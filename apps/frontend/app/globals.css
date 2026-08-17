@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 44 43% 94%;
+    --foreground: 20 20% 15%;
+
+    --card: 40 60% 95%;
+    --card-foreground: 20 20% 15%;
+
+    --popover: 40 60% 95%;
+    --popover-foreground: 20 20% 15%;
+
+    --primary: 137 51% 19%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 38 56% 58%;
+    --secondary-foreground: 20 20% 15%;
+
+    --muted: 38 40% 90%;
+    --muted-foreground: 30 15% 45%;
+
+    --accent: 38 50% 92%;
+    --accent-foreground: 137 51% 19%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 38 36% 83%;
+    --input: 38 36% 83%;
+    --ring: 137 51% 19%;
+
+    --radius: 1rem;
+
+    --font-serif-display: 'Playfair Display', Georgia, serif;
+    --font-sans-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-devanagari: 'Noto Serif Devanagari', serif;
+  }
+
+  body {
+    background-color: #f7f3e9;
+    color: #2c221e;
+    font-family: var(--font-sans-body);
+  }
+}
+
+.font-serif-display {
+  font-family: var(--font-serif-display), 'Playfair Display', Georgia, serif;
+}
+
+.font-devanagari {
+  font-family: var(--font-devanagari), 'Noto Serif Devanagari', serif;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #fcfaf5 inset !important;
+  -webkit-text-fill-color: #2c221e !important;
+}
