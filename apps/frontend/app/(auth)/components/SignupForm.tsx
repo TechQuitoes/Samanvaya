@@ -8,180 +8,116 @@ import {
   User,
   Mail,
   Phone,
-  ArrowRight,
-  Landmark,
-  Users,
   Lock,
-  ChevronDown,
-  ShieldCheck,
-  Building,
   Eye,
   EyeOff,
-  CheckCircle2,
-  FileText,
-  Edit2,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import LotusDivider from "@/components/ui/LotusDivider";
 import { useSignup } from "../hooks/useSignup";
-import { UserRole } from "@/types/auth";
 
 export default function SignupForm() {
   const {
-    currentStep,
-    maxUnlockedStep,
-    goToStep,
     formData,
     updateFormData,
     fieldErrors,
     clearFieldError,
     isLoading,
     error,
-    handleNextStep,
+    handleDirectSignup,
   } = useSignup();
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const steps = [
-    { id: 1, label: "Personal" },
-    { id: 2, label: "Temple" },
-    { id: 3, label: "Role" },
-    { id: 4, label: "Confirm" },
-  ];
-
-  const roleOptions = [
-    { value: UserRole.SUPER_ADMIN, label: "Super Administrator" },
-    { value: UserRole.ADMIN, label: "Administrator" },
-    { value: UserRole.DATA_ENTRY_OPERATOR, label: "Data Entry Operator" },
-    { value: UserRole.DEPARTMENT_USER, label: "Department User" },
-    { value: UserRole.VIEWER, label: "Viewer" },
-  ];
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   return (
-    <Card className="relative w-full flex flex-col items-center px-4 sm:px-6 py-5 sm:py-6 z-10 space-y-4 overflow-hidden">
-      {/* Decorative Top Leaf Graphics */}
-      <div className="absolute top-0 left-0 w-24 sm:w-28 h-24 sm:h-28 pointer-events-none z-0">
+    <div className="relative w-full flex flex-col items-center pt-6 pb-2 z-10">
+      {/* Decorative Corner Foliage - Top Left */}
+      <div className="absolute top-0 left-0 w-32 h-28 pointer-events-none z-0 opacity-75">
         <Image
           src="/assests/leftSideleaf.png"
-          alt="Top Left Leaf Accent"
+          alt="Top Left Foliage"
           fill
-          className="object-contain object-top-left opacity-90"
+          className="object-contain object-top-left"
         />
       </div>
-      <div className="absolute top-0 right-0 w-24 sm:w-28 h-24 sm:h-28 pointer-events-none z-0">
+
+      {/* Decorative Corner Foliage - Top Right */}
+      <div className="absolute top-0 right-0 w-36 h-32 pointer-events-none z-0 opacity-80">
         <Image
           src="/assests/rightSideLeaf.png"
-          alt="Top Right Leaf Accent"
+          alt="Top Right Foliage"
           fill
-          className="object-contain object-top-right opacity-90"
+          className="object-contain object-top-right"
         />
       </div>
 
-      {/* Top Header Controls */}
-      <div className="w-full flex items-center justify-between pt-2 z-10">
+      {/* Back Button - Positioned lower below top-left leaves matching reference */}
+      <div className="absolute top-7 left-4 z-20">
         <Link href="/login">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-10 h-10 rounded-full bg-white/70 backdrop-blur-md shadow-sm border border-amber-900/10 flex items-center justify-center text-[#2c221e]"
-            aria-label="Go back to login"
+          <button
+            type="button"
+            aria-label="Back to login"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[#2c221e] hover:bg-black/5 transition-all cursor-pointer"
           >
-            <ChevronLeft className="w-6 h-6 text-[#2c221e]" />
-          </Button>
+            <ChevronLeft className="w-7 h-7 text-[#2c221e]" />
+          </button>
         </Link>
+      </div>
 
-        {/* Center Lotus Emblem */}
-        <div className="relative w-12 h-12 flex-shrink-0">
+      {/* Header Branding Section - Centered with proper top spacing */}
+      <div className="relative z-10 flex flex-col items-center text-center px-4 w-full pt-1 mb-3">
+        {/* Golden Lotus Logo Emblem */}
+        <div className="relative w-14 h-12 mb-1.5 flex items-center justify-center">
           <Image
-            src="/assests/flower-icon.png"
+            src="/assests/04_lotus_icon_gold.svg"
             alt="Lotus Emblem"
-            width={48}
-            height={48}
-            className="object-contain"
+            width={56}
+            height={46}
+            className="object-contain w-14 h-11 drop-shadow-sm"
+            priority
           />
         </div>
 
-        <div className="w-10" />
-      </div>
-
-      {/* Page Title & Subtitle */}
-      <div className="text-center px-2 space-y-1">
-        <h1 className="font-serif-display text-3xl sm:text-4xl font-bold text-[#174824] tracking-wide">
+        {/* Create Account Title */}
+        <h1 className="font-serif-display text-[38px] sm:text-[42px] font-bold tracking-tight text-[#134625] leading-tight my-0.5">
           Create Account
         </h1>
-        <p className="text-[#5a4836] font-medium text-xs sm:text-sm">
+
+        {/* Tagline / Subtitle */}
+        <p className="font-serif-display text-[#4A2B18] font-semibold text-sm sm:text-base tracking-wide mt-0.5">
           Join LDMS and continue your seva
         </p>
+
+        {/* Golden Lotus Line Divider */}
+        <LotusDivider maxWidth="xs" iconSize={16} className="mt-2.5 mb-1" />
       </div>
 
-      {/* General Error Alert if any */}
+      {/* General Error Banner */}
       {error && (
-        <div className="w-full bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-3 text-center font-medium animate-fadeIn">
-          {error}
+        <div className="w-full px-4 sm:px-5 mb-2">
+          <div className="w-full bg-red-50/90 border border-red-200/80 text-red-700 text-xs rounded-xl p-3 flex items-center gap-2.5 font-medium animate-in fade-in">
+            <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
         </div>
       )}
 
-      {/* Progress Stepper Bar with Locked States */}
-      <div className="w-full max-w-[360px] my-2">
-        <div className="relative flex items-center justify-between">
-          <div className="absolute top-4 left-6 right-6 h-[2px] bg-[#e4d9c6] -z-0" />
-
-          {steps.map((step) => {
-            const isActive = currentStep === step.id;
-            const isCompleted = currentStep > step.id;
-            const isLocked = step.id > maxUnlockedStep;
-
-            return (
-              <div
-                key={step.id}
-                className={`relative z-10 flex flex-col items-center transition-all ${
-                  isLocked ? "cursor-not-allowed opacity-60" : "cursor-pointer"
-                }`}
-                onClick={() => goToStep(step.id)}
-              >
-                <div
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
-                    isActive
-                      ? "bg-[#174824] text-white shadow-md ring-2 ring-[#174824]/20"
-                      : isCompleted
-                      ? "bg-[#174824]/90 text-white"
-                      : isLocked
-                      ? "bg-[#e5d9c3]/50 border border-[#cfa35d]/40 text-[#8c7865]"
-                      : "bg-[#f5efe1] border border-[#cfa35d] text-[#5a4836]"
-                  }`}
-                >
-                  {isLocked ? <Lock className="w-3.5 h-3.5" /> : step.id}
-                </div>
-                <span
-                  className={`text-[11px] font-semibold mt-1.5 ${
-                    isActive ? "text-[#174824]" : "text-[#8c7865]"
-                  }`}
-                >
-                  {step.label}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* STEP 1: Personal Information */}
-      {currentStep === 1 ? (
-        <Card className="w-full border border-[#e8dfcf] p-5 sm:p-6">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-6 h-6 rounded-full bg-[#174824] text-white text-xs font-bold flex items-center justify-center">
-              1
-            </div>
-            <h2 className="text-[#174824] font-bold text-base sm:text-lg">
-              Personal Information
-            </h2>
-          </div>
-
-          <form onSubmit={handleNextStep} className="space-y-4" noValidate>
+      {/* Form Card Container matching login001_new.png */}
+      <div className="w-full px-4 sm:px-5 z-10">
+        <div className="bg-[#fffdfa]/95 backdrop-blur-md rounded-[28px] p-5 sm:p-6 border border-amber-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col gap-4">
+          <form
+            onSubmit={(e) => handleDirectSignup(e, agreeTerms)}
+            className="flex flex-col gap-4"
+            noValidate
+          >
+            {/* Full Name Field */}
             <Input
-              id="fullName"
+              id="signup-fullName"
               type="text"
               label="Full Name"
               value={formData.fullName}
@@ -191,10 +127,11 @@ export default function SignupForm() {
               }}
               error={fieldErrors.fullName}
               placeholder="Enter your full name"
-              leftIcon={<User className="w-5 h-5" />}
+              leftIcon={<User className="w-4 h-4 text-[#4a3e31]" />}
               required
             />
 
+            {/* Email Address Field */}
             <Input
               id="signup-email"
               type="email"
@@ -206,12 +143,13 @@ export default function SignupForm() {
               }}
               error={fieldErrors.email}
               placeholder="Enter your email address"
-              leftIcon={<Mail className="w-5 h-5" />}
+              leftIcon={<Mail className="w-4 h-4 text-[#4a3e31]" />}
               required
             />
 
+            {/* Mobile Number Field */}
             <Input
-              id="mobile"
+              id="signup-mobile"
               type="tel"
               label="Mobile Number"
               value={formData.mobile}
@@ -220,13 +158,14 @@ export default function SignupForm() {
                 clearFieldError("mobile");
               }}
               error={fieldErrors.mobile}
-              placeholder="10-digit mobile number"
-              leftIcon={<Phone className="w-5 h-5" />}
+              placeholder="Enter your mobile number"
+              leftIcon={<Phone className="w-4 h-4 text-[#4a3e31]" />}
               required
             />
 
+            {/* Password Field */}
             <Input
-              id="new-password"
+              id="signup-password"
               type={showPassword ? "text" : "password"}
               label="Password"
               value={formData.password}
@@ -235,27 +174,29 @@ export default function SignupForm() {
                 clearFieldError("password");
               }}
               error={fieldErrors.password}
-              placeholder="Create password (min 6 chars)"
-              leftIcon={<Lock className="w-5 h-5" />}
+              placeholder="Enter your password"
+              leftIcon={<Lock className="w-4 h-4 text-[#4a3e31]" />}
               rightIcon={
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="p-1 text-[#8c7865]"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="text-[#8c7865] hover:text-[#4a3e31] transition-colors p-0.5"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4" />
                   )}
                 </button>
               }
               required
             />
 
+            {/* Confirm Password Field */}
             <Input
-              id="confirm-password"
-              type={showPassword ? "text" : "password"}
+              id="signup-confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
               label="Confirm Password"
               value={formData.confirmPassword}
               onChange={(e) => {
@@ -263,331 +204,141 @@ export default function SignupForm() {
                 clearFieldError("confirmPassword");
               }}
               error={fieldErrors.confirmPassword}
-              placeholder="Re-enter password"
-              leftIcon={<Lock className="w-5 h-5" />}
+              placeholder="Confirm your password"
+              leftIcon={<Lock className="w-4 h-4 text-[#4a3e31]" />}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  className="text-[#8c7865] hover:text-[#4a3e31] transition-colors p-0.5"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              }
               required
             />
 
-            <Button
-              type="submit"
-              variant="sacred-primary"
-              className="w-full mt-2 flex items-center justify-center gap-2"
-            >
-              <span>Continue</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </form>
-        </Card>
-      ) : (
-        <Card
-          className={`w-full p-4 flex items-center justify-between transition-all ${
-            1 > maxUnlockedStep
-              ? "cursor-not-allowed opacity-60 bg-[#f7f3e9]"
-              : "cursor-pointer hover:bg-[#fffcf7]"
-          }`}
-          onClick={() => goToStep(1)}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#eadeca] text-[#b88636] font-bold text-sm flex items-center justify-center">
-              1
-            </div>
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-[#b88636]" />
-              <span className="font-bold text-sm text-[#b88636]">
-                Personal Information
-              </span>
-            </div>
-          </div>
-          <ChevronDown className="w-5 h-5 text-[#b88636]" />
-        </Card>
-      )}
-
-      {/* STEP 2: Temple Information */}
-      {currentStep === 2 ? (
-        <Card className="w-full border border-[#e8dfcf] p-5 sm:p-6">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-6 h-6 rounded-full bg-[#174824] text-white text-xs font-bold flex items-center justify-center">
-              2
-            </div>
-            <h2 className="text-[#174824] font-bold text-base sm:text-lg">
-              Temple Information
-            </h2>
-          </div>
-
-          <form onSubmit={handleNextStep} className="space-y-4" noValidate>
-            <Input
-              id="templeName"
-              type="text"
-              label="Temple / Center Name"
-              value={formData.templeName}
-              onChange={(e) => {
-                updateFormData({ templeName: e.target.value });
-                clearFieldError("templeName");
-              }}
-              error={fieldErrors.templeName}
-              placeholder="e.g. ISKCON Vrindavan / Delhi"
-              leftIcon={<Landmark className="w-5 h-5" />}
-              required
-            />
-
-            <Input
-              id="templeLocation"
-              type="text"
-              label="City / Location"
-              value={formData.templeLocation}
-              onChange={(e) => updateFormData({ templeLocation: e.target.value })}
-              placeholder="Enter temple location (Optional)"
-              leftIcon={<Building className="w-5 h-5" />}
-            />
-
-            <Button
-              type="submit"
-              variant="sacred-primary"
-              className="w-full mt-2 flex items-center justify-center gap-2"
-            >
-              <span>Continue</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </form>
-        </Card>
-      ) : (
-        <Card
-          className={`w-full p-4 flex items-center justify-between transition-all ${
-            2 > maxUnlockedStep
-              ? "cursor-not-allowed opacity-60 bg-[#f7f3e9]"
-              : "cursor-pointer hover:bg-[#fffcf7]"
-          }`}
-          onClick={() => goToStep(2)}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#eadeca] text-[#b88636] font-bold text-sm flex items-center justify-center">
-              2
-            </div>
-            <div className="flex items-center gap-2">
-              <Landmark className="w-4 h-4 text-[#b88636]" />
-              <span className="font-bold text-sm text-[#b88636]">
-                Temple Information
-              </span>
-            </div>
-          </div>
-          {2 > maxUnlockedStep ? (
-            <Lock className="w-4 h-4 text-[#8c7865]" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-[#b88636]" />
-          )}
-        </Card>
-      )}
-
-      {/* STEP 3: Role Selection */}
-      {currentStep === 3 ? (
-        <Card className="w-full border border-[#e8dfcf] p-5 sm:p-6">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-6 h-6 rounded-full bg-[#174824] text-white text-xs font-bold flex items-center justify-center">
-              3
-            </div>
-            <h2 className="text-[#174824] font-bold text-base sm:text-lg">
-              Role Selection
-            </h2>
-          </div>
-
-          <form onSubmit={handleNextStep} className="space-y-4" noValidate>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-[#4a3e31]">
-                Select Your Seva Role
+            {/* Agreement Checkbox */}
+            <div className="flex items-start gap-2.5 text-xs my-0.5">
+              <input
+                type="checkbox"
+                id="agree-terms"
+                checked={agreeTerms}
+                onChange={(e) => {
+                  setAgreeTerms(e.target.checked);
+                  clearFieldError("terms");
+                }}
+                className="w-4 h-4 mt-0.5 rounded border-[#174824] text-[#174824] focus:ring-[#174824] accent-[#174824] cursor-pointer"
+              />
+              <label htmlFor="agree-terms" className="text-[#2c221e] leading-snug cursor-pointer select-none">
+                I agree to the{" "}
+                <span className="text-[#174824] font-semibold hover:underline">
+                  Terms & Conditions
+                </span>{" "}
+                and{" "}
+                <span className="text-[#174824] font-semibold hover:underline">
+                  Privacy Policy
+                </span>
               </label>
-              <div
-                className={`relative flex items-center bg-[#fcfaf5] border rounded-xl px-3 h-12 transition-all ${
-                  fieldErrors.role ? "border-red-500" : "border-[#e4d9c6]"
-                }`}
-              >
-                <Users className="w-5 h-5 text-[#8c7865] mr-2 flex-shrink-0" />
-                <select
-                  value={formData.role}
-                  onChange={(e) => {
-                    updateFormData({ role: e.target.value });
-                    clearFieldError("role");
-                  }}
-                  className="w-full bg-transparent text-sm text-[#2c221e] outline-none font-medium cursor-pointer"
-                  required
-                >
-                  {roleOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {fieldErrors.role && (
-                <span className="text-xs text-red-600 mt-0.5">{fieldErrors.role}</span>
-              )}
             </div>
+            {fieldErrors.terms && (
+              <span className="text-xs text-red-600 -mt-2">{fieldErrors.terms}</span>
+            )}
 
+            {/* Create Account Button */}
             <Button
               type="submit"
-              variant="sacred-primary"
-              className="w-full mt-2 flex items-center justify-center gap-2"
-            >
-              <span>Continue</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </form>
-        </Card>
-      ) : (
-        <Card
-          className={`w-full p-4 flex items-center justify-between transition-all ${
-            3 > maxUnlockedStep
-              ? "cursor-not-allowed opacity-60 bg-[#f7f3e9]"
-              : "cursor-pointer hover:bg-[#fffcf7]"
-          }`}
-          onClick={() => goToStep(3)}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#eadeca] text-[#b88636] font-bold text-sm flex items-center justify-center">
-              3
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#b88636]" />
-              <span className="font-bold text-sm text-[#b88636]">
-                Role Selection
-              </span>
-            </div>
-          </div>
-          {3 > maxUnlockedStep ? (
-            <Lock className="w-4 h-4 text-[#8c7865]" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-[#b88636]" />
-          )}
-        </Card>
-      )}
-
-      {/* STEP 4: Confirm Details */}
-      {currentStep === 4 ? (
-        <Card className="w-full border border-[#e8dfcf] p-5 sm:p-6">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-6 h-6 rounded-full bg-[#174824] text-white text-xs font-bold flex items-center justify-center">
-              4
-            </div>
-            <h2 className="text-[#174824] font-bold text-base sm:text-lg">
-              Confirm Details
-            </h2>
-          </div>
-
-          <form onSubmit={handleNextStep} className="space-y-4">
-            <div className="bg-[#fdfbf7] border border-[#e8dfcf] rounded-xl p-4 space-y-3 text-xs">
-              <div className="flex justify-between items-start border-b border-[#e8dfcf] pb-2">
-                <div>
-                  <span className="font-bold text-[#174824] text-sm block">
-                    Personal Details
-                  </span>
-                  <p className="text-[#4a3e31] font-semibold mt-1">
-                    {formData.fullName || "—"}
-                  </p>
-                  <p className="text-[#8c7865]">{formData.email || "—"}</p>
-                  <p className="text-[#8c7865]">{formData.mobile || "—"}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => goToStep(1)}
-                  className="text-[#b88636] hover:underline flex items-center gap-1 font-semibold"
-                >
-                  <Edit2 className="w-3.5 h-3.5" /> Edit
-                </button>
-              </div>
-
-              <div className="flex justify-between items-start border-b border-[#e8dfcf] pb-2">
-                <div>
-                  <span className="font-bold text-[#174824] text-sm block">
-                    Temple Details
-                  </span>
-                  <p className="text-[#4a3e31] font-semibold mt-1">
-                    {formData.templeName || "—"}
-                  </p>
-                  <p className="text-[#8c7865]">{formData.templeLocation || "—"}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => goToStep(2)}
-                  className="text-[#b88636] hover:underline flex items-center gap-1 font-semibold"
-                >
-                  <Edit2 className="w-3.5 h-3.5" /> Edit
-                </button>
-              </div>
-
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="font-bold text-[#174824] text-sm block">
-                    Seva Role
-                  </span>
-                  <p className="text-[#4a3e31] font-semibold mt-1">
-                    {formData.role || "—"}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => goToStep(3)}
-                  className="text-[#b88636] hover:underline flex items-center gap-1 font-semibold"
-                >
-                  <Edit2 className="w-3.5 h-3.5" /> Edit
-                </button>
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              variant="sacred-primary"
               disabled={isLoading}
-              className="w-full mt-2 flex items-center justify-center gap-2"
+              className="w-full h-12 bg-[#174824] hover:bg-[#12391c] text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-md transition-all mt-1 cursor-pointer"
             >
               {isLoading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Submitting Registration...</span>
+                  <span>Creating Account...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Confirm & Submit Registration</span>
+                  <div className="relative w-5 h-5 flex-shrink-0">
+                    <Image
+                      src="/assests/04_lotus_icon_gold.svg"
+                      alt="Lotus"
+                      width={20}
+                      height={20}
+                      className="object-contain brightness-200"
+                    />
+                  </div>
+                  <span>Create Account</span>
                 </>
               )}
             </Button>
           </form>
-        </Card>
-      ) : (
-        <Card
-          className={`w-full p-4 flex items-center justify-between transition-all ${
-            4 > maxUnlockedStep
-              ? "cursor-not-allowed opacity-60 bg-[#f7f3e9]"
-              : "cursor-pointer hover:bg-[#fffcf7]"
-          }`}
-          onClick={() => goToStep(4)}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#eadeca] text-[#b88636] font-bold text-sm flex items-center justify-center">
-              4
-            </div>
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#b88636]" />
-              <span className="font-bold text-sm text-[#b88636]">
-                Confirm Details
-              </span>
-            </div>
-          </div>
-          {4 > maxUnlockedStep ? (
-            <Lock className="w-4 h-4 text-[#8c7865]" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-[#b88636]" />
-          )}
-        </Card>
-      )}
-
-      {/* Admin Review Information Notice Box */}
-      <div className="w-full bg-[#edf4eb] border border-[#c3dfc1] rounded-2xl p-4 flex items-start gap-3 mt-2">
-        <ShieldCheck className="w-6 h-6 text-[#216833] flex-shrink-0 mt-0.5" />
-        <p className="text-[#216833] text-xs font-medium leading-relaxed">
-          Your account will be reviewed by the administrator. You will receive an
-          approval notification once activated.
-        </p>
+        </div>
       </div>
-    </Card>
+
+      {/* Administrator Review Notice Callout Box */}
+      <div className="w-full px-4 sm:px-5 mt-3">
+        <div className="bg-[#e5ece0] border border-[#d2dec9]/70 rounded-[20px] p-4 flex items-center gap-3.5">
+          {/* Authentic Leaf-Sprout Shield Icon matching design */}
+          <div className="relative w-8 h-9 flex-shrink-0 flex items-center justify-center">
+            <svg
+              className="w-8 h-9 text-[#174824]"
+              viewBox="0 0 28 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Outer Shield Outline */}
+              <path
+                d="M14 2L3 6.5V14.5C3 21.5 8 27.5 14 29.5C20 27.5 25 21.5 25 14.5V6.5L14 2Z"
+                stroke="#174824"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Central Stem */}
+              <path
+                d="M14 21V10"
+                stroke="#174824"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              {/* Bottom Pair of Leaves (pointing UPWARDS) */}
+              <path
+                d="M14 18.5C11.5 18 9.5 16 9 13.5C11 14.5 13 16 14 18.5Z"
+                fill="#174824"
+              />
+              <path
+                d="M14 18.5C16.5 18 18.5 16 19 13.5C17 14.5 15 16 14 18.5Z"
+                fill="#174824"
+              />
+              {/* Top Pair of Leaves (pointing UPWARDS) */}
+              <path
+                d="M14 14.5C12 14 10.5 12.5 10 10.5C11.5 11.5 13 12.5 14 14.5Z"
+                fill="#174824"
+              />
+              <path
+                d="M14 14.5C16 14 17.5 12.5 18 10.5C16.5 11.5 15 12.5 14 14.5Z"
+                fill="#174824"
+              />
+              {/* Center Top Bud */}
+              <path
+                d="M14 7.5L12.5 10H15.5L14 7.5Z"
+                fill="#174824"
+              />
+            </svg>
+          </div>
+
+          {/* Message Text */}
+          <p className="text-xs sm:text-[13px] text-[#244b2d] font-normal leading-[1.45] tracking-tight">
+            Your account will be reviewed by the administrator. You will receive an
+            approval notification once activated.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

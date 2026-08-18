@@ -127,8 +127,89 @@ export function useSignup() {
     }
   };
 
+  const handleDirectSignup = async (e: React.FormEvent, agreeTerms: boolean) => {
+    e.preventDefault();
+    setError(null);
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full Name is required.';
+    } else if (formData.fullName.trim().length < 2) {
+      newErrors.fullName = 'Name must be at least 2 characters.';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email address is required.';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+
+    if (!formData.mobile.trim()) {
+      newErrors.mobile = 'Mobile number is required.';
+    } else if (!/^\d{10}$/.test(formData.mobile.trim())) {
+      newErrors.mobile = 'Please enter a valid 10-digit mobile number.';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required.';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long.';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password.';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match.';
+    }
+
+    if (!agreeTerms) {
+      newErrors.terms = 'Please agree to the Terms & Conditions and Privacy Policy.';
+    }
+
+    setFieldErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      setError(firstError);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await apiNexus.call<SignupResponse>('POST_SIGNUP', {
+        payload: {
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          mobile: formData.mobile,
+          role: formData.role || UserRole.VIEWER,
+        },
+      });
+
+      if (!response.isSuccess || !response.data) {
+        throw new Error(response.message || 'Signup failed. Please try again.');
+      }
+
+      const resData = response.data;
+
+      toast.success(resData.message || 'Account created successfully!', {
+        description: 'Your account is pending admin approval. You will be able to login once approved.',
+        duration: 5000,
+      });
+
+      setTimeout(() => {
+        router.push('/login');
+      }, 1500);
+    } catch (err: any) {
+      const errorMessage = err.message || 'Signup failed. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const submitSignup = async () => {
-    // Validate all steps prior to submission
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
       toast.error('Please fix the errors in previous steps before submitting.');
       return;
@@ -182,6 +263,7 @@ export function useSignup() {
     isLoading,
     error,
     handleNextStep,
+    handleDirectSignup,
     submitSignup,
   };
 }

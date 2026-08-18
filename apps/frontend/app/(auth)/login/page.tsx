@@ -9,7 +9,7 @@ export default function LoginPage() {
       {/* Mobile View (< lg screen) */}
       <div className="flex lg:hidden items-center justify-center p-0 min-h-screen">
         <div
-          className="w-full max-w-[430px] min-h-screen sm:min-h-[744px] bg-[#f5efe1] relative shadow-2xl sm:rounded-[36px] overflow-hidden flex flex-col justify-between border-0 sm:border sm:border-amber-900/10"
+          className="w-full max-w-[430px] min-h-screen bg-[#f5efe1] relative shadow-2xl sm:rounded-[36px] overflow-hidden flex flex-col justify-between border-0 sm:border sm:border-amber-900/10"
           style={{ position: "relative" }}
         >
           <div>

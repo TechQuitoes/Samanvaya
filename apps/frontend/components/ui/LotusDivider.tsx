@@ -3,36 +3,41 @@ import { cn } from "@/lib/utils";
 
 interface LotusDividerProps {
   className?: string;
-  maxWidth?: "sm" | "md" | "lg" | "full";
+  maxWidth?: "xs" | "sm" | "md" | "lg" | "full";
   iconSize?: number;
   text?: string;
   isDevanagari?: boolean;
 }
 
 const maxWidthMap = {
-  sm: "max-w-[200px]",
-  md: "max-w-[260px]",
-  lg: "max-w-[320px]",
+  xs: "max-w-[200px]",
+  sm: "max-w-[250px]",
+  md: "max-w-[300px]",
+  lg: "max-w-[340px]",
   full: "w-full",
 };
 
 export default function LotusDivider({
   className,
-  maxWidth = "md",
-  iconSize = 20,
+  maxWidth = "xs",
+  iconSize = 16,
   text,
   isDevanagari = false,
 }: LotusDividerProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-3 my-2 w-full",
+        "flex items-center justify-center gap-2 my-2 w-full mx-auto",
         maxWidthMap[maxWidth],
         className
       )}
     >
-      <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#cfa35d] to-[#cfa35d]" />
-      
+      {/* Left End Dot */}
+      <div className="w-1 h-1 rounded-full bg-[#cfa35d] shrink-0" />
+
+      {/* Left Line */}
+      <div className="h-[1px] flex-1 bg-[#cfa35d]" />
+
       {text ? (
         <span
           className={cn(
@@ -45,7 +50,7 @@ export default function LotusDivider({
       ) : (
         <div className="relative flex-shrink-0" style={{ width: iconSize, height: iconSize }}>
           <Image
-            src="/assests/flower-icon.png"
+            src="/assests/04_lotus_icon_gold.svg"
             alt="Lotus Accent"
             width={iconSize}
             height={iconSize}
@@ -54,7 +59,11 @@ export default function LotusDivider({
         </div>
       )}
 
-      <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#cfa35d] to-[#cfa35d]" />
+      {/* Right Line */}
+      <div className="h-[1px] flex-1 bg-[#cfa35d]" />
+
+      {/* Right End Dot */}
+      <div className="w-1 h-1 rounded-full bg-[#cfa35d] shrink-0" />
     </div>
   );
 }
