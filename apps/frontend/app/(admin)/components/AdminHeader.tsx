@@ -40,8 +40,8 @@ export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHead
   };
 
   return (
-    <header className="w-full bg-transparent border-none shadow-none px-4 sm:px-8 pt-4 pb-2">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <header className="w-full bg-transparent border-none shadow-none px-6 py-4">
+      <div className="w-full flex items-center justify-between gap-4">
         {/* Left Side: Mobile Menu Button + Devotional Greeting & Tagline */}
         <div className="flex items-center gap-3 min-w-0">
           {/* Hamburger Menu (Mobile/Tablet < lg only) */}

@@ -128,8 +128,6 @@ export default function TravelDashboardPage() {
         </div>
       </div>
 
-      <LotusDivider maxWidth="full" iconSize={20} className="my-1" />
-
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">

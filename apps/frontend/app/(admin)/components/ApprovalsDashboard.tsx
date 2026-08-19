@@ -60,8 +60,6 @@ export default function ApprovalsDashboard() {
         </Button>
       </div>
 
-      <LotusDivider maxWidth="full" iconSize={20} className="my-1" />
-
       {/* Sacred Summary Stat Cards */}
       <ApprovalStatCards
         pendingCount={pendingUsers.length}

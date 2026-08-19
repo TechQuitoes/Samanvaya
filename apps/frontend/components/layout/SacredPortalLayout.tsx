@@ -58,25 +58,9 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
         />
 
         {/* Main Page Content */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-4 sm:py-6 space-y-6">
+        <main className="flex-1 w-full px-6 py-4 pb-8 space-y-6">
           {children}
         </main>
-
-        {/* Page Bottom Sacred Footer */}
-        <footer className="relative z-20 w-full py-6 border-t border-[#e5d9c3]/60 bg-[#faf4e8]/60 text-center space-y-2">
-          <div className="flex justify-center items-center gap-2 text-xs font-bold text-[#5a4836]">
-            <div className="relative w-4 h-4 flex-shrink-0">
-              <Image
-                src="/assests/flower-icon.png"
-                alt="Lotus Icon"
-                width={16}
-                height={16}
-                className="object-contain"
-              />
-            </div>
-            <span>All Glories to Srila Prabhupada</span>
-          </div>
-        </footer>
       </div>
     </div>
   );

@@ -22,8 +22,6 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      <LotusDivider maxWidth="full" iconSize={20} className="my-1" />
-
       <Card className="rounded-[24px] border-[#e5d9c3] bg-[#faf4e8] p-8 text-center space-y-3">
         <div className="w-12 h-12 rounded-full bg-[#174824]/10 text-[#174824] flex items-center justify-center mx-auto">
           <Sparkles className="w-6 h-6 text-amber-600" />

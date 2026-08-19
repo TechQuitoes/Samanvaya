@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Calendar as CalendarIcon,
@@ -12,12 +13,35 @@ import {
   UserCheck,
   Building,
   HeartHandshake,
+  Plane,
+  Heart,
+  Users,
+  MoreHorizontal,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import LotusDivider from "@/components/ui/LotusDivider";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
+import QuickActionButton from "@/components/dashboard/QuickActionButton";
+import TodayScheduleCard from "@/components/dashboard/widgets/TodayScheduleCard";
+import UpcomingTravelCard from "@/components/dashboard/widgets/UpcomingTravelCard";
+import MyTasksCard from "@/components/dashboard/widgets/MyTasksCard";
+import PendingDocsCard from "@/components/dashboard/widgets/PendingDocsCard";
+import UpcomingMeetingsCard from "@/components/dashboard/widgets/UpcomingMeetingsCard";
+import NotificationsCard from "@/components/dashboard/widgets/NotificationsCard";
+import RecentActivitiesCard from "@/components/dashboard/widgets/RecentActivitiesCard";
 import DataManager from "@/lib/data-manager";
+
+const QUICK_ACTIONS = [
+  { title: "Travel", icon: Plane, href: "/travel" },
+  { title: "Calendar", icon: CalendarIcon, href: "/calendar" },
+  { title: "Journal", icon: BookOpen, href: "/journal" },
+  { title: "Documentation", icon: FileText, href: "/documentation" },
+  { title: "Task", icon: CheckSquare, href: "/tasks" },
+  { title: "Health", icon: Heart, href: "/health" },
+  { title: "Meeting", icon: Users, href: "/meetings" },
+  { title: "More", icon: MoreHorizontal, href: "/settings" },
+];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -47,127 +71,113 @@ export default function DashboardPage() {
 
   return (
     <SacredPortalLayout>
-      <LotusDivider maxWidth="full" iconSize={20} className="my-1" />
-
-      {/* Top Summary & Location Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Location Card */}
-        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] p-5 border border-[#e5d9c3] bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#8c7865] uppercase tracking-wider">
-            <MapPin className="w-4 h-4 text-[#174824]" />
-            <span>Temple / Center</span>
+      {/* Top 2 Cards Row: Current Location (with Temple Sketch) & Today's Summary (with Lotus Accent) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* 1. Current Location Card */}
+        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] px-5 sm:px-6 py-5 sm:py-6 border border-[#e5d9c3] bg-[#fbf8f0] shadow-xs flex flex-col justify-center">
+          {/* Temple Sketch Background Illustration on Right */}
+          <div className="absolute right-0 bottom-0 top-0 w-1/3 pointer-events-none overflow-hidden opacity-30 mix-blend-multiply">
+            <Image
+              src="/assets/card_temple_sketch.jpg"
+              alt="Temple Sketch"
+              fill
+              className="object-contain object-right-bottom"
+            />
           </div>
-          <p className="text-xl font-bold text-[#174824]">
-            {user.temple?.name || "ISKCON Leader Center"}
-          </p>
-          <p className="text-xs text-[#5a4836] font-medium">
-            Status: <span className="text-emerald-800 font-bold">Active Seva</span>
-          </p>
+
+          <div className="relative z-10 flex flex-row items-start gap-3.5">
+            {/* Location Pin Icon — Left */}
+            <div className="w-9 h-9 mt-0.5 rounded-full bg-white border border-[#d4af37]/50 shadow-sm flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-4.5 h-4.5 text-[#174824] fill-[#2d6a4f]" strokeWidth={1.5} />
+            </div>
+
+            {/* Text Stack — Right */}
+            <div className="space-y-0.5 min-w-0">
+              <p className="text-[11px] sm:text-xs font-semibold text-[#5a4836] tracking-wide leading-tight">
+                Current Location
+              </p>
+              <h3 className="text-base sm:text-lg font-bold font-serif-display text-[#174824] leading-snug">
+                {user.temple?.name || "ISKCON Ahmedabad"}
+              </h3>
+              <p className="text-xs font-semibold text-[#2d6a4f]">
+                Travelling
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-[#8c7865] font-medium">
+                Updated 20 mins ago
+              </p>
+            </div>
+          </div>
         </Card>
 
-        {/* Today's Summary Card */}
-        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] p-5 border border-[#e5d9c3] bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-2">
-          <p className="text-xs font-bold text-[#8c7865] uppercase tracking-wider">
-            Today&apos;s Summary
-          </p>
-          <div className="grid grid-cols-3 gap-2 text-center pt-1">
-            <div>
-              <p className="text-xl font-bold text-[#174824]">2</p>
-              <p className="text-[11px] text-[#5a4836]">Meetings</p>
-            </div>
-            <div>
-              <p className="text-xl font-bold text-[#174824]">6</p>
-              <p className="text-[11px] text-[#5a4836]">Tasks</p>
-            </div>
-            <div>
-              <p className="text-xl font-bold text-[#174824]">4</p>
-              <p className="text-[11px] text-[#5a4836]">Pending Docs</p>
-            </div>
-          </div>
-        </Card>
+        {/* 2. Today's Summary Card */}
+        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] px-5 sm:px-6 py-5 sm:py-6 border border-[#e5d9c3] bg-[#fbf8f0] shadow-xs flex flex-col justify-center">
+          <div className="relative z-10 space-y-3">
+            <h4 className="text-xs sm:text-sm font-semibold text-[#2c221e]">
+              Today&apos;s Summary
+            </h4>
 
-        {/* Verification Status Card */}
-        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] p-5 border border-emerald-300/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#8c7865] uppercase tracking-wider">
-            <UserCheck className="w-4 h-4 text-[#174824]" />
-            <span>Account Status</span>
+            {/* 3 Metric Columns with Dividers */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 items-center">
+              <div className="space-y-1">
+                <p className="text-xs text-[#5a4836] font-medium">Meetings</p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#174824]">2</p>
+              </div>
+
+              <div className="space-y-1 border-l border-[#e5d9c3] pl-3 sm:pl-4">
+                <p className="text-xs text-[#5a4836] font-medium">Tasks</p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#174824]">6</p>
+              </div>
+
+              <div className="space-y-1 border-l border-[#e5d9c3] pl-3 sm:pl-4">
+                <p className="text-xs text-[#5a4836] font-medium">Pending Docs</p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#174824]">4</p>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge className="bg-emerald-600 text-white font-bold text-xs px-2.5 py-0.5">
-              VERIFIED & APPROVED
-            </Badge>
+
+          {/* Lotus Accent Motif on Bottom Right */}
+          <div className="absolute right-4 bottom-3 w-8 h-8 opacity-70 pointer-events-none">
+            <Image
+              src="/assets/04_lotus_icon_gold.png"
+              alt="Lotus Motif"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
           </div>
-          <p className="text-xs text-emerald-900 font-medium">
-            Verified by Administrator
-          </p>
         </Card>
       </div>
 
       {/* Quick Actions Grid */}
-      <div className="space-y-3">
-        <h3 className="text-base font-bold text-[#174824] flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-600" />
-          <span>Quick Actions</span>
+      <div className="space-y-2.5">
+        <h3 className="text-sm sm:text-base font-semibold text-[#2c221e]">
+          Quick Actions
         </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="rounded-[20px] p-4 border border-[#e5d9c3] bg-[#faf4e8] hover:bg-[#fffdf7] transition-all flex flex-col items-center justify-center text-center space-y-2 cursor-pointer group shadow-xs">
-            <div className="p-3 rounded-2xl bg-[#174824]/10 text-[#174824] group-hover:scale-105 transition-transform">
-              <CalendarIcon className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-bold text-[#2c221e]">Calendar</span>
-          </Card>
-
-          <Card className="rounded-[20px] p-4 border border-[#e5d9c3] bg-[#faf4e8] hover:bg-[#fffdf7] transition-all flex flex-col items-center justify-center text-center space-y-2 cursor-pointer group shadow-xs">
-            <div className="p-3 rounded-2xl bg-[#174824]/10 text-[#174824] group-hover:scale-105 transition-transform">
-              <FileText className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-bold text-[#2c221e]">Documentation</span>
-          </Card>
-
-          <Card className="rounded-[20px] p-4 border border-[#e5d9c3] bg-[#faf4e8] hover:bg-[#fffdf7] transition-all flex flex-col items-center justify-center text-center space-y-2 cursor-pointer group shadow-xs">
-            <div className="p-3 rounded-2xl bg-[#174824]/10 text-[#174824] group-hover:scale-105 transition-transform">
-              <BookOpen className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-bold text-[#2c221e]">Journal</span>
-          </Card>
-
-          <Card className="rounded-[20px] p-4 border border-[#e5d9c3] bg-[#faf4e8] hover:bg-[#fffdf7] transition-all flex flex-col items-center justify-center text-center space-y-2 cursor-pointer group shadow-xs">
-            <div className="p-3 rounded-2xl bg-[#174824]/10 text-[#174824] group-hover:scale-105 transition-transform">
-              <CheckSquare className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-bold text-[#2c221e]">Tasks</span>
-          </Card>
+        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8">
+          {QUICK_ACTIONS.map((action) => (
+            <QuickActionButton
+              key={action.title}
+              title={action.title}
+              icon={action.icon}
+              onClick={() => router.push(action.href)}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Welcome Seva Notice Card */}
-      <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] p-6 border border-[#e5d9c3] bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-[#174824] text-white">
-            <HeartHandshake className="w-6 h-6 text-amber-300" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-[#174824]">
-              Welcome to LDMS Seva Portal
-            </h3>
-            <p className="text-xs text-[#5a4836] font-medium">
-              Leader Documentation & Management System
-            </p>
-          </div>
-        </div>
+      {/* 6 Dashboard Widgets Grid (Today's Schedule, Upcoming Travel, My Tasks, Pending Docs, Upcoming Meetings, Notifications) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <TodayScheduleCard />
+        <UpcomingTravelCard />
+        <MyTasksCard />
+        <PendingDocsCard />
+        <UpcomingMeetingsCard />
+        <NotificationsCard />
+      </div>
 
-        <p className="text-xs sm:text-sm text-[#4a3e31] leading-relaxed">
-          Your account is verified and ready for service. Use the quick action tools to access documentation, track schedules, and coordinate seva tasks.
-        </p>
-
-        <div className="pt-2 flex items-center justify-between border-t border-[#e5d9c3]/60 text-xs font-semibold text-[#174824]">
-          <span className="flex items-center gap-1.5">
-            <Building className="w-4 h-4 text-amber-600" />
-            <span>Serving Leaders. Strengthening Seva.</span>
-          </span>
-        </div>
-      </Card>
+      {/* Bottom Recent Activities Card with Left-to-Right Transparent Gradient & Temple Skyline */}
+      <RecentActivitiesCard />
     </SacredPortalLayout>
   );
 }

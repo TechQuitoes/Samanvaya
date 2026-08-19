@@ -160,8 +160,6 @@ export default function LeaderProfilePage() {
         </div>
       </div>
 
-      <LotusDivider maxWidth="full" iconSize={20} className="my-1" />
-
       {isLoading || !profile ? (
         <div className="space-y-4">
           <Skeleton className="h-48 w-full rounded-[24px] bg-[#e5d9c3]/60" />
