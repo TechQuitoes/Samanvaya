@@ -1,8 +1,11 @@
 export enum UserRole {
-  SUPER_ADMIN = 'Super Administrator',
-  ADMIN = 'Administrator',
-  DATA_ENTRY_OPERATOR = 'Data Entry Operator',
-  DEPARTMENT_USER = 'Department User',
+  SUPER_ADMIN = 'Super Admin',
+  ADMIN = 'Admin',
+  DOCUMENTATION_TEAM = 'Documentation Team',
+  TRAVEL_TEAM = 'Travel Team',
+  HEALTH_TEAM = 'Health Team',
+  FINANCE_TEAM = 'Finance Team',
+  VOLUNTEER_SEVAK = 'Volunteer/Sevak',
   VIEWER = 'Viewer',
 }
 

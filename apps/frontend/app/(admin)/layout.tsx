@@ -22,9 +22,16 @@ export default function AdminLayout({
       return;
     }
 
-    const allowedRoles = [UserRole.ADMIN, UserRole.SUPER_ADMIN];
+    const allowedRoles = [
+      UserRole.ADMIN,
+      UserRole.SUPER_ADMIN,
+      "Super Administrator",
+      "Administrator",
+      "Admin",
+      "Super Admin",
+    ];
     if (!allowedRoles.includes(user.role)) {
-      router.replace("/login");
+      router.replace("/dashboard");
       return;
     }
 

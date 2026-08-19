@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Menu, Globe, ChevronDown } from "lucide-react";
+import { Menu } from "lucide-react";
 import LotusDivider from "@/components/ui/LotusDivider";
 
 export default function Header() {
   return (
     <header className="relative w-full flex flex-col items-center overflow-hidden">
       {/* Top Floating Control Bar */}
-      <div className="absolute top-4 left-4 right-4 z-30 flex justify-between items-center">
+      <div className="absolute top-4 left-4 z-30 flex items-center">
         {/* Menu Button */}
         <button
           type="button"
@@ -16,17 +16,6 @@ export default function Header() {
           className="w-10 h-10 rounded-full bg-white/70 backdrop-blur-md shadow-sm border border-amber-950/15 flex items-center justify-center text-[#2c221e] hover:bg-white transition-all cursor-pointer"
         >
           <Menu className="w-5 h-5 text-[#2c221e]" />
-        </button>
-
-        {/* Language Selector Pill */}
-        <button
-          type="button"
-          aria-label="Select language"
-          className="px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur-md shadow-sm border border-amber-950/15 flex items-center gap-1.5 text-xs font-semibold text-[#2c221e] hover:bg-white transition-all cursor-pointer"
-        >
-          <Globe className="w-3.5 h-3.5 text-[#2c221e]" />
-          <span>EN</span>
-          <ChevronDown className="w-3.5 h-3.5 text-[#2c221e]" />
         </button>
       </div>
 

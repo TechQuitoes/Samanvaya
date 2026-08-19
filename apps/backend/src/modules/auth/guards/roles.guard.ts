@@ -23,12 +23,21 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Access denied: No role assigned to user');
     }
 
-    // Super Administrator has unrestricted access across all routes
-    if (user.role === UserRole.SUPER_ADMIN) {
+    // Super Admin has unrestricted access across all routes
+    if (
+      user.role === UserRole.SUPER_ADMIN ||
+      user.role === 'Super Administrator' ||
+      user.role === 'Super Admin'
+    ) {
       return true;
     }
 
-    const hasRole = requiredRoles.includes(user.role as UserRole);
+    const normalizedRole =
+      user.role === 'Administrator' ? UserRole.ADMIN : user.role === 'Super Administrator' ? UserRole.SUPER_ADMIN : user.role;
+
+    const hasRole =
+      requiredRoles.includes(user.role as UserRole) ||
+      requiredRoles.includes(normalizedRole as UserRole);
     if (!hasRole) {
       throw new ForbiddenException(
         `Access denied: Required role (${requiredRoles.join(', ')}) matching criteria not met for user with role "${user.role}"`,

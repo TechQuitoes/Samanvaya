@@ -192,8 +192,8 @@ export function useSignup() {
 
       const resData = response.data;
 
-      toast.success(resData.message || 'Account created successfully!', {
-        description: 'Your account is pending admin approval. You will be able to login once approved.',
+      toast.success(resData.message || 'Registration Successful!', {
+        description: 'Your account has been submitted for admin approval. You can log in once approved.',
         duration: 5000,
       });
 
@@ -234,8 +234,8 @@ export function useSignup() {
 
       const resData = response.data;
 
-      toast.success(resData.message || 'Account created successfully!', {
-        description: 'Your account is pending admin approval. You will be able to login once approved.',
+      toast.success(resData.message || 'Registration Successful!', {
+        description: 'Your account has been submitted for admin approval. You can log in once approved.',
         duration: 5000,
       });
 

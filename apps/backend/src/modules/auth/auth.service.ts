@@ -45,7 +45,7 @@ export class AuthService {
     await newUser.save();
 
     return {
-      message: 'Account created successfully! Your account is pending admin approval.',
+      message: 'Account created successfully!',
       requiresApproval: true,
     };
   }

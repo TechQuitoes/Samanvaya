@@ -4,8 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Globe,
-  ChevronDown,
   Mail,
   Lock,
   Eye,
@@ -99,19 +97,7 @@ export default function DesktopLogin() {
       {/* =========================================================================
           RIGHT PANEL (50%): Welcome Back Login Form with Sharp Background
          ========================================================================= */}
-      <div className="relative w-1/2 min-h-screen flex flex-col justify-between p-8 lg:p-12 xl:p-14 bg-[#fcf9f2]">
-        {/* Top Right Control Bar */}
-        <div className="w-full flex justify-end items-center z-20">
-          <button
-            type="button"
-            aria-label="Select language"
-            className="px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-sm border border-amber-950/15 flex items-center gap-1.5 text-xs font-semibold text-[#2c221e] hover:bg-white transition-all cursor-pointer"
-          >
-            <Globe className="w-3.5 h-3.5 text-[#2c221e]" />
-            <span>EN</span>
-            <ChevronDown className="w-3.5 h-3.5 text-[#2c221e]" />
-          </button>
-        </div>
+      <div className="relative w-1/2 min-h-screen flex flex-col justify-center p-8 lg:p-12 xl:p-14 bg-[#fcf9f2]">
 
         {/* Center Login Form Container */}
         <div className="w-full max-w-[400px] mx-auto z-10 my-auto py-4">

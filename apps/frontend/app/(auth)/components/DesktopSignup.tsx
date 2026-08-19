@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import {
-  Globe,
-  ChevronDown,
   User,
   Mail,
   Phone,
@@ -58,19 +56,6 @@ export default function DesktopSignup() {
         <div className="absolute inset-0 bg-gradient-to-t from-transparent via-[#fcf9f2]/50 to-[#fcf9f2] z-10" />
         <div className="absolute inset-y-0 right-0 w-36 bg-gradient-to-l from-[#fcf9f2] to-transparent z-10" />
       </div>
-
-      {/* Top Floating Control Bar */}
-      <header className="relative z-20 w-full flex justify-end items-center max-w-6xl mx-auto">
-        <button
-          type="button"
-          aria-label="Select language"
-          className="px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-sm border border-amber-950/15 flex items-center gap-1.5 text-xs font-semibold text-[#2c221e] hover:bg-white transition-all cursor-pointer"
-        >
-          <Globe className="w-3.5 h-3.5 text-[#2c221e]" />
-          <span>EN</span>
-          <ChevronDown className="w-3.5 h-3.5 text-[#2c221e]" />
-        </button>
-      </header>
 
       {/* Main Centered 2-Column Content Grid */}
       <main className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-12 gap-8 lg:gap-14 items-center my-auto py-2">

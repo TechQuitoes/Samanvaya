@@ -52,7 +52,7 @@ export const apiNexus = {
         const response = (await baseApi.call<T>(apikey, reqOptions)) as IResponseFormat<T> & { data: { data: T } };
 
         if (!response.isSuccess) {
-            if (response.status === 401 || response.status === 403) {
+            if (response.status === 401) {
                 if (endpointPath && !endpointPath.includes("auth")) {
                     handleLogout();
                 }
@@ -100,7 +100,7 @@ export const apiNexus = {
 function handleLogout() {
     DataManager.cleanAll();
     if (typeof window !== "undefined") {
-        window.location.href = "/signup";
+        window.location.href = "/login";
     }
 }
 
