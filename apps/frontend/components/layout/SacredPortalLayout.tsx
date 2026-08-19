@@ -15,7 +15,7 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
   const { pendingUsers } = useAdminApprovals();
 
   return (
-    <div className="relative min-h-screen w-full bg-[#f7f3e9] flex flex-col lg:flex-row overflow-x-hidden">
+    <div className="relative h-screen w-full bg-[#f7f3e9] flex flex-col lg:flex-row overflow-hidden">
       {/* Background Sacred Temple Banner Illustration */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <Image
@@ -49,8 +49,8 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
       {/* Dark Green Sacred Sidebar (Pinned on Desktop, Slide-over Drawer on Mobile) */}
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Workspace Area (Right of Sidebar on Desktop) */}
-      <div className="relative z-20 flex-1 flex flex-col min-h-screen min-w-0">
+      {/* Main Workspace Area — ONLY this area scrolls */}
+      <div className="relative z-20 flex-1 flex flex-col min-h-0 min-w-0 overflow-y-auto">
         {/* Top Header Bar */}
         <AdminHeader
           onToggleSidebar={() => setSidebarOpen(true)}

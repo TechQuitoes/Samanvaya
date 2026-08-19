@@ -13,7 +13,7 @@ const allEndpoints = Object.values(endpoints).reduce<Record<string, string>>((ac
 
 // Create the base API instance using native fetch
 const baseApi = createApiNexus({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api",
+    baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3005/api",
     endpoints: allEndpoints,
     httpClient: "fetch",
 });

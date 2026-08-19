@@ -1,9 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Menu, Bell, Globe, ChevronDown, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, Bell, HelpCircle, LogOut } from "lucide-react";
 import DataManager from "@/lib/data-manager";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void;
@@ -12,8 +21,18 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHeaderProps) {
   const router = useRouter();
-  const currentUser = DataManager.getUser();
-  const adminName = currentUser?.name || "Admin";
+  const [userName, setUserName] = useState("Giriraj Das");
+  const [userRole, setUserRole] = useState("Leader");
+
+  useEffect(() => {
+    const currentUser = DataManager.getUser();
+    if (currentUser?.name) {
+      setUserName(currentUser.name);
+    }
+    if (currentUser?.role) {
+      setUserRole(currentUser.role);
+    }
+  }, []);
 
   const handleLogout = () => {
     DataManager.cleanAll();
@@ -21,63 +40,93 @@ export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHead
   };
 
   return (
-    <header className="relative z-30 w-full max-w-7xl mx-auto px-4 sm:px-8 pt-4 pb-2 space-y-3 sm:space-y-4">
-      {/* Top Bar Row: Left Menu Button --- Right Controls (EN, Bell, Logout) */}
-      <div className="flex items-center justify-between">
-        {/* Left: Hamburger Menu Button (Visible ONLY on Mobile/Tablet < lg, hidden on Desktop >= lg) */}
-        <button
-          type="button"
-          onClick={onToggleSidebar}
-          aria-label="Toggle menu"
-          className="lg:hidden w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/90 backdrop-blur-md border border-[#e5d9c3] shadow-xs flex items-center justify-center text-[#174824] hover:bg-white transition-all cursor-pointer flex-shrink-0"
-        >
-          <Menu className="w-6 h-6 text-[#174824]" />
-        </button>
-
-        {/* Right: Language Pill, Notification Bell & Logout */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+    <header className="w-full bg-transparent border-none shadow-none px-4 sm:px-8 pt-4 pb-2">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        {/* Left Side: Mobile Menu Button + Devotional Greeting & Tagline */}
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Hamburger Menu (Mobile/Tablet < lg only) */}
           <button
             type="button"
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/90 backdrop-blur-md border border-[#e5d9c3] shadow-xs flex items-center gap-1.5 text-xs font-semibold text-[#2c221e] hover:bg-white transition-all cursor-pointer"
+            onClick={onToggleSidebar}
+            aria-label="Toggle menu"
+            className="lg:hidden w-10 h-10 rounded-xl bg-white/80 border border-[#e5d9c3] shadow-xs flex items-center justify-center text-[#174824] hover:bg-white transition-all cursor-pointer flex-shrink-0"
           >
-            <Globe className="w-3.5 h-3.5 text-[#174824]" />
-            <span>EN</span>
-            <ChevronDown className="w-3 h-3 text-[#5a4836]" />
+            <Menu className="w-5 h-5" />
           </button>
 
+          <div className="space-y-0.5 min-w-0">
+            <h1 className="font-serif-display text-lg sm:text-2xl font-bold text-[#174824] flex items-center gap-2 truncate">
+              <span>Hare Krishna, {userName}</span>
+              <span className="text-base sm:text-xl flex-shrink-0">🙏</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-[#4a3e31] font-medium tracking-wide">
+              Welcome to Samanvaya
+            </p>
+            <p className="text-[11px] sm:text-xs text-[#8c7865] font-medium tracking-wide">
+              Organise &bull; Coordinate &bull; Serve
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side: Notification Bell, Help Icon, Profile Avatar */}
+        <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+          {/* Notifications Button */}
           <button
             type="button"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur-md border border-[#e5d9c3] shadow-xs flex items-center justify-center text-[#174824] hover:bg-white transition-all relative cursor-pointer"
+            className="relative w-10 h-10 rounded-full hover:bg-black/5 flex items-center justify-center text-[#2c221e] transition-colors cursor-pointer"
             aria-label="Notifications"
           >
-            <Bell className="w-4 h-4 text-[#174824]" />
+            <Bell className="w-5 h-5 text-[#2c221e]" />
             {pendingCount > 0 && (
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white" />
+              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500" />
             )}
           </button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className="text-[#5a4836] hover:text-red-700 hover:bg-red-50 gap-1.5 text-xs font-semibold rounded-xl"
+          {/* Help / Support Icon */}
+          <button
+            type="button"
+            className="w-10 h-10 rounded-full hover:bg-black/5 flex items-center justify-center text-[#2c221e] transition-colors cursor-pointer"
+            aria-label="Help and Support"
           >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden md:inline">Logout</span>
-          </Button>
-        </div>
-      </div>
+            <HelpCircle className="w-5 h-5 text-[#2c221e]" />
+          </button>
 
-      {/* Devotional Greeting Banner (Placed BELOW Top Bar, Left-Aligned - Exactly as in Screenshot 2!) */}
-      <div className="text-left space-y-0.5 pt-1">
-        <h1 className="text-xl sm:text-2xl font-bold text-[#174824] flex items-center gap-2">
-          <span>Hare Krishna, {adminName}</span>
-          <span className="text-lg sm:text-xl">🙏</span>
-        </h1>
-        <p className="text-xs sm:text-sm text-[#5a4836] font-semibold tracking-wide">
-          All Glories to Srila Prabhupada
-        </p>
+          {/* Leader Profile Avatar with Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#d4af37] shadow-sm hover:ring-2 hover:ring-[#174824]/30 transition-all flex-shrink-0">
+                <Image
+                  src="/assets/01_desktop_temple_background_banner.png"
+                  alt="Leader Profile Avatar"
+                  fill
+                  className="object-cover object-center"
+                />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 rounded-2xl p-2 bg-[#fcfaf5] border border-[#e5d9c3] shadow-lg">
+              <DropdownMenuLabel className="px-3 py-2">
+                <p className="text-xs font-bold text-[#174824]">{userName}</p>
+                <p className="text-[11px] text-[#8c7865] font-medium">{userRole}</p>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-[#e5d9c3]/60 my-1" />
+              <DropdownMenuItem
+                onClick={() => router.push("/leader-profile")}
+                className="rounded-xl text-xs font-semibold text-[#2c221e] hover:bg-[#faf4e8] cursor-pointer"
+              >
+                Profile Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="rounded-xl text-xs font-semibold text-red-700 hover:bg-red-50 gap-2 cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );
 }
+
