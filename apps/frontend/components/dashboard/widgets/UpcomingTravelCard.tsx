@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { MapPin, ArrowRight } from "lucide-react";
 import ECard from "@/components/ui/ECard";
 
 export interface TravelStop {
@@ -27,8 +28,23 @@ export default function UpcomingTravelCard({
       className="h-full"
     >
       <div className="space-y-4 pt-1">
-        {/* Timeline Path */}
-        <div className="relative pl-1 space-y-4">
+        {/* Mobile Horizontal Stop Route (< md) */}
+        <div className="flex md:hidden items-center gap-2 text-xs sm:text-[13px] font-semibold text-[#2c221e] flex-wrap pt-0.5">
+          <div className="w-5 h-5 rounded-full bg-[#174824]/10 flex items-center justify-center flex-shrink-0">
+            <MapPin className="w-3 h-3 text-[#174824] fill-[#174824]" />
+          </div>
+          {stops.map((stop, index) => (
+            <React.Fragment key={index}>
+              <span className="truncate">{stop.location}</span>
+              {index < stops.length - 1 && (
+                <ArrowRight className="w-3.5 h-3.5 text-[#174824] flex-shrink-0" />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Desktop Timeline Path (>= md) */}
+        <div className="hidden md:block relative pl-1 space-y-4">
           {stops.map((stop, index) => (
             <div key={index} className="relative flex items-center gap-4">
               {/* Connector line */}
@@ -49,8 +65,8 @@ export default function UpcomingTravelCard({
           ))}
         </div>
 
-        {/* Date Range Subtitle */}
-        <p className="text-[11px] sm:text-xs font-medium text-[#8c7865] pl-8">
+        {/* Date Range Subtitle (Desktop only) */}
+        <p className="hidden md:block text-[11px] sm:text-xs font-medium text-[#8c7865] pl-8">
           {dateRange}
         </p>
       </div>

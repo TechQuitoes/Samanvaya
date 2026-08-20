@@ -40,36 +40,79 @@ export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHead
   };
 
   return (
-    <header className="w-full bg-transparent border-none shadow-none px-6 py-4">
-      <div className="w-full flex items-center justify-between gap-4">
-        {/* Left Side: Mobile Menu Button + Devotional Greeting & Tagline */}
-        <div className="flex items-center gap-3 min-w-0">
-          {/* Hamburger Menu (Mobile/Tablet < lg only) */}
+    <header className="w-full bg-transparent border-none shadow-none px-4 sm:px-6 pt-3 pb-2 sm:py-4">
+      {/* ─── MOBILE HEADER (< lg) ─── */}
+      <div className="lg:hidden flex flex-col gap-3.5">
+        {/* Top Bar: Hamburger, Samanvaya Logo+Title, Notification Bell */}
+        <div className="flex items-center justify-between">
+          {/* Hamburger Menu */}
           <button
             type="button"
             onClick={onToggleSidebar}
             aria-label="Toggle menu"
-            className="lg:hidden w-10 h-10 rounded-xl bg-white/80 border border-[#e5d9c3] shadow-xs flex items-center justify-center text-[#174824] hover:bg-white transition-all cursor-pointer flex-shrink-0"
+            className="p-1.5 -ml-1 text-[#2c221e] hover:text-[#174824] transition-colors cursor-pointer"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-6 h-6" />
           </button>
 
-          <div className="space-y-0.5 min-w-0">
-            <h1 className="font-serif-display text-lg sm:text-2xl font-bold text-[#174824] flex items-center gap-2 truncate">
-              <span>Hare Krishna, {userName}</span>
-              <span className="text-base sm:text-xl flex-shrink-0">🙏</span>
-            </h1>
-            <p className="text-xs sm:text-sm text-[#4a3e31] font-medium tracking-wide">
-              Welcome to Samanvaya
-            </p>
-            <p className="text-[11px] sm:text-xs text-[#8c7865] font-medium tracking-wide">
-              Organise &bull; Coordinate &bull; Serve
-            </p>
+          {/* Center Logo & Title */}
+          <div className="flex items-center gap-2">
+            <div className="relative w-6 h-6 flex-shrink-0">
+              <Image
+                src="/assets/04_lotus_icon_gold.png"
+                alt="Lotus Emblem"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <span className="font-serif-display text-xl font-bold text-[#174824] tracking-tight">
+              Samanvaya
+            </span>
           </div>
+
+          {/* Right Notification Bell with Badge */}
+          <button
+            type="button"
+            className="relative p-1.5 -mr-1 text-[#2c221e] hover:text-[#174824] transition-colors cursor-pointer"
+            aria-label="Notifications"
+          >
+            <Bell className="w-6 h-6" />
+            <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-[#c0392b] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
+              {pendingCount > 0 ? pendingCount : 1}
+            </span>
+          </button>
+        </div>
+
+        {/* Greeting Section below Top Bar on Mobile */}
+        <div className="space-y-0.5 pt-0.5">
+          <h1 className="font-serif-display text-lg font-bold text-[#174824] flex items-center gap-1.5">
+            <span>Hare Krishna, {userName}</span>
+            <span className="text-base">🙏</span>
+          </h1>
+          <p className="text-xs text-[#5a4836] font-medium tracking-wide">
+            All Glories to Srila Prabhupada
+          </p>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER (>= lg) ─── */}
+      <div className="hidden lg:flex w-full items-center justify-between gap-4">
+        {/* Left Side: Devotional Greeting & Tagline */}
+        <div className="space-y-0.5 min-w-0">
+          <h1 className="font-serif-display text-2xl font-bold text-[#174824] flex items-center gap-2 truncate">
+            <span>Hare Krishna, {userName}</span>
+            <span className="text-xl flex-shrink-0">🙏</span>
+          </h1>
+          <p className="text-sm text-[#4a3e31] font-medium tracking-wide">
+            Welcome to Samanvaya
+          </p>
+          <p className="text-xs text-[#8c7865] font-medium tracking-wide">
+            Organise &bull; Coordinate &bull; Serve
+          </p>
         </div>
 
         {/* Right Side: Notification Bell, Help Icon, Profile Avatar */}
-        <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+        <div className="flex items-center gap-4 flex-shrink-0">
           {/* Notifications Button */}
           <button
             type="button"

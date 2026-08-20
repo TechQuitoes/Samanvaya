@@ -19,13 +19,13 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
       {/* Background Sacred Temple Banner Illustration */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <Image
-          src="/assests/templeDesktop.png"
-          alt="Sacred Temple Landscape"
+          src="/images/dashboard/admin_dashboard_bg_001.png"
+          alt="Sacred Dashboard Background"
           fill
           priority
-          className="object-cover object-top opacity-30 lg:opacity-40 transition-opacity"
+          className="object-cover object-top opacity-40 lg:opacity-50 transition-opacity"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3e9]/50 via-[#f7f3e9]/80 to-[#f7f3e9] z-0" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3e9]/40 via-[#f7f3e9]/70 to-[#f7f3e9] z-0" />
       </div>
 
       {/* Cascading Corner Leaf Graphics */}

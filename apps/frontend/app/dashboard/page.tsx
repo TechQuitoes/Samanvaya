@@ -17,12 +17,16 @@ import {
   Heart,
   Users,
   MoreHorizontal,
+  Archive,
+  BarChart3,
+  Settings,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import LotusDivider from "@/components/ui/LotusDivider";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
 import QuickActionButton from "@/components/dashboard/QuickActionButton";
+import MobileQuickActionsSheet from "@/components/dashboard/MobileQuickActionsSheet";
 import TodayScheduleCard from "@/components/dashboard/widgets/TodayScheduleCard";
 import UpcomingTravelCard from "@/components/dashboard/widgets/UpcomingTravelCard";
 import MyTasksCard from "@/components/dashboard/widgets/MyTasksCard";
@@ -30,9 +34,26 @@ import PendingDocsCard from "@/components/dashboard/widgets/PendingDocsCard";
 import UpcomingMeetingsCard from "@/components/dashboard/widgets/UpcomingMeetingsCard";
 import NotificationsCard from "@/components/dashboard/widgets/NotificationsCard";
 import RecentActivitiesCard from "@/components/dashboard/widgets/RecentActivitiesCard";
+import CalendarSnapshotCard from "@/components/dashboard/widgets/CalendarSnapshotCard";
 import DataManager from "@/lib/data-manager";
 
-const QUICK_ACTIONS = [
+const PRIMARY_MOBILE_ACTIONS = [
+  { title: "Travel", icon: Plane, href: "/travel" },
+  { title: "Calendar", icon: CalendarIcon, href: "/calendar" },
+  { title: "Journal", icon: BookOpen, href: "/journal" },
+];
+
+const MORE_ACTIONS = [
+  { title: "Documentation", icon: FileText, href: "/documentation" },
+  { title: "Task", icon: CheckSquare, href: "/tasks" },
+  { title: "Health", icon: Heart, href: "/health" },
+  { title: "Meeting", icon: Users, href: "/meetings" },
+  { title: "Archival", icon: Archive, href: "/archival" },
+  { title: "Reports", icon: BarChart3, href: "/reports" },
+  { title: "Settings", icon: Settings, href: "/settings" },
+];
+
+const DESKTOP_QUICK_ACTIONS = [
   { title: "Travel", icon: Plane, href: "/travel" },
   { title: "Calendar", icon: CalendarIcon, href: "/calendar" },
   { title: "Journal", icon: BookOpen, href: "/journal" },
@@ -46,6 +67,7 @@ const QUICK_ACTIONS = [
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  const [moreActionsOpen, setMoreActionsOpen] = useState(false);
 
   useEffect(() => {
     const token = DataManager.getToken();
@@ -110,42 +132,48 @@ export default function DashboardPage() {
         </Card>
 
         {/* 2. Today's Summary Card */}
-        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] px-5 sm:px-6 py-5 sm:py-6 border border-[#e5d9c3] bg-[#fbf8f0] shadow-xs flex flex-col justify-center">
-          <div className="relative z-10 space-y-3">
-            <h4 className="text-xs sm:text-sm font-semibold text-[#2c221e]">
-              Today&apos;s Summary
-            </h4>
+        <div className="space-y-2 flex flex-col justify-end">
+          <h4 className="text-sm font-semibold text-[#2c221e] md:hidden px-0.5">
+            Today&apos;s Summary
+          </h4>
+          <Card className="relative overflow-hidden rounded-[20px] sm:rounded-[28px] px-4 sm:px-6 py-4 sm:py-5 border border-[#e5d9c3] bg-[#fbf8f0] shadow-xs flex flex-col justify-center">
+            <div className="relative z-10 space-y-2">
+              <h4 className="hidden md:block text-xs sm:text-sm font-semibold text-[#2c221e]">
+                Today&apos;s Summary
+              </h4>
 
-            {/* 3 Metric Columns with Dividers */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4 items-center">
-              <div className="space-y-1">
-                <p className="text-xs text-[#5a4836] font-medium">Meetings</p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#174824]">2</p>
-              </div>
+              {/* 3 Metric Columns with Dividers */}
+              <div className="grid grid-cols-3 items-center text-center">
+                <div className="space-y-1">
+                  <p className="text-[11px] sm:text-xs text-[#5a4836] font-medium truncate">
+                    Meetings
+                  </p>
+                  <p className="text-xl sm:text-2xl font-bold text-[#174824]">
+                    2
+                  </p>
+                </div>
 
-              <div className="space-y-1 border-l border-[#e5d9c3] pl-3 sm:pl-4">
-                <p className="text-xs text-[#5a4836] font-medium">Tasks</p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#174824]">6</p>
-              </div>
+                <div className="space-y-1 border-l border-[#e5d9c3]">
+                  <p className="text-[11px] sm:text-xs text-[#5a4836] font-medium truncate">
+                    Tasks
+                  </p>
+                  <p className="text-xl sm:text-2xl font-bold text-[#174824]">
+                    6
+                  </p>
+                </div>
 
-              <div className="space-y-1 border-l border-[#e5d9c3] pl-3 sm:pl-4">
-                <p className="text-xs text-[#5a4836] font-medium">Pending Docs</p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#174824]">4</p>
+                <div className="space-y-1 border-l border-[#e5d9c3]">
+                  <p className="text-[11px] sm:text-xs text-[#5a4836] font-medium truncate">
+                    Pending Docs
+                  </p>
+                  <p className="text-xl sm:text-2xl font-bold text-[#174824]">
+                    4
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Lotus Accent Motif on Bottom Right */}
-          <div className="absolute right-4 bottom-3 w-8 h-8 opacity-70 pointer-events-none">
-            <Image
-              src="/assets/04_lotus_icon_gold.png"
-              alt="Lotus Motif"
-              width={32}
-              height={32}
-              className="object-contain"
-            />
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
 
       {/* Quick Actions Grid */}
@@ -154,8 +182,26 @@ export default function DashboardPage() {
           Quick Actions
         </h3>
 
-        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8">
-          {QUICK_ACTIONS.map((action) => (
+        {/* Mobile: 1 Row with 4 items (Travel, Calendar, Journal, More) (< md) */}
+        <div className="grid grid-cols-4 md:hidden gap-2 sm:gap-3">
+          {PRIMARY_MOBILE_ACTIONS.map((action) => (
+            <QuickActionButton
+              key={action.title}
+              title={action.title}
+              icon={action.icon}
+              onClick={() => router.push(action.href)}
+            />
+          ))}
+          <QuickActionButton
+            title="More"
+            icon={MoreHorizontal}
+            onClick={() => setMoreActionsOpen(true)}
+          />
+        </div>
+
+        {/* Desktop: 1 Row with 8 items (>= md) */}
+        <div className="hidden md:grid md:grid-cols-8 gap-3 sm:gap-4">
+          {DESKTOP_QUICK_ACTIONS.map((action) => (
             <QuickActionButton
               key={action.title}
               title={action.title}
@@ -165,6 +211,13 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+
+      {/* Mobile More Actions Bottom Sheet Drawer Component */}
+      <MobileQuickActionsSheet
+        open={moreActionsOpen}
+        onOpenChange={setMoreActionsOpen}
+        actions={MORE_ACTIONS}
+      />
 
       {/* 6 Dashboard Widgets Grid (Today's Schedule, Upcoming Travel, My Tasks, Pending Docs, Upcoming Meetings, Notifications) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -176,8 +229,11 @@ export default function DashboardPage() {
         <NotificationsCard />
       </div>
 
-      {/* Bottom Recent Activities Card with Left-to-Right Transparent Gradient & Temple Skyline */}
-      <RecentActivitiesCard />
+      {/* Bottom 2 Cards Grid: Recent Activities & Calendar Snapshot */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <RecentActivitiesCard />
+        <CalendarSnapshotCard />
+      </div>
     </SacredPortalLayout>
   );
 }
