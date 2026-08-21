@@ -2,13 +2,16 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
-import { User, UserDocument, UserStatus } from './schemas/user.schema';
+import { User, UserDocument, UserRole, UserStatus } from './schemas/user.schema';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationTemplateKey } from '../notification/notification-templates';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
@@ -62,16 +65,71 @@ export class UserService {
     return this.userModel.find({ status }).populate('temple').sort({ createdAt: -1 }).exec();
   }
 
-  async updateStatus(userId: string, status: UserStatus): Promise<User> {
+  async updateStatus(
+    userId: string,
+    status: UserStatus,
+    role?: string,
+    permissions?: Record<string, Record<string, boolean>>,
+  ): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
     user.status = status;
+    if (role) {
+      user.role = role;
+    } else if (user.role === 'Super Administrator') {
+      user.role = UserRole.SUPER_ADMIN;
+    } else if (user.role === 'Administrator') {
+      user.role = UserRole.ADMIN;
+    }
+
+    if (permissions) {
+      user.permissions = permissions;
+    }
     const updatedUser = await user.save();
     const populated = await updatedUser.populate('temple');
     const userObj = populated.toObject();
     delete (userObj as any).password;
+
+    // Trigger Notification to target user
+    try {
+      if (status === UserStatus.APPROVED) {
+        await this.notificationService.sendFromTemplate(
+          NotificationTemplateKey.ACCOUNT_APPROVED,
+          {
+            recipientId: user._id.toString(),
+            data: {
+              userName: user.name,
+              role: user.role,
+            },
+          },
+        );
+      } else if (status === UserStatus.BLOCKED) {
+        await this.notificationService.sendFromTemplate(
+          NotificationTemplateKey.ACCOUNT_BLOCKED,
+          {
+            recipientId: user._id.toString(),
+            data: {
+              userName: user.name,
+            },
+          },
+        );
+      } else if (status === UserStatus.REJECTED) {
+        await this.notificationService.sendFromTemplate(
+          NotificationTemplateKey.ACCOUNT_REJECTED,
+          {
+            recipientId: user._id.toString(),
+            data: {
+              userName: user.name,
+            },
+          },
+        );
+      }
+    } catch {
+      // Non-blocking notification dispatch
+    }
+
     return userObj;
   }
 }

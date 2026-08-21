@@ -1,6 +1,7 @@
 export const authEndpoints = {
   POST_SIGNUP: '/auth/signup',
   POST_LOGIN: '/auth/login',
+  POST_GOOGLE_AUTH: '/auth/google',
   GET_PROFILE: '/auth/me',
 };
 
@@ -39,3 +40,13 @@ export const travelEndpoints = {
   POST_CREATE_TRAVEL_TASK: '/travel/{id}/tasks',
   PATCH_UPDATE_TRAVEL_TASK: '/travel/tasks/{taskId}',
 };
+
+export const notificationEndpoints = {
+  GET_NOTIFICATIONS: '/notifications',
+  GET_VAPID_PUBLIC_KEY: '/notifications/vapid-public-key',
+  POST_SUBSCRIBE_PUSH: '/notifications/subscribe',
+  POST_UNSUBSCRIBE_PUSH: '/notifications/unsubscribe',
+  PATCH_MARK_NOTIFICATION_READ: '/notifications/{id}/read',
+  PATCH_MARK_ALL_NOTIFICATIONS_READ: '/notifications/read-all',
+};
+

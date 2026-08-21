@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LotusDivider from "@/components/ui/LotusDivider";
+import GoogleAuthButton from "./GoogleAuthButton";
 import { useSignup } from "../hooks/useSignup";
 
 export default function SignupForm() {
@@ -276,6 +277,18 @@ export default function SignupForm() {
                 </>
               )}
             </Button>
+
+            {/* OR Divider */}
+            <div className="flex items-center justify-center gap-3 my-0.5">
+              <div className="h-[1px] flex-1 bg-[#e4d9c6]" />
+              <span className="text-xs font-semibold text-[#8c7a68] uppercase tracking-wider">
+                OR
+              </span>
+              <div className="h-[1px] flex-1 bg-[#e4d9c6]" />
+            </div>
+
+            {/* Continue with Google Button */}
+            <GoogleAuthButton />
           </form>
         </div>
       </div>

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff, User, Loader2, Clock, ShieldAlert, AlertCircle, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { GoogleButton } from "@/components/ui/GoogleButton";
+import GoogleAuthButton from "./GoogleAuthButton";
 import { useLogin } from "../hooks/useLogin";
 
 export default function LoginForm() {
@@ -177,7 +177,7 @@ export default function LoginForm() {
           </div>
 
           {/* Continue with Google Button */}
-          <GoogleButton onClick={() => console.log("Google Login clicked")} />
+          <GoogleAuthButton />
 
           {/* Create New Account Button */}
           <Link href="/signup" className="w-full">

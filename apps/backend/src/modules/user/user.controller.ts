@@ -54,6 +54,11 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserStatusDto: UpdateUserStatusDto,
   ) {
-    return this.userService.updateStatus(id, updateUserStatusDto.status);
+    return this.userService.updateStatus(
+      id,
+      updateUserStatusDto.status,
+      updateUserStatusDto.role,
+      updateUserStatusDto.permissions,
+    );
   }
 }

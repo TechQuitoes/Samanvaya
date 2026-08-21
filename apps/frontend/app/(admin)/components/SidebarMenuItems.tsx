@@ -17,8 +17,10 @@ import {
   Settings,
   LucideIcon,
 } from "lucide-react";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export interface MenuItem {
+  id: string;
   title: string;
   href: string;
   icon: LucideIcon;
@@ -27,66 +29,79 @@ export interface MenuItem {
 
 export const MENU_ITEMS: MenuItem[] = [
   {
+    id: "dashboard",
     title: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
+    id: "travel",
     title: "Travel",
     href: "/travel",
     icon: Plane,
   },
   {
+    id: "calendar",
     title: "Calendar",
     href: "/calendar",
     icon: Calendar,
   },
   {
+    id: "documentation",
     title: "Documentation",
     href: "/documentation",
     icon: FileText,
   },
   {
+    id: "journal",
     title: "Journal",
     href: "/journal",
     icon: BookOpen,
   },
   {
+    id: "tasks",
     title: "Tasks",
     href: "/tasks",
     icon: CheckSquare,
   },
   {
+    id: "health",
     title: "Health",
     href: "/health",
     icon: Heart,
   },
   {
+    id: "meetings",
     title: "Meetings",
     href: "/meetings",
     icon: Users,
   },
   {
+    id: "contacts",
     title: "Contacts",
     href: "/contacts",
     icon: Contact,
   },
   {
+    id: "archival",
     title: "Archival",
     href: "/archival",
     icon: Archive,
   },
   {
+    id: "reports",
     title: "Reports",
     href: "/reports",
     icon: BarChart3,
   },
   {
+    id: "users",
     title: "Users",
     href: "/admin/approvals",
     icon: UsersRound,
   },
   {
+    id: "settings",
     title: "Settings",
     href: "/settings",
     icon: Settings,
@@ -100,6 +115,7 @@ interface SidebarMenuItemsProps {
 export default function SidebarMenuItems({ onItemClick }: SidebarMenuItemsProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { isSuperAdmin, hasModuleAccess } = usePermissions();
 
   const handleNavigate = (href: string) => {
     router.push(href);
@@ -108,9 +124,20 @@ export default function SidebarMenuItems({ onItemClick }: SidebarMenuItemsProps)
     }
   };
 
+  // Filter visible menu items based on Super Admin role or module view permission
+  const visibleMenuItems = MENU_ITEMS.filter((item) => {
+    // 1. Super Admin & Admin see all items
+    if (isSuperAdmin) {
+      return true;
+    }
+
+    // 2. Regular user: check if granted view access for this module
+    return hasModuleAccess(item.id);
+  });
+
   return (
     <nav className="space-y-1 py-1">
-      {MENU_ITEMS.map((item) => {
+      {visibleMenuItems.map((item) => {
         const Icon = item.icon;
         const isActive =
           pathname === item.href ||

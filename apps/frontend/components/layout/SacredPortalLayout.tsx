@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import AdminSidebar from "@/app/(admin)/components/AdminSidebar";
 import AdminHeader from "@/app/(admin)/components/AdminHeader";
-import useAdminApprovals from "@/app/(admin)/hooks/useAdminApprovals";
 
 interface SacredPortalLayoutProps {
   children: React.ReactNode;
@@ -12,7 +11,6 @@ interface SacredPortalLayoutProps {
 
 export default function SacredPortalLayout({ children }: SacredPortalLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { pendingUsers } = useAdminApprovals();
 
   return (
     <div className="relative h-screen w-full bg-[#f7f3e9] flex flex-col lg:flex-row overflow-hidden">
@@ -52,10 +50,7 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
       {/* Main Workspace Area — ONLY this area scrolls */}
       <div className="relative z-20 flex-1 flex flex-col min-h-0 min-w-0 overflow-y-auto">
         {/* Top Header Bar */}
-        <AdminHeader
-          onToggleSidebar={() => setSidebarOpen(true)}
-          pendingCount={pendingUsers.length}
-        />
+        <AdminHeader onToggleSidebar={() => setSidebarOpen(true)} />
 
         {/* Main Page Content */}
         <main className="flex-1 w-full px-6 py-4 pb-8 space-y-6">

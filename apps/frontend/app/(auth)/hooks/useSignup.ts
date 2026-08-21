@@ -63,6 +63,11 @@ export function useSignup() {
         newErrors.email = 'Email address is required.';
       } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
         newErrors.email = 'Please enter a valid email address.';
+      } else {
+        const lowerEmail = formData.email.trim().toLowerCase();
+        if (!lowerEmail.endsWith('@samanvaya.com') && !lowerEmail.endsWith('@gmail.com')) {
+          newErrors.email = 'Registration is allowed only with @samanvaya.com or @gmail.com emails.';
+        }
       }
 
       if (!formData.mobile.trim()) {
@@ -142,6 +147,11 @@ export function useSignup() {
       newErrors.email = 'Email address is required.';
     } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
       newErrors.email = 'Please enter a valid email address.';
+    } else {
+      const lowerEmail = formData.email.trim().toLowerCase();
+      if (!lowerEmail.endsWith('@samanvaya.com') && !lowerEmail.endsWith('@gmail.com')) {
+        newErrors.email = 'Registration is allowed only with @samanvaya.com or @gmail.com emails.';
+      }
     }
 
     if (!formData.mobile.trim()) {

@@ -25,8 +25,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import LotusDivider from "@/components/ui/LotusDivider";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
-import QuickActionButton from "@/components/dashboard/QuickActionButton";
-import MobileQuickActionsSheet from "@/components/dashboard/MobileQuickActionsSheet";
+import QuickActions from "@/components/dashboard/QuickActions";
 import TodayScheduleCard from "@/components/dashboard/widgets/TodayScheduleCard";
 import UpcomingTravelCard from "@/components/dashboard/widgets/UpcomingTravelCard";
 import MyTasksCard from "@/components/dashboard/widgets/MyTasksCard";
@@ -36,33 +35,6 @@ import NotificationsCard from "@/components/dashboard/widgets/NotificationsCard"
 import RecentActivitiesCard from "@/components/dashboard/widgets/RecentActivitiesCard";
 import CalendarSnapshotCard from "@/components/dashboard/widgets/CalendarSnapshotCard";
 import DataManager from "@/lib/data-manager";
-
-const PRIMARY_MOBILE_ACTIONS = [
-  { title: "Travel", icon: Plane, href: "/travel" },
-  { title: "Calendar", icon: CalendarIcon, href: "/calendar" },
-  { title: "Journal", icon: BookOpen, href: "/journal" },
-];
-
-const MORE_ACTIONS = [
-  { title: "Documentation", icon: FileText, href: "/documentation" },
-  { title: "Task", icon: CheckSquare, href: "/tasks" },
-  { title: "Health", icon: Heart, href: "/health" },
-  { title: "Meeting", icon: Users, href: "/meetings" },
-  { title: "Archival", icon: Archive, href: "/archival" },
-  { title: "Reports", icon: BarChart3, href: "/reports" },
-  { title: "Settings", icon: Settings, href: "/settings" },
-];
-
-const DESKTOP_QUICK_ACTIONS = [
-  { title: "Travel", icon: Plane, href: "/travel" },
-  { title: "Calendar", icon: CalendarIcon, href: "/calendar" },
-  { title: "Journal", icon: BookOpen, href: "/journal" },
-  { title: "Documentation", icon: FileText, href: "/documentation" },
-  { title: "Task", icon: CheckSquare, href: "/tasks" },
-  { title: "Health", icon: Heart, href: "/health" },
-  { title: "Meeting", icon: Users, href: "/meetings" },
-  { title: "More", icon: MoreHorizontal, href: "/settings" },
-];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -176,48 +148,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick Actions Grid */}
-      <div className="space-y-2.5">
-        <h3 className="text-sm sm:text-base font-semibold text-[#2c221e]">
-          Quick Actions
-        </h3>
-
-        {/* Mobile: 1 Row with 4 items (Travel, Calendar, Journal, More) (< md) */}
-        <div className="grid grid-cols-4 md:hidden gap-2 sm:gap-3">
-          {PRIMARY_MOBILE_ACTIONS.map((action) => (
-            <QuickActionButton
-              key={action.title}
-              title={action.title}
-              icon={action.icon}
-              onClick={() => router.push(action.href)}
-            />
-          ))}
-          <QuickActionButton
-            title="More"
-            icon={MoreHorizontal}
-            onClick={() => setMoreActionsOpen(true)}
-          />
-        </div>
-
-        {/* Desktop: 1 Row with 8 items (>= md) */}
-        <div className="hidden md:grid md:grid-cols-8 gap-3 sm:gap-4">
-          {DESKTOP_QUICK_ACTIONS.map((action) => (
-            <QuickActionButton
-              key={action.title}
-              title={action.title}
-              icon={action.icon}
-              onClick={() => router.push(action.href)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile More Actions Bottom Sheet Drawer Component */}
-      <MobileQuickActionsSheet
-        open={moreActionsOpen}
-        onOpenChange={setMoreActionsOpen}
-        actions={MORE_ACTIONS}
-      />
+      {/* Dynamic Quick Actions (Filtered by User Permissions) */}
+      <QuickActions />
 
       {/* 6 Dashboard Widgets Grid (Today's Schedule, Upcoming Travel, My Tasks, Pending Docs, Upcoming Meetings, Notifications) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

@@ -14,12 +14,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import NotificationBell from "@/components/notifications/NotificationBell";
+
 interface AdminHeaderProps {
   onToggleSidebar: () => void;
-  pendingCount: number;
+  pendingCount?: number;
 }
 
-export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHeaderProps) {
+export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
   const router = useRouter();
   const [userName, setUserName] = useState("Giriraj Das");
   const [userRole, setUserRole] = useState("Leader");
@@ -70,17 +72,10 @@ export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHead
             </span>
           </div>
 
-          {/* Right Notification Bell with Badge */}
-          <button
-            type="button"
-            className="relative p-1.5 -mr-1 text-[#2c221e] hover:text-[#174824] transition-colors cursor-pointer"
-            aria-label="Notifications"
-          >
-            <Bell className="w-6 h-6" />
-            <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-[#c0392b] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
-              {pendingCount > 0 ? pendingCount : 1}
-            </span>
-          </button>
+          {/* Right Notification Bell */}
+          <div className="-mr-1">
+            <NotificationBell />
+          </div>
         </div>
 
         {/* Greeting Section below Top Bar on Mobile */}
@@ -113,17 +108,8 @@ export default function AdminHeader({ onToggleSidebar, pendingCount }: AdminHead
 
         {/* Right Side: Notification Bell, Help Icon, Profile Avatar */}
         <div className="flex items-center gap-4 flex-shrink-0">
-          {/* Notifications Button */}
-          <button
-            type="button"
-            className="relative w-10 h-10 rounded-full hover:bg-black/5 flex items-center justify-center text-[#2c221e] transition-colors cursor-pointer"
-            aria-label="Notifications"
-          >
-            <Bell className="w-5 h-5 text-[#2c221e]" />
-            {pendingCount > 0 && (
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500" />
-            )}
-          </button>
+          {/* Notifications Bell Dropdown */}
+          <NotificationBell />
 
           {/* Help / Support Icon */}
           <button

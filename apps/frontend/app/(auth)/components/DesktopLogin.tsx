@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { GoogleButton } from "@/components/ui/GoogleButton";
+import GoogleAuthButton from "./GoogleAuthButton";
 import LotusDivider from "@/components/ui/LotusDivider";
 import { useLogin } from "../hooks/useLogin";
 
@@ -233,7 +233,7 @@ export default function DesktopLogin() {
             </div>
 
             {/* Continue with Google */}
-            <GoogleButton onClick={() => console.log("Google Login clicked")} />
+            <GoogleAuthButton />
 
             {/* Create New Account Button */}
             <Link href="/signup" className="w-full">

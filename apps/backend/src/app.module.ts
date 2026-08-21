@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LeaderProfileModule } from './modules/leader-profile/leader-profile.module';
 import { TravelModule } from './modules/travel/travel.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TravelModule } from './modules/travel/travel.module';
     AuthModule,
     LeaderProfileModule,
     TravelModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
