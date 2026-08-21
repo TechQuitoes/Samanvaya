@@ -26,9 +26,9 @@ export const NOTIFICATION_TEMPLATES: Record<
     title: 'New Account Approval Request 🔔',
     body: `${data.applicantName || 'A new user'} (${data.applicantEmail || ''}) has applied for community access. Click to review and assign permissions.`,
     type: NotificationType.APPROVAL_REQUEST,
-    actionUrl: '/admin/approvals',
+    actionUrl: '/admin/approvals?tab=pending',
     defaultRecipientRole: UserRole.SUPER_ADMIN,
-    icon: '/assests/lotus-small.png',
+    icon: '/assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.ACCOUNT_APPROVED]: (data) => ({

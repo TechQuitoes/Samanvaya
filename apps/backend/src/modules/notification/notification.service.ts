@@ -167,6 +167,10 @@ export class NotificationService implements OnModuleInit {
       return;
     }
 
+    this.logger.log(
+      `🔔 [Notification] Dispatching [${templateKey}] to ${recipientUsers.length} user(s): ${recipientUsers.map((u) => u.email).join(', ')}`,
+    );
+
     const sendPush = options.sendPush !== false;
     const senderObjectId = options.senderId
       ? new Types.ObjectId(options.senderId)
@@ -186,6 +190,7 @@ export class NotificationService implements OnModuleInit {
           metadata: options.data,
           isRead: false,
         });
+        this.logger.log(`📥 [Notification] In-app notification saved for: ${recipient.email}`);
 
         // Send Web Push notification if enabled and subscriptions exist
         if (
@@ -193,11 +198,19 @@ export class NotificationService implements OnModuleInit {
           recipient.pushSubscriptions &&
           recipient.pushSubscriptions.length > 0
         ) {
+          // Deduplicate subscriptions by endpoint
+          const uniqueSubs = Array.from(
+            new Map(
+              recipient.pushSubscriptions.map((s) => [s.endpoint, s]),
+            ).values(),
+          );
+
           const pushPayload = JSON.stringify({
+            id: 'notif-' + Date.now(),
             title: template.title,
             body: template.body,
-            icon: template.icon || '/assests/lotus-small.png',
-            badge: '/assests/lotus-small.png',
+            icon: template.icon || '/assets/04_lotus_icon_gold.png',
+            badge: '/assets/04_lotus_icon_gold.png',
             actionUrl: template.actionUrl,
             data: {
               actionUrl: template.actionUrl,
@@ -205,8 +218,12 @@ export class NotificationService implements OnModuleInit {
             },
           });
 
-          // Dispatch to all device subscriptions for this user
-          for (const sub of recipient.pushSubscriptions) {
+          this.logger.log(
+            `🚀 [Notification] Sending Web Push to ${uniqueSubs.length} unique device(s) for ${recipient.email}...`,
+          );
+
+          // Dispatch to unique device subscriptions for this user
+          for (const sub of uniqueSubs) {
             try {
               await webpush.sendNotification(
                 {
@@ -215,6 +232,7 @@ export class NotificationService implements OnModuleInit {
                 },
                 pushPayload,
               );
+              this.logger.log(`✅ [Notification] Push delivered successfully to: ${recipient.email}`);
             } catch (pushErr: any) {
               // If subscription has expired or is invalid (410 Gone / 404 Not Found), remove it
               if (

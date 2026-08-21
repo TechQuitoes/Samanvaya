@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Shield, RefreshCw, Clock, Users, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +13,31 @@ import ApprovalStatCards from "./ApprovalStatCards";
 import UserTableList from "./UserTableList";
 
 export default function ApprovalsDashboard() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabQuery = searchParams.get("tab");
+
+  const getInitialTab = (tabStr: string | null) => {
+    if (tabStr === "pending") return "pending";
+    if (tabStr === "blocked" || tabStr === "rejected" || tabStr === "blocked_rejected") return "blocked_rejected";
+    return "all";
+  };
+
+  const [activeTab, setActiveTab] = useState<string>(() => getInitialTab(tabQuery));
+
+  // Sync tab with URL query parameter when navigating from notifications
+  useEffect(() => {
+    if (tabQuery) {
+      setActiveTab(getInitialTab(tabQuery));
+    }
+  }, [tabQuery]);
+
+  const handleTabChange = (val: string) => {
+    setActiveTab(val);
+    const param = val === "all" ? "users" : val;
+    router.replace(`/admin/approvals?tab=${param}`, { scroll: false });
+  };
+
   const {
     approvedUsers,
     pendingUsers,
@@ -70,8 +96,8 @@ export default function ApprovalsDashboard() {
         isLoading={isLoading}
       />
 
-      {/* Main Tabs Container: 3 Clean Mobile-Friendly Tabs */}
-      <Tabs defaultValue="all" className="w-full space-y-4">
+      {/* Main Tabs Container: Synced via activeTab state & URL query */}
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-4">
         <TabsList className="bg-[#faf4e8] border border-[#e5d9c3] p-1 sm:p-1.5 rounded-2xl w-full sm:w-auto grid grid-cols-3 sm:flex sm:inline-flex justify-start h-auto gap-1 shadow-xs">
           {/* Tab 1: Active Verified Members */}
           <TabsTrigger

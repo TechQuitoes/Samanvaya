@@ -61,9 +61,23 @@ export function useNotifications() {
   useEffect(() => {
     fetchNotifications();
 
+    // Instant update when a push notification is received
+    const handlePushReceived = () => {
+      fetchNotifications();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("samanvaya:notification-received", handlePushReceived);
+    }
+
     // Poll every 30 seconds for background in-app updates
     const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("samanvaya:notification-received", handlePushReceived);
+      }
+    };
   }, [fetchNotifications]);
 
   return {

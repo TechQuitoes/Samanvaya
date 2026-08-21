@@ -8,44 +8,61 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-  if (!event.data) return;
-
-  try {
-    const data = event.data.json();
-    const title = data.title || 'Samanvaya Notification';
-    const options = {
-      body: data.body || '',
-      icon: data.icon || '/assests/lotus-small.png',
-      badge: data.badge || '/assests/lotus-small.png',
-      data: {
-        actionUrl: data.actionUrl || data.data?.actionUrl || '/dashboard',
-        ...data.data,
-      },
-      vibrate: [100, 50, 100],
-      requireInteraction: true,
-    };
-
-    event.waitUntil(self.registration.showNotification(title, options));
-  } catch (err) {
-    console.error('Push event processing error:', err);
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data = { title: 'Samanvaya Alert', body: event.data.text() };
+    }
   }
+
+  const title = data.title || 'Samanvaya Notification';
+  const actionUrl = data.actionUrl || data.data?.actionUrl || '/admin/approvals';
+
+  const options = {
+    body: data.body || '',
+    icon: '/assets/04_lotus_icon_gold.png',
+    badge: '/assets/04_lotus_icon_gold.png',
+    tag: 'samanvaya-alert-' + Date.now(),
+    data: {
+      actionUrl,
+      ...data.data,
+    },
+    requireInteraction: true,
+  };
+
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(title, options),
+      // Broadcast to open browser windows for instant in-app toast
+      self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+        clients.forEach((client) => {
+          client.postMessage({
+            type: 'PUSH_NOTIFICATION_RECEIVED',
+            title,
+            body: data.body,
+            actionUrl,
+          });
+        });
+      }),
+    ])
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const actionUrl = event.notification.data?.actionUrl || '/dashboard';
+  const actionUrl = event.notification.data?.actionUrl || '/admin/approvals';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Check if there is already a window open with this app
       for (const client of windowClients) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.navigate(actionUrl);
           return client.focus();
         }
       }
-      // If no window is open, open a new one
       if (clients.openWindow) {
         return clients.openWindow(actionUrl);
       }

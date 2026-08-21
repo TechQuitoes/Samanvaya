@@ -50,3 +50,8 @@ export const notificationEndpoints = {
   PATCH_MARK_ALL_NOTIFICATIONS_READ: '/notifications/read-all',
 };
 
+export const mediaEndpoints = {
+  POST_GENERATE_PRESIGNED_URL: '/media/presigned-url',
+};
+
+

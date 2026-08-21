@@ -34,7 +34,7 @@ export class NotificationController {
     @Query('limit') limit?: number,
     @Query('page') page?: number,
   ) {
-    const userId = req.user.sub || req.user._id || req.user.id;
+    const userId = req.user.userId || req.user.sub || req.user._id || req.user.id;
     return this.notificationService.getUserNotifications(
       userId,
       limit ? Number(limit) : 20,
@@ -48,7 +48,7 @@ export class NotificationController {
     @Request() req: any,
     @Body() dto: SubscribePushDto,
   ) {
-    const userId = req.user.sub || req.user._id || req.user.id;
+    const userId = req.user.userId || req.user.sub || req.user._id || req.user.id;
     await this.notificationService.registerSubscription(userId, dto);
     return { message: 'Push subscription registered successfully' };
   }
@@ -59,7 +59,7 @@ export class NotificationController {
     @Request() req: any,
     @Body() dto: UnsubscribePushDto,
   ) {
-    const userId = req.user.sub || req.user._id || req.user.id;
+    const userId = req.user.userId || req.user.sub || req.user._id || req.user.id;
     await this.notificationService.removeSubscription(userId, dto.endpoint);
     return { message: 'Push subscription removed successfully' };
   }
@@ -70,14 +70,14 @@ export class NotificationController {
     @Request() req: any,
     @Param('id') notificationId: string,
   ) {
-    const userId = req.user.sub || req.user._id || req.user.id;
+    const userId = req.user.userId || req.user.sub || req.user._id || req.user.id;
     return this.notificationService.markAsRead(userId, notificationId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('read-all')
   async markAllRead(@Request() req: any) {
-    const userId = req.user.sub || req.user._id || req.user.id;
+    const userId = req.user.userId || req.user.sub || req.user._id || req.user.id;
     await this.notificationService.markAllAsRead(userId);
     return { message: 'All notifications marked as read' };
   }

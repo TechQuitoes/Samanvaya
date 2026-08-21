@@ -208,6 +208,25 @@ export default function NotificationBell() {
             ))
           )}
         </div>
+
+        {/* Footer: Push Status */}
+        <div className="px-4 py-2 bg-[#f2ece0] border-t border-[#e5d9c3] flex items-center justify-between text-[11px]">
+          <div className="flex items-center gap-1.5 text-[#5a4836] font-medium">
+            <span className={`w-2 h-2 rounded-full ${isSubscribed ? "bg-emerald-500" : "bg-amber-500"}`} />
+            <span>{isSubscribed ? "Push Alerts: Active" : "Push Alerts: Inactive"}</span>
+          </div>
+
+          {!isSubscribed && (
+            <button
+              type="button"
+              onClick={subscribeUser}
+              disabled={isPushLoading}
+              className="text-[#174824] hover:underline font-bold cursor-pointer"
+            >
+              {isPushLoading ? "Syncing..." : "Sync Push Token"}
+            </button>
+          )}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
