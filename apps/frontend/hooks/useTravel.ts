@@ -78,6 +78,26 @@ export function useTravel(statusFilter?: TravelStatus) {
     [fetchTravels]
   );
 
+  const deleteTravel = useCallback(
+    async (travelId: string) => {
+      try {
+        const response = await apiNexus.call("DELETE_TRAVEL", {
+          params: { id: travelId },
+        });
+
+        if (!response.isSuccess) {
+          throw new Error(response.message || "Failed to delete travel record.");
+        }
+
+        toast.success("Travel record deleted successfully!");
+        setTravels((prev) => prev.filter((t) => t._id !== travelId));
+      } catch (err: any) {
+        toast.error(err.message || "Failed to delete travel record.");
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     fetchTravels();
   }, [fetchTravels]);
@@ -89,6 +109,7 @@ export function useTravel(statusFilter?: TravelStatus) {
     fetchTravels,
     createTravel,
     addExpense,
+    deleteTravel,
   };
 }
 

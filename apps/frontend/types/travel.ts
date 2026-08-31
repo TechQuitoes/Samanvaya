@@ -18,6 +18,8 @@ export enum AccommodationType {
   TEMPLE = 'TEMPLE',
   HOTEL = 'HOTEL',
   GUEST_HOUSE = 'GUEST_HOUSE',
+  ASHRAM = 'ASHRAM',
+  DHARAMSHALA = 'DHARAMSHALA',
   OTHER = 'OTHER',
 }
 
@@ -36,15 +38,49 @@ export enum TaskStatus {
 
 export interface TransportDetail {
   mode: TransportMode;
+  // Flight
+  airline?: string;
   flightNo?: string;
   pnr?: string;
-  trainNo?: string;
-  seatNo?: string;
-  driverName?: string;
-  driverPhone?: string;
-  vehicleNo?: string;
+  seatPreference?: string;
+  departureAirport?: string;
+  arrivalAirport?: string;
   departureTime?: string;
   arrivalTime?: string;
+  terminalGateClass?: string;
+  // Train
+  trainNameNo?: string;
+  trainNo?: string;
+  coachSeat?: string;
+  seatNo?: string;
+  departureStation?: string;
+  arrivalStation?: string;
+  quota?: string;
+  // Car
+  carModel?: string;
+  vehicleNo?: string;
+  rentalAgency?: string;
+  bookingRef?: string;
+  pickupLocation?: string;
+  dropoffLocation?: string;
+  tollNotes?: string;
+  // Pickup / Cab
+  cabProvider?: string;
+  driverName?: string;
+  driverPhone?: string;
+  instructions?: string;
+  // Bus
+  busOperator?: string;
+  busType?: string;
+  ticketRef?: string;
+  boardingPoint?: string;
+  dropPoint?: string;
+  // Other
+  modeDescription?: string;
+  providerName?: string;
+  referenceNo?: string;
+  fromLocation?: string;
+  toLocation?: string;
   notes?: string;
 }
 
@@ -52,10 +88,11 @@ export interface StayDetails {
   type?: AccommodationType;
   name?: string;
   address?: string;
-  contactPersonName?: string;
-  contactPersonPhone?: string;
   checkIn?: string;
   checkOut?: string;
+  bookingRef?: string;
+  contactPersonName?: string;
+  contactPersonPhone?: string;
 }
 
 export interface LocalContact {
@@ -65,11 +102,21 @@ export interface LocalContact {
   email?: string;
 }
 
+export interface ItineraryItem {
+  dayNumber?: number;
+  date?: string;
+  time?: string;
+  activityTitle: string;
+  location?: string;
+  notes?: string;
+}
+
 export interface TravelAttachment {
   category: string;
   title: string;
   fileUrl: string;
   fileType?: string;
+  key?: string;
   uploadedAt?: string;
 }
 
@@ -109,6 +156,7 @@ export interface Travel {
   transportDetails: TransportDetail[];
   stayDetails: StayDetails;
   localContacts: LocalContact[];
+  itinerary?: ItineraryItem[];
   attachments: TravelAttachment[];
   expenses: TravelExpense[];
   specialInstructions?: string;
@@ -157,6 +205,7 @@ export interface CreateTravelPayload {
   transportDetails?: TransportDetail[];
   stayDetails?: StayDetails;
   localContacts?: LocalContact[];
+  itinerary?: ItineraryItem[];
   attachments?: TravelAttachment[];
   expenses?: TravelExpense[];
   specialInstructions?: string;

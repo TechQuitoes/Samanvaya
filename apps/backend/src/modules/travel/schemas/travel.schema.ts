@@ -21,6 +21,8 @@ export enum AccommodationType {
   TEMPLE = 'TEMPLE',
   HOTEL = 'HOTEL',
   GUEST_HOUSE = 'GUEST_HOUSE',
+  ASHRAM = 'ASHRAM',
+  DHARAMSHALA = 'DHARAMSHALA',
   OTHER = 'OTHER',
 }
 
@@ -34,7 +36,7 @@ export class Travel {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ default: 'Preaching & Temple Seva Tour' })
+  @Prop({ default: 'Official Visit' })
   purpose: string;
 
   @Prop({ required: true })
@@ -62,15 +64,48 @@ export class Travel {
     type: [
       {
         mode: { type: String, enum: TransportMode, default: TransportMode.FLIGHT },
+        // Flight
+        airline: String,
         flightNo: String,
         pnr: String,
-        trainNo: String,
-        seatNo: String,
-        driverName: String,
-        driverPhone: String,
-        vehicleNo: String,
+        seatPreference: String,
+        departureAirport: String,
+        arrivalAirport: String,
         departureTime: Date,
         arrivalTime: Date,
+        terminalGateClass: String,
+        // Train
+        trainNameNo: String,
+        coachSeat: String,
+        departureStation: String,
+        arrivalStation: String,
+        quota: String,
+        // Car
+        carModel: String,
+        vehicleNo: String,
+        rentalAgency: String,
+        bookingRef: String,
+        pickupLocation: String,
+        dropoffLocation: String,
+        tollNotes: String,
+        // Pickup / Cab
+        cabProvider: String,
+        driverName: String,
+        driverPhone: String,
+        instructions: String,
+        // Bus
+        busOperator: String,
+        busType: String,
+        ticketRef: String,
+        seatNo: String,
+        boardingPoint: String,
+        dropPoint: String,
+        // Other
+        modeDescription: String,
+        providerName: String,
+        referenceNo: String,
+        fromLocation: String,
+        toLocation: String,
         notes: String,
       },
     ],
@@ -78,15 +113,42 @@ export class Travel {
   })
   transportDetails: Array<{
     mode: TransportMode;
+    airline?: string;
     flightNo?: string;
     pnr?: string;
-    trainNo?: string;
-    seatNo?: string;
-    driverName?: string;
-    driverPhone?: string;
-    vehicleNo?: string;
+    seatPreference?: string;
+    departureAirport?: string;
+    arrivalAirport?: string;
     departureTime?: Date;
     arrivalTime?: Date;
+    terminalGateClass?: string;
+    trainNameNo?: string;
+    coachSeat?: string;
+    departureStation?: string;
+    arrivalStation?: string;
+    quota?: string;
+    carModel?: string;
+    vehicleNo?: string;
+    rentalAgency?: string;
+    bookingRef?: string;
+    pickupLocation?: string;
+    dropoffLocation?: string;
+    tollNotes?: string;
+    cabProvider?: string;
+    driverName?: string;
+    driverPhone?: string;
+    instructions?: string;
+    busOperator?: string;
+    busType?: string;
+    ticketRef?: string;
+    seatNo?: string;
+    boardingPoint?: string;
+    dropPoint?: string;
+    modeDescription?: string;
+    providerName?: string;
+    referenceNo?: string;
+    fromLocation?: string;
+    toLocation?: string;
     notes?: string;
   }>;
 
@@ -95,10 +157,11 @@ export class Travel {
       type: { type: String, enum: AccommodationType, default: AccommodationType.TEMPLE },
       name: String,
       address: String,
-      contactPersonName: String,
-      contactPersonPhone: String,
       checkIn: Date,
       checkOut: Date,
+      bookingRef: String,
+      contactPersonName: String,
+      contactPersonPhone: String,
     },
     default: {},
   })
@@ -106,10 +169,11 @@ export class Travel {
     type?: AccommodationType;
     name?: string;
     address?: string;
-    contactPersonName?: string;
-    contactPersonPhone?: string;
     checkIn?: Date;
     checkOut?: Date;
+    bookingRef?: string;
+    contactPersonName?: string;
+    contactPersonPhone?: string;
   };
 
   @Prop({
@@ -133,10 +197,33 @@ export class Travel {
   @Prop({
     type: [
       {
+        dayNumber: Number,
+        date: String,
+        time: String,
+        activityTitle: String,
+        location: String,
+        notes: String,
+      },
+    ],
+    default: [],
+  })
+  itinerary: Array<{
+    dayNumber?: number;
+    date?: string;
+    time?: string;
+    activityTitle: string;
+    location?: string;
+    notes?: string;
+  }>;
+
+  @Prop({
+    type: [
+      {
         category: String,
         title: String,
         fileUrl: String,
         fileType: String,
+        key: String,
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
@@ -147,6 +234,7 @@ export class Travel {
     title: string;
     fileUrl: string;
     fileType?: string;
+    key?: string;
     uploadedAt?: Date;
   }>;
 

@@ -70,11 +70,11 @@ function getDefaultPermissions(role: string): Record<string, Record<PermissionAc
   const perms: Record<string, Record<PermissionAction, boolean>> = {};
 
   SIDEBAR_MODULES.forEach((mod) => {
-    if (role === UserRole.SUPER_ADMIN || role === UserRole.ADMIN) {
+    if (role === UserRole.SUPER_ADMIN) {
       perms[mod.id] = { view: true, create: true, edit: true, delete: true, approve: true, export: true };
     } else {
-      // Default: View enabled for all modules
-      perms[mod.id] = { view: true, create: false, edit: false, delete: false, approve: false, export: false };
+      // Clean default: all permissions start unchecked so Admin explicitly assigns access
+      perms[mod.id] = { view: false, create: false, edit: false, delete: false, approve: false, export: false };
     }
   });
 
