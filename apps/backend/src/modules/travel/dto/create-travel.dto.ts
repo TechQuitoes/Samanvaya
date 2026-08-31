@@ -362,6 +362,14 @@ export class CreateTravelDto {
   @IsOptional()
   @IsString()
   generalNotes?: string;
+
+  @IsOptional()
+  @IsEnum(['PENDING', 'APPROVED', 'REJECTED'])
+  approvalStatus?: string;
+
+  @IsOptional()
+  @IsString()
+  approvalRemarks?: string;
 }
 
 export class CreateTravelTaskDto {
@@ -393,4 +401,13 @@ export class UpdateTravelTaskDto {
   @IsOptional()
   @IsString()
   commentText?: string;
+}
+
+export class UpdateTravelApprovalDto {
+  @IsEnum(['APPROVED', 'REJECTED'])
+  approvalStatus: 'APPROVED' | 'REJECTED';
+
+  @IsOptional()
+  @IsString()
+  approvalRemarks?: string;
 }

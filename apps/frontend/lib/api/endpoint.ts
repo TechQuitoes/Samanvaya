@@ -34,6 +34,7 @@ export const travelEndpoints = {
   POST_CREATE_TRAVEL: '/travel',
   GET_TRAVEL_BY_ID: '/travel/{id}',
   PATCH_UPDATE_TRAVEL: '/travel/{id}',
+  PATCH_TRAVEL_APPROVAL: '/travel/{id}/approval',
   POST_ADD_TRAVEL_EXPENSE: '/travel/{id}/expenses',
   DELETE_TRAVEL: '/travel/{id}',
   GET_TRAVEL_TASKS: '/travel/{id}/tasks',

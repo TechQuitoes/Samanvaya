@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 export enum TravelStatus {
@@ -56,6 +56,18 @@ export class Travel {
 
   @Prop({ type: String, enum: TravelStatus, default: TravelStatus.UPCOMING })
   status: TravelStatus;
+
+  @Prop({ type: String, enum: ['PENDING', 'APPROVED', 'REJECTED'], default: 'PENDING' })
+  approvalStatus: string;
+
+  @Prop({ type: String, default: '' })
+  approvalRemarks: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  approvedBy?: Types.ObjectId;
+
+  @Prop()
+  approvedAt?: Date;
 
   @Prop({ default: false })
   isBackdated: boolean;
@@ -152,19 +164,18 @@ export class Travel {
     notes?: string;
   }>;
 
-  @Prop({
-    type: {
+  @Prop(
+    raw({
       type: { type: String, enum: AccommodationType, default: AccommodationType.TEMPLE },
-      name: String,
-      address: String,
-      checkIn: Date,
-      checkOut: Date,
-      bookingRef: String,
-      contactPersonName: String,
-      contactPersonPhone: String,
-    },
-    default: {},
-  })
+      name: { type: String },
+      address: { type: String },
+      checkIn: { type: Date },
+      checkOut: { type: Date },
+      bookingRef: { type: String },
+      contactPersonName: { type: String },
+      contactPersonPhone: { type: String },
+    }),
+  )
   stayDetails: {
     type?: AccommodationType;
     name?: string;

@@ -16,6 +16,7 @@ import {
   CreateTravelDto,
   CreateTravelTaskDto,
   ExpenseDto,
+  UpdateTravelApprovalDto,
   UpdateTravelTaskDto,
 } from './dto/create-travel.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -27,7 +28,7 @@ export class TravelController {
 
   @Get()
   async findAll(@Request() req: any, @Query('status') status?: TravelStatus) {
-    return this.travelService.findAll(req.user.userId, status);
+    return this.travelService.findAll(req.user.userId, status, req.user.role);
   }
 
   @Post()
@@ -38,6 +39,20 @@ export class TravelController {
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.travelService.findById(id);
+  }
+
+  @Patch(':id/approval')
+  async updateApproval(
+    @Param('id') id: string,
+    @Request() req: any,
+    @Body() approvalDto: UpdateTravelApprovalDto,
+  ) {
+    return this.travelService.updateApproval(
+      id,
+      req.user.userId,
+      approvalDto.approvalStatus,
+      approvalDto.approvalRemarks,
+    );
   }
 
   @Patch(':id')

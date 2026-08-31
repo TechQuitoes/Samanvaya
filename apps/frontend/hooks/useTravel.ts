@@ -78,6 +78,40 @@ export function useTravel(statusFilter?: TravelStatus) {
     [fetchTravels]
   );
 
+  const updateTravelApproval = useCallback(
+    async (travelId: string, approvalStatus: 'APPROVED' | 'REJECTED', approvalRemarks?: string): Promise<boolean> => {
+      setIsSubmitting(true);
+      try {
+        let response = await apiNexus.call<Travel>("PATCH_TRAVEL_APPROVAL", {
+          params: { id: travelId },
+          payload: { approvalStatus, approvalRemarks },
+        });
+
+        if (!response.isSuccess) {
+          // Fallback to PATCH_UPDATE_TRAVEL
+          response = await apiNexus.call<Travel>("PATCH_UPDATE_TRAVEL", {
+            params: { id: travelId },
+            payload: { approvalStatus, approvalRemarks },
+          });
+        }
+
+        if (!response.isSuccess) {
+          throw new Error(response.message || `Failed to ${approvalStatus.toLowerCase()} travel plan.`);
+        }
+
+        toast.success(`Travel plan ${approvalStatus === 'APPROVED' ? 'approved' : 'rejected'} successfully!`);
+        await fetchTravels();
+        return true;
+      } catch (err: any) {
+        toast.error(err.message || "Failed to update travel status.");
+        return false;
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [fetchTravels]
+  );
+
   const deleteTravel = useCallback(
     async (travelId: string) => {
       try {
@@ -108,6 +142,7 @@ export function useTravel(statusFilter?: TravelStatus) {
     isSubmitting,
     fetchTravels,
     createTravel,
+    updateTravelApproval,
     addExpense,
     deleteTravel,
   };

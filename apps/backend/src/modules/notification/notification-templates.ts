@@ -7,6 +7,9 @@ export enum NotificationTemplateKey {
   ACCOUNT_BLOCKED = 'ACCOUNT_BLOCKED',
   ACCOUNT_REJECTED = 'ACCOUNT_REJECTED',
   TRAVEL_PLAN_CREATED = 'TRAVEL_PLAN_CREATED',
+  TRAVEL_PLAN_SUBMITTED = 'TRAVEL_PLAN_SUBMITTED',
+  TRAVEL_PLAN_APPROVED = 'TRAVEL_PLAN_APPROVED',
+  TRAVEL_PLAN_REJECTED = 'TRAVEL_PLAN_REJECTED',
 }
 
 export interface NotificationTemplateDefinition {
@@ -36,7 +39,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.userName || 'Devotee'}! Your account has been verified and approved as ${data.role || 'Member'}. Welcome to Samanvaya!`,
     type: NotificationType.ACCOUNT_APPROVED,
     actionUrl: '/dashboard',
-    icon: '/assests/lotus-small.png',
+    icon: '/assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.ACCOUNT_BLOCKED]: (data) => ({
@@ -44,7 +47,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.userName || 'User'}, your account has been temporarily suspended. Please contact your coordinator.`,
     type: NotificationType.ACCOUNT_BLOCKED,
     actionUrl: '/login',
-    icon: '/assests/lotus-small.png',
+    icon: '/assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.ACCOUNT_REJECTED]: (data) => ({
@@ -52,14 +55,39 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.userName || 'User'}, your registration request has been reviewed.`,
     type: NotificationType.ACCOUNT_REJECTED,
     actionUrl: '/login',
-    icon: '/assests/lotus-small.png',
+    icon: '/assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TRAVEL_PLAN_CREATED]: (data) => ({
     title: 'New Travel Plan Scheduled ✈️',
     body: `Travel plan to ${data.destination || 'destination'} has been created for ${data.leaderName || 'Leader'}.`,
     type: NotificationType.TRAVEL,
-    actionUrl: `/travel/${data.travelId || ''}`,
-    icon: '/assests/lotus-small.png',
+    actionUrl: `/travel`,
+    icon: '/assets/04_lotus_icon_gold.png',
+  }),
+
+  [NotificationTemplateKey.TRAVEL_PLAN_SUBMITTED]: (data) => ({
+    title: 'New Travel Plan Submitted 🧳',
+    body: `${data.devoteeName || 'A devotee'} submitted a new travel plan for "${data.title || 'Itinerary'}" (${data.fromLocation || ''} → ${data.destinationCity || ''}). Click to review.`,
+    type: NotificationType.TRAVEL,
+    actionUrl: '/travel',
+    defaultRecipientRole: UserRole.SUPER_ADMIN,
+    icon: '/assets/04_lotus_icon_gold.png',
+  }),
+
+  [NotificationTemplateKey.TRAVEL_PLAN_APPROVED]: (data) => ({
+    title: 'Travel Plan Approved! ✨',
+    body: `Hare Krishna ${data.devoteeName || 'Devotee'}! Your travel plan "${data.title || 'Itinerary'}" to ${data.destinationCity || ''} has been approved.${data.remarks ? ' Remarks: ' + data.remarks : ''}`,
+    type: NotificationType.TRAVEL,
+    actionUrl: '/travel',
+    icon: '/assets/04_lotus_icon_gold.png',
+  }),
+
+  [NotificationTemplateKey.TRAVEL_PLAN_REJECTED]: (data) => ({
+    title: 'Travel Plan Status Update ⚠️',
+    body: `Hare Krishna ${data.devoteeName || 'Devotee'}, your travel plan "${data.title || 'Itinerary'}" has been rejected.${data.remarks ? ' Reason: ' + data.remarks : ''}`,
+    type: NotificationType.TRAVEL,
+    actionUrl: '/travel',
+    icon: '/assets/04_lotus_icon_gold.png',
   }),
 };

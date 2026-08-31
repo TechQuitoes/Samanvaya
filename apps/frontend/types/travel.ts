@@ -152,6 +152,15 @@ export interface Travel {
   startDate: string;
   endDate: string;
   status: TravelStatus;
+  approvalStatus?: 'PENDING' | 'APPROVED' | 'REJECTED';
+  approvalRemarks?: string;
+  approvedBy?: {
+    _id?: string;
+    name: string;
+    email: string;
+    initiatedName?: string;
+  };
+  approvedAt?: string;
   isBackdated: boolean;
   transportDetails: TransportDetail[];
   stayDetails: StayDetails;
@@ -192,6 +201,15 @@ export interface TravelTask {
   updatedAt?: string;
 }
 
+export interface CreateTravelTaskInput {
+  title: string;
+  dueDate: string;
+  assigneeName?: string;
+  assigneeId?: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+}
+
 export interface CreateTravelPayload {
   title: string;
   purpose?: string;
@@ -211,3 +229,4 @@ export interface CreateTravelPayload {
   specialInstructions?: string;
   generalNotes?: string;
 }
+
