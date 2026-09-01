@@ -36,8 +36,12 @@ import {
 } from "@/components/ui/dialog";
 import LotusDivider from "@/components/ui/LotusDivider";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
+import CreateTaskDrawer from "@/components/task/CreateTaskDrawer";
+import TaskDetailDrawer from "@/components/task/TaskDetailDrawer";
 import apiNexus from "@/lib/api/apiNexusIntercepter";
-import { Travel, TravelTask, TaskStatus, TaskPriority } from "@/types/travel";
+import useTasks from "@/hooks/useTasks";
+import { Travel } from "@/types/travel";
+import { Task, TaskModuleType, TaskStatus } from "@/types/task";
 import { toast } from "sonner";
 
 function formatDate(dateStr?: string): string {
@@ -55,8 +59,15 @@ export default function TravelDetailPage() {
   const travelId = params.id as string;
 
   const [travel, setTravel] = useState<Travel | null>(null);
-  const [tasks, setTasks] = useState<TravelTask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Unified Tasks Hook
+  const { tasks, fetchTasks, updateTaskStatus } = useTasks(
+    travelId ? { moduleType: TaskModuleType.TRAVEL, moduleRefId: travelId } : undefined
+  );
+  const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
   // Expense Modal State
   const [expenseModalOpen, setExpenseModalOpen] = useState(false);
@@ -64,25 +75,14 @@ export default function TravelDetailPage() {
   const [expenseCategory, setExpenseCategory] = useState("TRANSPORT");
   const [expenseAmount, setExpenseAmount] = useState<number>(500);
 
-  // Task Modal State
-  const [taskModalOpen, setTaskModalOpen] = useState(false);
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskPriority, setTaskPriority] = useState<TaskPriority>(TaskPriority.MEDIUM);
-
   const fetchTravelData = useCallback(async () => {
     if (!travelId) return;
     setIsLoading(true);
     try {
-      const [travelRes, tasksRes] = await Promise.all([
-        apiNexus.call<Travel>("GET_TRAVEL_BY_ID", { params: { id: travelId } }),
-        apiNexus.call<TravelTask[]>("GET_TRAVEL_TASKS", { params: { id: travelId } }),
-      ]);
+      const travelRes = await apiNexus.call<Travel>("GET_TRAVEL_BY_ID", { params: { id: travelId } });
 
       if (travelRes.isSuccess && travelRes.data) {
         setTravel(travelRes.data);
-      }
-      if (tasksRes.isSuccess && Array.isArray(tasksRes.data)) {
-        setTasks(tasksRes.data);
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to load travel details.");
@@ -115,44 +115,6 @@ export default function TravelDetailPage() {
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to add expense.");
-    }
-  };
-
-  const handleCreateTask = async () => {
-    if (!taskTitle.trim()) return;
-    try {
-      const response = await apiNexus.call<TravelTask>("POST_CREATE_TRAVEL_TASK", {
-        params: { id: travelId },
-        payload: {
-          title: taskTitle,
-          priority: taskPriority,
-        },
-      });
-
-      if (response.isSuccess) {
-        toast.success("Task assigned to travel!");
-        setTaskModalOpen(false);
-        fetchTravelData();
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create task.");
-    }
-  };
-
-  const handleToggleTaskStatus = async (taskId: string, currentStatus: TaskStatus) => {
-    const newStatus = currentStatus === TaskStatus.COMPLETED ? TaskStatus.PENDING : TaskStatus.COMPLETED;
-    try {
-      const response = await apiNexus.call<TravelTask>("PATCH_UPDATE_TRAVEL_TASK", {
-        params: { taskId },
-        payload: { status: newStatus },
-      });
-
-      if (response.isSuccess) {
-        toast.success(`Task marked as ${newStatus}`);
-        fetchTravelData();
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update task.");
     }
   };
 
@@ -292,48 +254,68 @@ export default function TravelDetailPage() {
         <div className="flex items-center justify-between border-b border-[#e5d9c3]/60 pb-3">
           <div className="flex items-center gap-2">
             <CheckSquare className="w-5 h-5 text-[#174824]" />
-            <h3 className="text-base font-bold text-[#174824]">Travel Tasks & Checklist</h3>
+            <h3 className="text-base font-bold text-[#174824]">Travel Tasks & Seva ({tasks.length})</h3>
           </div>
           <Button
             size="sm"
-            onClick={() => setTaskModalOpen(true)}
-            className="bg-[#174824] text-white rounded-xl text-xs font-bold gap-1"
+            onClick={() => setIsTaskDrawerOpen(true)}
+            className="bg-[#174824] text-white rounded-xl text-xs font-bold gap-1 cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5" /> Assign Task
+            <Plus className="w-3.5 h-3.5 text-amber-300" /> Assign Seva Task
           </Button>
         </div>
 
         {tasks.length === 0 ? (
-          <p className="text-xs text-[#5a4836]">No tasks assigned to this travel record.</p>
+          <p className="text-xs text-[#5a4836] italic">No tasks assigned to this travel tour yet. Click &quot;Assign Seva Task&quot; to delegate duties.</p>
         ) : (
           <div className="space-y-2">
-            {tasks.map((task) => (
-              <div
-                key={task._id}
-                onClick={() => handleToggleTaskStatus(task._id, task.status)}
-                className="p-3.5 rounded-xl bg-[#fcfaf5] border border-[#e5d9c3] flex items-center justify-between gap-3 text-xs cursor-pointer hover:bg-white transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={task.status === TaskStatus.COMPLETED}
-                    readOnly
-                    className="w-4 h-4 accent-[#174824]"
-                  />
-                  <div>
-                    <p className={`font-bold ${task.status === TaskStatus.COMPLETED ? "line-through text-[#8c7865]" : "text-[#2c221e]"}`}>
-                      {task.title}
-                    </p>
-                    <Badge variant="outline" className="text-[10px] border-amber-300 text-amber-900">
-                      {task.priority} Priority
-                    </Badge>
+            {tasks.map((task) => {
+              const isDone = task.status === TaskStatus.COMPLETED;
+              return (
+                <div
+                  key={task._id}
+                  onClick={() => setSelectedTask(task)}
+                  className="p-3.5 rounded-xl bg-[#fcfaf5] border border-[#e5d9c3] flex items-center justify-between gap-3 text-xs cursor-pointer hover:bg-white transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        updateTaskStatus(
+                          task._id,
+                          isDone ? TaskStatus.PENDING : TaskStatus.COMPLETED
+                        );
+                      }}
+                      className={`w-5 h-5 rounded-md border flex items-center justify-center cursor-pointer transition-colors ${
+                        isDone
+                          ? "bg-[#174824] border-[#174824] text-white"
+                          : "bg-white border-[#8c7865] hover:border-[#174824]"
+                      }`}
+                    >
+                      {isDone && <CheckCircle2 className="w-3.5 h-3.5" />}
+                    </button>
+                    <div className="min-w-0">
+                      <p className={`font-bold truncate ${isDone ? "line-through text-[#8c7865]" : "text-[#2c221e]"}`}>
+                        {task.title}
+                      </p>
+                      <p className="text-[10px] text-[#8c7865] font-medium truncate">
+                        Assigned to: <strong className="text-[#174824]">{task.assignedTo?.name}</strong> • {task.priority}
+                      </p>
+                    </div>
                   </div>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md border flex-shrink-0 ${
+                      isDone
+                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                        : "bg-amber-100 text-amber-900 border-amber-300"
+                    }`}
+                  >
+                    {isDone ? "Completed" : "Pending"}
+                  </span>
                 </div>
-                <Badge className={task.status === TaskStatus.COMPLETED ? "bg-emerald-700 text-white text-[10px]" : "bg-amber-100 text-amber-900 text-[10px]"}>
-                  {task.status}
-                </Badge>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </Card>
@@ -354,20 +336,39 @@ export default function TravelDetailPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Create Task Modal */}
-      <Dialog open={taskModalOpen} onOpenChange={setTaskModalOpen}>
-        <DialogContent className="bg-[#faf4e8] border-[#e5d9c3] rounded-2xl max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-[#174824]">Assign Travel Task</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3 py-2">
-            <Input label="Task Title" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} placeholder="e.g. Confirm Flight Seat Assignment" />
-          </div>
-          <DialogFooter>
-            <Button onClick={handleCreateTask} className="bg-[#174824] text-white rounded-xl">Assign Task</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Unified Create / Edit Task Drawer */}
+      <CreateTaskDrawer
+        open={isTaskDrawerOpen}
+        onOpenChange={(open) => {
+          setIsTaskDrawerOpen(open);
+          if (!open) setTaskToEdit(null);
+        }}
+        taskToEdit={taskToEdit}
+        initialModuleType={TaskModuleType.TRAVEL}
+        initialModuleRefId={travelId}
+        initialModuleTitle={travel ? `${travel.title} (${travel.fromLocation} → ${travel.destinationCity})` : "Travel Tour"}
+        onSuccess={() => {
+          setTaskToEdit(null);
+          fetchTasks();
+        }}
+      />
+
+      {/* Task Details Drawer */}
+      <TaskDetailDrawer
+        open={!!selectedTask}
+        onOpenChange={(open) => {
+          if (!open) setSelectedTask(null);
+        }}
+        task={selectedTask}
+        onEdit={(task) => {
+          setSelectedTask(null);
+          setTaskToEdit(task);
+          setIsTaskDrawerOpen(true);
+        }}
+        onUpdated={() => {
+          fetchTasks();
+        }}
+      />
     </SacredPortalLayout>
   );
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Menu, Bell, HelpCircle, LogOut } from "lucide-react";
+import { Menu, Bell, HelpCircle, LogOut, UserCircle } from "lucide-react";
 import DataManager from "@/lib/data-manager";
 import {
   DropdownMenu,
@@ -25,6 +25,7 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
   const router = useRouter();
   const [userName, setUserName] = useState("Giriraj Das");
   const [userRole, setUserRole] = useState("Leader");
+  const [userAvatar, setUserAvatar] = useState<string | undefined>();
 
   useEffect(() => {
     const currentUser = DataManager.getUser();
@@ -33,6 +34,9 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
     }
     if (currentUser?.role) {
       setUserRole(currentUser.role);
+    }
+    if (currentUser?.avatar) {
+      setUserAvatar(currentUser.avatar);
     }
   }, []);
 
@@ -64,6 +68,7 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
                 src="/assets/04_lotus_icon_gold.png"
                 alt="Lotus Emblem"
                 fill
+                sizes="24px"
                 className="object-contain"
               />
             </div>
@@ -123,16 +128,21 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
           {/* Leader Profile Avatar with Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
-              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#d4af37] shadow-sm hover:ring-2 hover:ring-[#174824]/30 transition-all flex-shrink-0">
-                <Image
-                  src="/assets/01_desktop_temple_background_banner.png"
-                  alt="Leader Profile Avatar"
-                  fill
-                  className="object-cover object-center"
-                />
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#d4af37] bg-white shadow-sm hover:ring-2 hover:ring-[#174824]/30 transition-all flex-shrink-0 flex items-center justify-center font-bold text-[#174824]">
+                {userAvatar ? (
+                  <Image
+                    src={userAvatar}
+                    alt={userName}
+                    fill
+                    sizes="48px"
+                    className="object-cover object-center"
+                  />
+                ) : (
+                  <span className="text-base">{userName ? userName.charAt(0).toUpperCase() : "U"}</span>
+                )}
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 rounded-2xl p-2 bg-[#fcfaf5] border border-[#e5d9c3] shadow-lg">
+            <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 bg-[#fcfaf5] border border-[#e5d9c3] shadow-lg">
               <DropdownMenuLabel className="px-3 py-2">
                 <p className="text-xs font-bold text-[#174824]">{userName}</p>
                 <p className="text-[11px] text-[#8c7865] font-medium">{userRole}</p>
@@ -140,9 +150,10 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
               <DropdownMenuSeparator className="bg-[#e5d9c3]/60 my-1" />
               <DropdownMenuItem
                 onClick={() => router.push("/leader-profile")}
-                className="rounded-xl text-xs font-semibold text-[#2c221e] hover:bg-[#faf4e8] cursor-pointer"
+                className="rounded-xl text-xs font-semibold text-[#174824] hover:bg-[#faf4e8] cursor-pointer gap-2"
               >
-                Profile Settings
+                <UserCircle className="w-4 h-4 text-[#174824]" />
+                <span>My Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleLogout}

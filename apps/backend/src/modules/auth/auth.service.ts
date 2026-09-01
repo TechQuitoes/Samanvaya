@@ -247,6 +247,45 @@ export class AuthService {
     return userObj;
   }
 
+  async updateProfile(userId: string, updateData: { name?: string; mobile?: string; city?: string; templeName?: string; country?: string; avatar?: string }) {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User profile not found.');
+    }
+
+    if (updateData.name !== undefined) user.name = updateData.name.trim();
+    if (updateData.mobile !== undefined) user.mobile = updateData.mobile.trim();
+    if (updateData.city !== undefined) user.city = updateData.city.trim();
+    if (updateData.templeName !== undefined) user.templeName = updateData.templeName.trim();
+    if (updateData.country !== undefined) user.country = updateData.country.trim();
+    if (updateData.avatar !== undefined) user.avatar = updateData.avatar.trim();
+
+    await user.save();
+
+    const userObj = user.toObject();
+    delete (userObj as any).password;
+    return userObj;
+  }
+
+  async changePassword(userId: string, newPassword: string, confirmPassword: string) {
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Passwords do not match.');
+    }
+
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    return { message: 'Password changed successfully!' };
+  }
+
   /**
    * Verify a Google ID token using Google's tokeninfo endpoint.
    * This avoids needing the `google-auth-library` dependency.

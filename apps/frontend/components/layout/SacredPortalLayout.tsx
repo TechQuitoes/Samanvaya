@@ -21,6 +21,7 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
           alt="Sacred Dashboard Background"
           fill
           priority
+          sizes="100vw"
           className="object-cover object-top opacity-40 lg:opacity-50 transition-opacity"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3e9]/40 via-[#f7f3e9]/70 to-[#f7f3e9] z-0" />
@@ -32,6 +33,8 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
           src="/assests/leftSideleaf.png"
           alt="Top Left Cascading Leaves"
           fill
+          priority
+          sizes="(max-width: 640px) 112px, 224px"
           className="object-contain object-top-left"
         />
       </div>
@@ -40,6 +43,8 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
           src="/assests/rightSideLeaf.png"
           alt="Top Right Cascading Leaves"
           fill
+          priority
+          sizes="(max-width: 640px) 112px, 224px"
           className="object-contain object-top-right"
         />
       </div>

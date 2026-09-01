@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -116,6 +117,11 @@ export default function SidebarMenuItems({ onItemClick }: SidebarMenuItemsProps)
   const pathname = usePathname();
   const router = useRouter();
   const { isSuperAdmin, hasModuleAccess } = usePermissions();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleNavigate = (href: string) => {
     router.push(href);
@@ -124,16 +130,18 @@ export default function SidebarMenuItems({ onItemClick }: SidebarMenuItemsProps)
     }
   };
 
-  // Filter visible menu items based on Super Admin role or module view permission
-  const visibleMenuItems = MENU_ITEMS.filter((item) => {
-    // 1. Super Admin & Admin see all items
-    if (isSuperAdmin) {
-      return true;
-    }
+  // Until client mounts, render standard menu to match SSR output
+  const visibleMenuItems = !mounted
+    ? MENU_ITEMS
+    : MENU_ITEMS.filter((item) => {
+        // 1. Super Admin & Admin see all items
+        if (isSuperAdmin) {
+          return true;
+        }
 
-    // 2. Regular user: check if granted view access for this module
-    return hasModuleAccess(item.id);
-  });
+        // 2. Regular user: check if granted view access for this module
+        return hasModuleAccess(item.id);
+      });
 
   return (
     <nav className="space-y-1 py-1">

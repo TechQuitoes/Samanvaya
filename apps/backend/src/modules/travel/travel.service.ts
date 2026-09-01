@@ -24,8 +24,17 @@ export class TravelService {
 
   async findAll(leaderId: string, statusFilter?: TravelStatus, userRole?: string): Promise<TravelDocument[]> {
     const query: any = {};
-    // Admins, Super Admins, and Secretaries see all travels across the organization
-    if (userRole !== 'SUPER_ADMIN' && userRole !== 'ADMIN' && userRole !== 'SECRETARY') {
+    const r = (userRole || '').toLowerCase().trim();
+    const isElevatedAdmin =
+      r === 'super admin' ||
+      r === 'super administrator' ||
+      r === 'admin' ||
+      r === 'administrator' ||
+      r === 'travel team' ||
+      r === 'super_admin';
+
+    // Non-admin leaders only see their own travels; Admins and Travel Team see all travels
+    if (!isElevatedAdmin) {
       query.leaderId = new Types.ObjectId(leaderId);
     }
     if (statusFilter) {
@@ -72,6 +81,7 @@ export class TravelService {
         await this.notificationService.sendFromTemplate(templateKey, {
           recipientId: devoteeId,
           senderId: adminId,
+          sendPush: true,
           data: {
             travelId: travel._id.toString(),
             title: travel.title,
@@ -80,6 +90,7 @@ export class TravelService {
             remarks: approvalRemarks || '',
           },
         });
+        this.logger.log(`🔔 Sent approval notification & Web Push to devotee: ${devoteeId}`);
       }
     } catch (err: any) {
       this.logger.error(`Failed to send travel approval notification: ${err.message}`);
@@ -140,6 +151,7 @@ export class TravelService {
         NotificationTemplateKey.TRAVEL_PLAN_SUBMITTED,
         {
           senderId: leaderId,
+          sendPush: true,
           data: {
             travelId: saved._id.toString(),
             title: saved.title,

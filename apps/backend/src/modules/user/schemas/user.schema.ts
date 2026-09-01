@@ -55,6 +55,15 @@ export class User {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Temple', required: false })
   temple?: Temple;
 
+  @Prop({ required: false, trim: true })
+  templeName?: string;
+
+  @Prop({ required: false, trim: true })
+  city?: string;
+
+  @Prop({ required: false, trim: true })
+  country?: string;
+
   @Prop({ type: String, enum: UserRole, default: UserRole.VIEWER })
   role: string;
 

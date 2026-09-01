@@ -10,6 +10,9 @@ export enum NotificationTemplateKey {
   TRAVEL_PLAN_SUBMITTED = 'TRAVEL_PLAN_SUBMITTED',
   TRAVEL_PLAN_APPROVED = 'TRAVEL_PLAN_APPROVED',
   TRAVEL_PLAN_REJECTED = 'TRAVEL_PLAN_REJECTED',
+  TASK_ASSIGNED = 'TASK_ASSIGNED',
+  TASK_COMPLETED = 'TASK_COMPLETED',
+  TASK_COMMENT_ADDED = 'TASK_COMMENT_ADDED',
 }
 
 export interface NotificationTemplateDefinition {
@@ -88,6 +91,30 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.devoteeName || 'Devotee'}, your travel plan "${data.title || 'Itinerary'}" has been rejected.${data.remarks ? ' Reason: ' + data.remarks : ''}`,
     type: NotificationType.TRAVEL,
     actionUrl: '/travel',
+    icon: '/assets/04_lotus_icon_gold.png',
+  }),
+
+  [NotificationTemplateKey.TASK_ASSIGNED]: (data) => ({
+    title: 'New Seva Task Assigned 📋',
+    body: `Hare Krishna ${data.assigneeName || 'Devotee'}! You have been assigned a new task: "${data.title}"${data.moduleTitle ? ' for ' + data.moduleTitle : ''}.${data.dueDate ? ' Due: ' + data.dueDate : ''}`,
+    type: NotificationType.TASK,
+    actionUrl: '/tasks',
+    icon: '/assets/04_lotus_icon_gold.png',
+  }),
+
+  [NotificationTemplateKey.TASK_COMPLETED]: (data) => ({
+    title: 'Seva Task Completed! ✅',
+    body: `Hare Krishna! ${data.assigneeName || 'Devotee'} has completed the task: "${data.title}"${data.moduleTitle ? ' for ' + data.moduleTitle : ''}.`,
+    type: NotificationType.TASK,
+    actionUrl: '/tasks',
+    icon: '/assets/04_lotus_icon_gold.png',
+  }),
+
+  [NotificationTemplateKey.TASK_COMMENT_ADDED]: (data) => ({
+    title: 'New Update on Task 💬',
+    body: `${data.authorName || 'Devotee'} added a comment on task "${data.title}": "${data.commentText}"`,
+    type: NotificationType.TASK,
+    actionUrl: '/tasks',
     icon: '/assets/04_lotus_icon_gold.png',
   }),
 };

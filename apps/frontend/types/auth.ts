@@ -35,6 +35,9 @@ export interface User {
   avatar?: string;
   permissions?: Record<string, Record<string, boolean>>;
   temple?: any;
+  templeName?: string;
+  city?: string;
+  country?: string;
   createdAt?: string;
   updatedAt?: string;
 }

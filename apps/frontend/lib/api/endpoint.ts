@@ -3,6 +3,8 @@ export const authEndpoints = {
   POST_LOGIN: '/auth/login',
   POST_GOOGLE_AUTH: '/auth/google',
   GET_PROFILE: '/auth/me',
+  PATCH_PROFILE: '/auth/profile',
+  PATCH_CHANGE_PASSWORD: '/auth/change-password',
 };
 
 export const userEndpoints = {
@@ -49,6 +51,16 @@ export const notificationEndpoints = {
   POST_UNSUBSCRIBE_PUSH: '/notifications/unsubscribe',
   PATCH_MARK_NOTIFICATION_READ: '/notifications/{id}/read',
   PATCH_MARK_ALL_NOTIFICATIONS_READ: '/notifications/read-all',
+};
+
+export const taskEndpoints = {
+  GET_TASKS: '/tasks',
+  POST_CREATE_TASK: '/tasks',
+  GET_TASK_BY_ID: '/tasks/{id}',
+  PATCH_UPDATE_TASK: '/tasks/{id}',
+  PATCH_UPDATE_TASK_STATUS: '/tasks/{id}/status',
+  POST_ADD_TASK_COMMENT: '/tasks/{id}/comments',
+  DELETE_TASK: '/tasks/{id}',
 };
 
 export const mediaEndpoints = {

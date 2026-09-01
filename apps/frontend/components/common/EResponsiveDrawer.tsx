@@ -54,8 +54,8 @@ export default function EResponsiveDrawer({
         <DialogPrimitive.Content
           className={cn(
             "fixed z-50 flex flex-col bg-[#fffdfa] text-[#2c221e] shadow-2xl transition ease-out duration-300 outline-none",
-            // 📱 Mobile Styles (< md): Bottom Sheet
-            "inset-x-0 bottom-0 max-h-[92vh] rounded-t-[28px] sm:rounded-t-[32px] border-t border-[#e5d9c3]",
+            // 📱 Mobile Styles (< md): High Full-Feel Bottom Sheet (Opens near the top)
+            "inset-x-0 bottom-0 h-[92vh] max-h-[92vh] rounded-t-[28px] sm:rounded-t-[32px] border-t border-[#e5d9c3]",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
             // 🖥️ Desktop Styles (>= md): Right Side Slide-Over Drawer
             "md:inset-y-0 md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-screen md:max-h-screen md:rounded-none md:rounded-l-[32px] md:border-t-0 md:border-l md:border-[#e5d9c3]",
@@ -79,6 +79,7 @@ export default function EResponsiveDrawer({
                       src="/assets/04_lotus_icon_gold.png"
                       alt="Lotus Emblem"
                       fill
+                      sizes="24px"
                       className="object-contain"
                     />
                   </div>
@@ -108,7 +109,7 @@ export default function EResponsiveDrawer({
           )}
 
           {/* Scrollable Content Body */}
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4">
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6">
             {children}
           </div>
         </DialogPrimitive.Content>

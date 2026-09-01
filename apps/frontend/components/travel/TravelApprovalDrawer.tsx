@@ -18,13 +18,20 @@ import {
   CheckCircle2,
   XCircle,
   AlertCircle,
+  CheckSquare,
+  Plus,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import EResponsiveDrawer from "@/components/common/EResponsiveDrawer";
+import CreateTaskDrawer from "@/components/task/CreateTaskDrawer";
 import useTravel from "@/hooks/useTravel";
+import useTasks from "@/hooks/useTasks";
+import { usePermissions } from "@/hooks/usePermissions";
 import { TransportMode, Travel, TravelStatus } from "@/types/travel";
+import { Task, TaskModuleType, TaskStatus } from "@/types/task";
 
 interface TravelApprovalDrawerProps {
   open: boolean;
@@ -40,8 +47,13 @@ export default function TravelApprovalDrawer({
   onSuccess,
 }: TravelApprovalDrawerProps) {
   const { updateTravelApproval, isSubmitting } = useTravel();
+  const { isSuperAdmin } = usePermissions();
+  const { tasks, fetchTasks, updateTaskStatus } = useTasks(
+    travel?._id ? { moduleType: TaskModuleType.TRAVEL, moduleRefId: travel._id } : undefined
+  );
   const [remarks, setRemarks] = useState("");
-  const [decisionType, setDecisionType] = useState<"APPROVE" | "REJECT" | null>(null);
+  const [isAssignTaskOpen, setIsAssignTaskOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
   if (!travel) return null;
 
@@ -58,7 +70,6 @@ export default function TravelApprovalDrawer({
     const success = await updateTravelApproval(travel._id, status, remarks.trim() || undefined);
     if (success) {
       setRemarks("");
-      setDecisionType(null);
       onOpenChange(false);
       onSuccess?.();
     }
@@ -68,8 +79,12 @@ export default function TravelApprovalDrawer({
     <EResponsiveDrawer
       open={open}
       onOpenChange={onOpenChange}
-      title="Travel Plan Review & Approval"
-      description="Review travel details, stay arrangements, and record approval decisions."
+      title={isSuperAdmin ? "Travel Plan Review & Approval" : "Travel Plan Details"}
+      description={
+        isSuperAdmin
+          ? "Review travel details, stay arrangements, and record approval decisions."
+          : "View itinerary, transport, accommodation, and stay details."
+      }
       size="lg"
     >
       <div className="space-y-4 pb-6">
@@ -267,6 +282,111 @@ export default function TravelApprovalDrawer({
           </div>
         </Card>
 
+        {/* Seva Tasks Section (Visible on Approved plans) */}
+        {approvalStatus === "APPROVED" && (
+          <div className="p-4 rounded-2xl bg-[#fffdfa] border border-[#e5d9c3] space-y-3 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#174824] uppercase tracking-wider">
+                <CheckSquare className="w-4 h-4 text-emerald-800" />
+                <span>Seva Tasks ({tasks.length})</span>
+              </div>
+              {isSuperAdmin && (
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    setTaskToEdit(null);
+                    setIsAssignTaskOpen(true);
+                  }}
+                  className="h-7 px-2.5 rounded-lg bg-[#174824] text-white text-[11px] font-bold gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3 text-amber-300" />
+                  <span>Assign Seva Task</span>
+                </Button>
+              )}
+            </div>
+
+            {tasks.length === 0 ? (
+              <p className="text-xs text-[#8c7865] italic py-1">
+                No seva tasks assigned for this tour yet.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {tasks.map((t) => {
+                  const isDone = t.status === TaskStatus.COMPLETED;
+                  return (
+                    <div
+                      key={t._id}
+                      className="p-2.5 rounded-xl bg-[#faf5eb] border border-[#e5d9c3] flex items-center justify-between gap-2.5 hover:border-[#174824]/40 transition-colors"
+                    >
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateTaskStatus(
+                              t._id,
+                              isDone ? TaskStatus.PENDING : TaskStatus.COMPLETED
+                            )
+                          }
+                          className={`w-5 h-5 rounded-md border flex items-center justify-center cursor-pointer flex-shrink-0 transition-colors ${
+                            isDone
+                              ? "bg-[#174824] border-[#174824] text-white"
+                              : "bg-white border-[#8c7865] hover:border-[#174824]"
+                          }`}
+                        >
+                          {isDone && <Check className="w-3 h-3" />}
+                        </button>
+                        <div
+                          className="min-w-0 flex-1 cursor-pointer"
+                          onClick={() => {
+                            setTaskToEdit(t);
+                            setIsAssignTaskOpen(true);
+                          }}
+                        >
+                          <p
+                            className={`text-xs font-bold truncate ${
+                              isDone ? "line-through text-[#8c7865]" : "text-[#2c221e]"
+                            }`}
+                          >
+                            {t.title}
+                          </p>
+                          <p className="text-[10px] text-[#8c7865] font-medium">
+                            Sevak: <strong className="text-[#174824]">{t.assignedTo?.name}</strong> &bull; {t.priority}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                            isDone
+                              ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                              : "bg-amber-100 text-amber-900 border-amber-300"
+                          }`}
+                        >
+                          {isDone ? "Done" : "Pending"}
+                        </span>
+
+                        <button
+                          type="button"
+                          title="Edit Task"
+                          onClick={() => {
+                            setTaskToEdit(t);
+                            setIsAssignTaskOpen(true);
+                          }}
+                          className="p-1 rounded-lg text-[#8c7865] hover:text-[#174824] hover:bg-[#faf5eb] border border-transparent hover:border-[#e5d9c3] cursor-pointer transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Existing Decision Audit Log (if already decided) */}
         {travel.approvalRemarks && (
           <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs space-y-1">
@@ -283,90 +403,129 @@ export default function TravelApprovalDrawer({
           </div>
         )}
 
-        {/* Decision & Action Controls Based on Status */}
-        {approvalStatus === "REJECTED" ? (
-          <div className="p-4 rounded-2xl bg-red-50/60 border border-red-200 text-center space-y-1">
-            <div className="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center mx-auto">
-              <XCircle className="w-4 h-4" />
-            </div>
-            <p className="text-xs font-bold text-red-900">
-              This Travel Plan has been Rejected
-            </p>
-            <p className="text-[11px] text-red-700/90 font-medium">
-              No further approval actions can be taken for this request.
-            </p>
-          </div>
-        ) : approvalStatus === "APPROVED" ? (
-          <div className="p-4 rounded-2xl bg-[#fffdfa] border-2 border-amber-500/20 space-y-3 shadow-xs">
-            <div className="flex items-center gap-2 text-emerald-800">
-              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-              <span className="text-xs font-bold">This plan is currently Approved</span>
-            </div>
-
-            <div className="space-y-1">
-              <label className="block text-[11px] font-bold text-[#8c7865] uppercase tracking-wider">
-                Reason for Revocation / Rejection
-              </label>
-              <textarea
-                rows={2}
-                value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
-                placeholder="Specify reason to revoke approval or cancel plan..."
-                className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-red-500 outline-none p-2.5 placeholder:text-[#8c7865]/60 transition-all resize-none"
-              />
-            </div>
-
-            <Button
-              type="button"
-              disabled={isSubmitting}
-              onClick={() => handleDecision("REJECTED")}
-              className="w-full rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold h-10 cursor-pointer gap-1.5 shadow-sm"
-            >
-              <X className="w-4 h-4" />
-              <span>Revoke Approval & Reject Plan</span>
-            </Button>
+        {/* Decision & Action Controls: Admin Only vs Regular Devotee View */}
+        {!isSuperAdmin ? (
+          /* Regular User / Devotee: Read-only Status Banner */
+          <div className="pt-2">
+            {approvalStatus === "APPROVED" ? (
+              <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 flex items-center gap-2.5 text-emerald-900">
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 flex-shrink-0" />
+                <span className="text-xs font-bold">This travel plan is Approved and scheduled.</span>
+              </div>
+            ) : approvalStatus === "REJECTED" ? (
+              <div className="p-3.5 rounded-2xl bg-red-50/80 border border-red-200 flex items-center gap-2.5 text-red-900">
+                <XCircle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                <span className="text-xs font-bold">This travel plan was Rejected by temple administration.</span>
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center gap-2.5 text-amber-900">
+                <Clock className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                <span className="text-xs font-bold">Your travel request has been submitted and is pending admin review.</span>
+              </div>
+            )}
           </div>
         ) : (
-          /* PENDING APPROVAL - Show Both Options */
-          <div className="p-4 rounded-2xl bg-[#fffdfa] border-2 border-[#174824]/20 space-y-3 shadow-xs">
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-[#174824] uppercase tracking-wider">
-                Approval / Rejection Remarks (Optional)
-              </label>
-              <textarea
-                rows={2}
-                value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
-                placeholder="Add approval clearance notes or instructions..."
-                className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-[#174824] outline-none p-2.5 placeholder:text-[#8c7865]/60 transition-all resize-none"
-              />
+          /* Super Admin Controls */
+          approvalStatus === "REJECTED" ? (
+            <div className="p-4 rounded-2xl bg-red-50/60 border border-red-200 text-center space-y-1">
+              <div className="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center mx-auto">
+                <XCircle className="w-4 h-4" />
+              </div>
+              <p className="text-xs font-bold text-red-900">
+                This Travel Plan has been Rejected
+              </p>
+              <p className="text-[11px] text-red-700/90 font-medium">
+                No further approval actions can be taken for this request.
+              </p>
             </div>
+          ) : approvalStatus === "APPROVED" ? (
+            <div className="p-4 rounded-2xl bg-[#fffdfa] border-2 border-amber-500/20 space-y-3 shadow-xs">
+              <div className="flex items-center gap-2 text-emerald-800">
+                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+                <span className="text-xs font-bold">This plan is currently Approved</span>
+              </div>
 
-            <div className="flex items-center gap-2.5 pt-1">
+              <div className="space-y-1">
+                <label className="block text-[11px] font-bold text-[#8c7865] uppercase tracking-wider">
+                  Reason for Revocation / Rejection
+                </label>
+                <textarea
+                  rows={2}
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  placeholder="Specify reason to revoke approval or cancel plan..."
+                  className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-red-500 outline-none p-2.5 placeholder:text-[#8c7865]/60 transition-all resize-none"
+                />
+              </div>
+
               <Button
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => handleDecision("REJECTED")}
-                variant="outline"
-                className="flex-1 rounded-xl border-red-300 bg-red-50/50 hover:bg-red-100 text-red-700 text-xs font-bold h-11 cursor-pointer gap-1.5"
+                className="w-full rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold h-10 cursor-pointer gap-1.5 shadow-sm"
               >
                 <X className="w-4 h-4" />
-                <span>Reject Plan</span>
-              </Button>
-
-              <Button
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => handleDecision("APPROVED")}
-                className="flex-1 rounded-xl bg-[#174824] hover:bg-[#174824]/90 text-white text-xs font-bold h-11 cursor-pointer gap-1.5 shadow-md"
-              >
-                <Check className="w-4 h-4 text-amber-300" />
-                <span>Approve Plan</span>
+                <span>Revoke Approval & Reject Plan</span>
               </Button>
             </div>
-          </div>
+          ) : (
+            /* PENDING APPROVAL - Show Both Options to Admin */
+            <div className="p-4 rounded-2xl bg-[#fffdfa] border-2 border-[#174824]/20 space-y-3 shadow-xs">
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-[#174824] uppercase tracking-wider">
+                  Approval / Rejection Remarks (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  placeholder="Add approval clearance notes or instructions..."
+                  className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-[#174824] outline-none p-2.5 placeholder:text-[#8c7865]/60 transition-all resize-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2.5 pt-1">
+                <Button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleDecision("REJECTED")}
+                  variant="outline"
+                  className="flex-1 rounded-xl border-red-300 bg-red-50/50 hover:bg-red-100 text-red-700 text-xs font-bold h-11 cursor-pointer gap-1.5"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Reject Plan</span>
+                </Button>
+
+                <Button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleDecision("APPROVED")}
+                  className="flex-1 rounded-xl bg-[#174824] hover:bg-[#174824]/90 text-white text-xs font-bold h-11 cursor-pointer gap-1.5 shadow-md"
+                >
+                  <Check className="w-4 h-4 text-amber-300" />
+                  <span>Approve Plan</span>
+                </Button>
+              </div>
+            </div>
+          )
         )}
       </div>
+
+      <CreateTaskDrawer
+        open={isAssignTaskOpen}
+        onOpenChange={(isOpen) => {
+          setIsAssignTaskOpen(isOpen);
+          if (!isOpen) setTaskToEdit(null);
+        }}
+        taskToEdit={taskToEdit}
+        initialModuleType={TaskModuleType.TRAVEL}
+        initialModuleRefId={travel._id}
+        initialModuleTitle={`${travel.title} (${travel.fromLocation} → ${travel.destinationCity})`}
+        onSuccess={() => {
+          setTaskToEdit(null);
+          fetchTasks();
+        }}
+      />
     </EResponsiveDrawer>
   );
 }

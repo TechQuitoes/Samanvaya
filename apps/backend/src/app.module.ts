@@ -10,6 +10,7 @@ import { LeaderProfileModule } from './modules/leader-profile/leader-profile.mod
 import { TravelModule } from './modules/travel/travel.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { MediaModule } from './modules/media/media.module';
+import { TaskModule } from './modules/task/task.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MediaModule } from './modules/media/media.module';
     TravelModule,
     NotificationModule,
     MediaModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

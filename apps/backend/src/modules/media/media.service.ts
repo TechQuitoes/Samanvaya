@@ -13,27 +13,54 @@ export class MediaService {
   private readonly customDomain?: string;
 
   constructor(private configService: ConfigService) {
-    this.region = this.configService.get<string>('AWS_REGION') || 'ap-south-1';
-    this.bucket = this.configService.get<string>('AWS_S3_BUCKET') || 'samanvaya-media-bucket';
-    this.customDomain = this.configService.get<string>('AWS_S3_CUSTOM_DOMAIN');
+    this.region =
+      this.configService.get<string>('AWS_REGION') ||
+      this.configService.get<string>('R2_REGION') ||
+      'auto';
 
-    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
+    this.bucket =
+      this.configService.get<string>('CLOUDFLARE_R2_BUCKET') ||
+      this.configService.get<string>('R2_BUCKET') ||
+      this.configService.get<string>('AWS_S3_BUCKET') ||
+      'samanvaya-media';
+
+    this.customDomain =
+      this.configService.get<string>('CLOUDFLARE_R2_PUBLIC_URL') ||
+      this.configService.get<string>('R2_PUBLIC_URL') ||
+      this.configService.get<string>('AWS_S3_CUSTOM_DOMAIN') ||
+      this.configService.get<string>('PUBLIC_CDN_URL');
+
+    const accessKeyId =
+      this.configService.get<string>('CLOUDFLARE_R2_ACCESS_KEY_ID') ||
+      this.configService.get<string>('R2_ACCESS_KEY_ID') ||
+      this.configService.get<string>('AWS_ACCESS_KEY_ID');
+
+    const secretAccessKey =
+      this.configService.get<string>('CLOUDFLARE_R2_SECRET_ACCESS_KEY') ||
+      this.configService.get<string>('R2_SECRET_ACCESS_KEY') ||
+      this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
+
+    const endpoint =
+      this.configService.get<string>('CLOUDFLARE_R2_ENDPOINT') ||
+      this.configService.get<string>('R2_ENDPOINT') ||
+      this.configService.get<string>('AWS_ENDPOINT');
 
     if (accessKeyId && secretAccessKey) {
       this.s3Client = new S3Client({
         region: this.region,
+        endpoint: endpoint || undefined,
         credentials: {
           accessKeyId,
           secretAccessKey,
         },
       });
-      this.logger.log('✅ AWS S3 Client initialized with configured credentials');
+      this.logger.log(`✅ S3/R2 Storage Client initialized (Bucket: ${this.bucket}, Endpoint: ${endpoint || 'AWS Standard'})`);
     } else {
       this.s3Client = new S3Client({
         region: this.region,
+        endpoint: endpoint || undefined,
       });
-      this.logger.warn('⚠️ AWS S3 credentials not set in .env. S3 calls will use default AWS credential chain.');
+      this.logger.warn('⚠️ S3/R2 credentials not set in .env. Storage calls will use default credentials.');
     }
   }
 
@@ -44,7 +71,7 @@ export class MediaService {
     userId: string,
     dto: GeneratePresignedUrlDto,
   ): Promise<GeneratePresignedUrlResponseDto> {
-    const rawFolder = (dto.folder || 'uploads').replace(/^\/+|\/+$/g, '');
+    const rawFolder = (dto.folder || 'avatars').replace(/^\/+|\/+$/g, '');
     const cleanFileName = dto.fileName
       .toLowerCase()
       .replace(/[^a-z0-9.-]/g, '_')
@@ -67,17 +94,51 @@ export class MediaService {
     });
 
     // Public URL format
-    const publicUrl = this.customDomain
-      ? `https://${this.customDomain}/${key}`
-      : `https://${this.bucket}.s3.${this.region}.amazonaws.com/${key}`;
+    const publicUrl = this.getPublicUrl(key);
 
-    this.logger.log(`Generated S3 presigned URL for key: ${key}`);
+    this.logger.log(`Generated S3/R2 presigned URL for key: ${key}`);
 
     return {
       presignedUrl,
       key,
       publicUrl,
       fileType: dto.fileType,
+    };
+  }
+
+  /**
+   * Directly uploads a file buffer to S3 / Cloudflare R2 from the server
+   */
+  async uploadDirect(
+    userId: string,
+    file: { buffer: Buffer; originalname: string; mimetype: string },
+    folder: string = 'avatars',
+  ): Promise<{ key: string; publicUrl: string; fileType: string }> {
+    const rawFolder = (folder || 'avatars').replace(/^\/+|\/+$/g, '');
+    const cleanFileName = (file.originalname || 'file.jpg')
+      .toLowerCase()
+      .replace(/[^a-z0-9.-]/g, '_')
+      .replace(/_+/g, '_');
+    const timestamp = Date.now();
+    const randomSuffix = Math.random().toString(36).substring(2, 8);
+    const key = `${rawFolder}/${userId.substring(0, 8)}_${timestamp}_${randomSuffix}_${cleanFileName}`;
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+
+    await this.s3Client.send(command);
+    const publicUrl = this.getPublicUrl(key);
+
+    this.logger.log(`✅ Uploaded direct S3/R2 object for key: ${key}`);
+
+    return {
+      key,
+      publicUrl,
+      fileType: file.mimetype,
     };
   }
 
@@ -89,8 +150,11 @@ export class MediaService {
     if (key.startsWith('http://') || key.startsWith('https://')) {
       return key;
     }
-    return this.customDomain
-      ? `https://${this.customDomain}/${key}`
-      : `https://${this.bucket}.s3.${this.region}.amazonaws.com/${key}`;
+    if (this.customDomain) {
+      const domain = this.customDomain.replace(/\/+$/, '');
+      const cleanKey = key.replace(/^\/+/, '');
+      return `${domain}/${cleanKey}`;
+    }
+    return `https://${this.bucket}.s3.${this.region}.amazonaws.com/${key}`;
   }
 }

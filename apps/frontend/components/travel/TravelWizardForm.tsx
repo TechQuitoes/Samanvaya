@@ -190,15 +190,15 @@ export default function TravelWizardForm({ onSuccess, onCancel }: TravelWizardFo
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentStep]);
 
-  // Single Transport State (Strictly 1 Selected Mode as per spec)
+  // Single Transport State
   const [transport, setTransport] = useState<TransportDetail>({
     mode: TransportMode.FLIGHT,
     airline: "IndiGo",
-    flightNo: "6E-204",
+    flightNo: "",
     pnr: "",
-    seatPreference: "Aisle",
-    departureAirport: "BOM - Mumbai",
-    arrivalAirport: "DEL - New Delhi",
+    seatPreference: "",
+    departureAirport: "",
+    arrivalAirport: "",
     departureTime: new Date().toISOString().slice(0, 16),
     arrivalTime: new Date(Date.now() + 3600000 * 2).toISOString().slice(0, 16),
   });
@@ -207,30 +207,23 @@ export default function TravelWizardForm({ onSuccess, onCancel }: TravelWizardFo
   const [formData, setFormData] = useState<CreateTravelPayload>({
     title: "",
     purpose: "Preaching & Temple Seva Tour",
-    fromLocation: "Mumbai",
-    destinationCity: "Vrindavan",
+    fromLocation: "",
+    destinationCity: "",
     startDate: new Date().toISOString().slice(0, 16),
     endDate: new Date(Date.now() + 86400000 * 3).toISOString().slice(0, 16),
     status: TravelStatus.UPCOMING,
     isBackdated: false,
     stayDetails: {
       type: AccommodationType.TEMPLE,
-      name: "ISKCON Vrindavan Temple Guest House",
-      address: "Bhaktivedanta Swami Marg, Raman Reti, Vrindavan, UP 281121",
+      name: "",
+      address: "",
       checkIn: new Date().toISOString().slice(0, 16),
       checkOut: new Date(Date.now() + 86400000 * 3).toISOString().slice(0, 16),
       bookingRef: "",
-      contactPersonName: "Govinda Das",
-      contactPersonPhone: "+91 98765 43210",
+      contactPersonName: "",
+      contactPersonPhone: "",
     },
-    localContacts: [
-      {
-        role: "Temple Coordinator",
-        name: "Madhav Das",
-        phone: "+91 98765 11111",
-        email: "madhav@samanvaya.com",
-      },
-    ],
+    localContacts: [],
     specialInstructions: "",
     generalNotes: "",
   });
@@ -436,24 +429,22 @@ export default function TravelWizardForm({ onSuccess, onCancel }: TravelWizardFo
                 className="flex flex-col items-center gap-1.5 z-10 cursor-pointer select-none"
               >
                 <div
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-2xs ${
-                    isActive
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-2xs ${isActive
                       ? "bg-[#174824] text-white ring-4 ring-[#174824]/20 scale-110"
                       : isCompleted
-                      ? "bg-[#174824] text-white"
-                      : "bg-[#fbf7f0] border border-[#cfa35d] text-[#5a4836]"
-                  }`}
+                        ? "bg-[#174824] text-white"
+                        : "bg-[#fbf7f0] border border-[#cfa35d] text-[#5a4836]"
+                    }`}
                 >
                   {isCompleted ? <Check className="w-3.5 h-3.5" /> : step.num}
                 </div>
                 <span
-                  className={`text-[9px] sm:text-[11px] font-bold tracking-tight text-center ${
-                    isActive
+                  className={`text-[9px] sm:text-[11px] font-bold tracking-tight text-center ${isActive
                       ? "text-[#174824]"
                       : isCompleted
-                      ? "text-[#5a4836]"
-                      : "text-[#8c7865]"
-                  }`}
+                        ? "text-[#5a4836]"
+                        : "text-[#8c7865]"
+                    }`}
                 >
                   {step.label}
                 </span>
@@ -597,16 +588,14 @@ export default function TravelWizardForm({ onSuccess, onCancel }: TravelWizardFo
                   <div
                     key={item.mode}
                     onClick={() => setTransport({ ...transport, mode: item.mode })}
-                    className={`p-2.5 sm:p-3 rounded-xl border-2 transition-all flex flex-col items-center justify-center text-center gap-1 cursor-pointer select-none ${
-                      isSelected
+                    className={`p-2.5 sm:p-3 rounded-xl border-2 transition-all flex flex-col items-center justify-center text-center gap-1 cursor-pointer select-none ${isSelected
                         ? "border-[#174824] bg-[#174824]/10 shadow-xs scale-[1.02]"
                         : "border-[#e5d9c3] bg-[#faf5eb]/50 hover:bg-[#faf5eb]"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center ${
-                        isSelected ? "bg-[#174824] text-white" : "bg-[#fbf7f0] text-[#174824]"
-                      }`}
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center ${isSelected ? "bg-[#174824] text-white" : "bg-[#fbf7f0] text-[#174824]"
+                        }`}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
