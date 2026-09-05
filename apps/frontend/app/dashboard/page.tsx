@@ -28,12 +28,12 @@ import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
 import QuickActions from "@/components/dashboard/QuickActions";
 import TodayScheduleCard from "@/components/dashboard/widgets/TodayScheduleCard";
 import UpcomingTravelCard from "@/components/dashboard/widgets/UpcomingTravelCard";
-import MyTasksCard from "@/components/dashboard/widgets/MyTasksCard";
-import PendingDocsCard from "@/components/dashboard/widgets/PendingDocsCard";
 import UpcomingMeetingsCard from "@/components/dashboard/widgets/UpcomingMeetingsCard";
 import NotificationsCard from "@/components/dashboard/widgets/NotificationsCard";
 import RecentActivitiesCard from "@/components/dashboard/widgets/RecentActivitiesCard";
 import CalendarSnapshotCard from "@/components/dashboard/widgets/CalendarSnapshotCard";
+import MyTasksCard from "@/components/dashboard/widgets/MyTasksCard";
+import PendingDocsCard from "@/components/dashboard/widgets/PendingDocsCard";
 import DataManager from "@/lib/data-manager";
 
 export default function DashboardPage() {
@@ -151,20 +151,24 @@ export default function DashboardPage() {
       {/* Dynamic Quick Actions (Filtered by User Permissions) */}
       <QuickActions />
 
-      {/* 6 Dashboard Widgets Grid (Today's Schedule, Upcoming Travel, My Tasks, Pending Docs, Upcoming Meetings, Notifications) */}
+      {/* Row 1: Today's Schedule, Calendar Snapshot, Upcoming Meetings (3 Cols) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <TodayScheduleCard />
-        <UpcomingTravelCard />
-        <MyTasksCard />
-        <PendingDocsCard />
+        <CalendarSnapshotCard />
         <UpcomingMeetingsCard />
+      </div>
+
+      {/* Row 2: Upcoming Travel, Recent Activities, Notifications (3 Cols) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <UpcomingTravelCard />
+        <RecentActivitiesCard />
         <NotificationsCard />
       </div>
 
-      {/* Bottom 2 Cards Grid: Recent Activities & Calendar Snapshot */}
+      {/* Row 3: My Tasks, Pending Documentation (2 Cols) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <RecentActivitiesCard />
-        <CalendarSnapshotCard />
+        <MyTasksCard />
+        <PendingDocsCard />
       </div>
     </SacredPortalLayout>
   );

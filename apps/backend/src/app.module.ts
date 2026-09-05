@@ -11,6 +11,7 @@ import { TravelModule } from './modules/travel/travel.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { MediaModule } from './modules/media/media.module';
 import { TaskModule } from './modules/task/task.module';
+import { CalendarModule } from './modules/calendar/calendar.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { TaskModule } from './modules/task/task.module';
     NotificationModule,
     MediaModule,
     TaskModule,
+    CalendarModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -67,4 +67,11 @@ export const mediaEndpoints = {
   POST_GENERATE_PRESIGNED_URL: '/media/presigned-url',
 };
 
+export const calendarEndpoints = {
+  GET_CALENDAR_MONTH: '/calendar/month',
+  GET_CALENDAR_DAY: '/calendar/day',
+  POST_CALENDAR_EVENT: '/calendar/events',
+  DELETE_CALENDAR_EVENT: '/calendar/events/{id}',
+};
+
 
