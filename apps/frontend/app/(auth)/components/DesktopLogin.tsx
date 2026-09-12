@@ -47,7 +47,7 @@ export default function DesktopLogin() {
         {/* Full Edge-to-Edge Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/assests/signin_001_mobile_bg.png"
+            src="/image-assets/signin_001_mobile_bg.png"
             alt="Divine Radha & Sacred Temple Landscape"
             fill
             priority
@@ -211,7 +211,7 @@ export default function DesktopLogin() {
                 <>
                   <div className="relative w-5 h-5 flex-shrink-0">
                     <Image
-                      src="/assests/04_lotus_icon_gold.svg"
+                      src="/image-assets/04_lotus_icon_gold.svg"
                       alt="Lotus"
                       width={20}
                       height={20}

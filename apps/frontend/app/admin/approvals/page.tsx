@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ApprovalsDashboard from "@/app/(admin)/components/ApprovalsDashboard";
+import ApprovalsDashboard from "@/components/users/ApprovalsDashboard";
 
 export default function AdminApprovalsPage() {
   return (

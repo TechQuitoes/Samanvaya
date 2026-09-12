@@ -22,8 +22,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body || '',
-    icon: '/assets/04_lotus_icon_gold.png',
-    badge: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
+    badge: '/image-assets/04_lotus_icon_gold.png',
     tag: 'samanvaya-alert-' + Date.now(),
     data: {
       actionUrl,

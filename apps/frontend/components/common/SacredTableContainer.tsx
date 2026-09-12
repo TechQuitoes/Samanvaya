@@ -33,7 +33,7 @@ export default function SacredTableContainer({
       {showLeafAccent && (
         <div className="absolute top-0 right-0 w-24 sm:w-36 h-24 sm:h-36 pointer-events-none opacity-30 sm:opacity-40 z-0">
           <Image
-            src="/assests/rightSideLeaf.png"
+            src="/image-assets/rightSideLeaf.png"
             alt="Leaf Accent"
             fill
             className="object-contain object-top-right"
@@ -59,7 +59,7 @@ export default function SacredTableContainer({
 
           <div className="relative w-6 h-6 pt-3 opacity-60">
             <Image
-              src="/assests/flower-icon.png"
+              src="/image-assets/flower-icon.png"
               alt="Lotus Emblem"
               width={24}
               height={24}

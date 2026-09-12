@@ -87,7 +87,7 @@ export function SacredStatCard({
       {/* Corner Leaf Illustration Accent */}
       <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
         <Image
-          src="/assests/rightSideLeaf.png"
+          src="/image-assets/rightSideLeaf.png"
           alt="Leaf Accent"
           fill
           className="object-contain object-top-right"

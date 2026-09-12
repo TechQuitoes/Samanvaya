@@ -21,7 +21,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
       >
         {/* Sidebar Background Image */}
         <Image
-          src="/images/sidebar/left_navigation_web_bg.jpg"
+          src="/image-assets/left_navigation_web_bg.jpg"
           alt=""
           fill
           priority
@@ -47,7 +47,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
 
               <div className="relative w-12 h-12 mb-2 flex-shrink-0">
                 <Image
-                  src="/assets/04_lotus_icon_gold.png"
+                  src="/image-assets/04_lotus_icon_gold.png"
                   alt="Lotus Emblem"
                   width={48}
                   height={48}

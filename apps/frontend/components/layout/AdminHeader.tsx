@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import NotificationBell from "@/components/notifications/NotificationBell";
+import EAvatar from "@/components/common/EAvatar";
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void;
@@ -69,7 +70,7 @@ export default function AdminHeader({
             <div className="flex items-center gap-2 min-w-0">
               <div className="relative w-6 h-6 flex-shrink-0">
                 <Image
-                  src="/assets/04_lotus_icon_gold.png"
+                  src="/image-assets/04_lotus_icon_gold.png"
                   alt="Lotus Emblem"
                   fill
                   sizes="24px"
@@ -88,19 +89,13 @@ export default function AdminHeader({
 
             <DropdownMenu>
               <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
-                <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[#d4af37] bg-white shadow-sm hover:ring-2 hover:ring-[#174824]/30 transition-all flex items-center justify-center font-bold text-[#174824]">
-                  {userAvatar ? (
-                    <Image
-                      src={userAvatar}
-                      alt={userName}
-                      fill
-                      sizes="36px"
-                      className="object-cover object-center"
-                    />
-                  ) : (
-                    <span className="text-sm">{userName ? userName.charAt(0).toUpperCase() : "U"}</span>
-                  )}
-                </div>
+                <EAvatar
+                  src={userAvatar}
+                  name={userName}
+                  size="md"
+                  variant="gold"
+                  className="hover:ring-2 hover:ring-[#174824]/30 transition-all"
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 bg-[#fcfaf5] border border-[#e5d9c3] shadow-lg">
                 <DropdownMenuLabel className="px-3 py-2">
@@ -178,19 +173,13 @@ export default function AdminHeader({
           {/* Leader Profile Avatar with Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
-              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#d4af37] bg-white shadow-sm hover:ring-2 hover:ring-[#174824]/30 transition-all flex-shrink-0 flex items-center justify-center font-bold text-[#174824]">
-                {userAvatar ? (
-                  <Image
-                    src={userAvatar}
-                    alt={userName}
-                    fill
-                    sizes="48px"
-                    className="object-cover object-center"
-                  />
-                ) : (
-                  <span className="text-base">{userName ? userName.charAt(0).toUpperCase() : "U"}</span>
-                )}
-              </div>
+              <EAvatar
+                src={userAvatar}
+                name={userName}
+                size="xl"
+                variant="gold"
+                className="hover:ring-2 hover:ring-[#174824]/30 transition-all"
+              />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 bg-[#fcfaf5] border border-[#e5d9c3] shadow-lg">
               <DropdownMenuLabel className="px-3 py-2">

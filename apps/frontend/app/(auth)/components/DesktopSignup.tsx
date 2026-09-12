@@ -38,7 +38,7 @@ export default function DesktopSignup() {
       {/* Decorative Top-Left Foliage Leaves */}
       <div className="absolute top-0 left-0 w-52 h-48 pointer-events-none z-0 opacity-85">
         <Image
-          src="/assests/leftSideleaf.png"
+          src="/image-assets/leftSideleaf.png"
           alt="Top Left Foliage"
           fill
           className="object-contain object-top-left"
@@ -48,7 +48,7 @@ export default function DesktopSignup() {
       {/* Decorative Bottom-Left Lotus Pond Landscape Artwork */}
       <div className="absolute bottom-0 left-0 w-[450px] h-[200px] pointer-events-none z-0 opacity-90 overflow-hidden">
         <Image
-          src="/assests/signin_001_mobile_bg.png"
+          src="/image-assets/signin_001_mobile_bg.png"
           alt="Lotus Pond Decoration"
           fill
           className="object-cover object-bottom"
@@ -69,7 +69,7 @@ export default function DesktopSignup() {
             {/* Golden Lotus Logo Emblem */}
             <div className="relative w-16 h-13 mb-1 flex items-center justify-center">
               <Image
-                src="/assests/04_lotus_icon_gold.svg"
+                src="/image-assets/04_lotus_icon_gold.svg"
                 alt="Lotus Emblem"
                 width={58}
                 height={48}
@@ -398,7 +398,7 @@ export default function DesktopSignup() {
                   <>
                     <div className="relative w-5 h-5 flex-shrink-0">
                       <Image
-                        src="/assests/04_lotus_icon_gold.svg"
+                        src="/image-assets/04_lotus_icon_gold.svg"
                         alt="Lotus"
                         width={20}
                         height={20}

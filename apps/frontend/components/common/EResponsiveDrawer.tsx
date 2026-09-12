@@ -22,7 +22,9 @@ interface EResponsiveDrawerProps {
   title?: React.ReactNode;
   description?: React.ReactNode;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   className?: string;
+  contentClassName?: string;
   size?: DrawerSize; // "sm" | "md" | "lg" (default) | "xl"
   showLotusIcon?: boolean;
 }
@@ -33,7 +35,9 @@ export default function EResponsiveDrawer({
   title,
   description,
   children,
+  footer,
   className,
+  contentClassName,
   size = "lg",
   showLotusIcon = true,
 }: EResponsiveDrawerProps) {
@@ -76,7 +80,7 @@ export default function EResponsiveDrawer({
                 {showLotusIcon && (
                   <div className="relative w-6 h-6 flex-shrink-0 opacity-90">
                     <Image
-                      src="/assets/04_lotus_icon_gold.png"
+                      src="/image-assets/04_lotus_icon_gold.png"
                       alt="Lotus Emblem"
                       fill
                       sizes="24px"
@@ -109,9 +113,21 @@ export default function EResponsiveDrawer({
           )}
 
           {/* Scrollable Content Body */}
-          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div
+            className={cn(
+              "flex-1 flex flex-col min-h-0 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6",
+              contentClassName
+            )}
+          >
             {children}
           </div>
+
+          {/* Sticky Drawer Footer */}
+          {footer && (
+            <div className="flex-shrink-0 border-t border-[#e5d9c3] bg-[#fffdfa] px-4 sm:px-6 py-3.5 sm:py-4">
+              {footer}
+            </div>
+          )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

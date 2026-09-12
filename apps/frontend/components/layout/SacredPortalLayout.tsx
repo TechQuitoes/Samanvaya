@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import AdminSidebar from "@/app/(admin)/components/AdminSidebar";
-import AdminHeader from "@/app/(admin)/components/AdminHeader";
+import AdminSidebar from "@/components/layout/AdminSidebar";
+import AdminHeader from "@/components/layout/AdminHeader";
 
 interface SacredPortalLayoutProps {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ export default function SacredPortalLayout({
       {/* Background Sacred Temple Banner Illustration */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <Image
-          src="/images/dashboard/admin_dashboard_bg_001.png"
+          src="/image-assets/admin_dashboard_bg_001.png"
           alt="Sacred Dashboard Background"
           fill
           priority
@@ -34,7 +34,7 @@ export default function SacredPortalLayout({
       {/* Cascading Corner Leaf Graphics */}
       <div className="fixed top-0 left-0 w-28 sm:w-56 h-28 sm:h-56 pointer-events-none z-10 opacity-75 sm:opacity-90">
         <Image
-          src="/assests/leftSideleaf.png"
+          src="/image-assets/leftSideleaf.png"
           alt="Top Left Cascading Leaves"
           fill
           priority
@@ -44,7 +44,7 @@ export default function SacredPortalLayout({
       </div>
       <div className="fixed top-0 right-0 w-28 sm:w-56 h-28 sm:h-56 pointer-events-none z-10 opacity-75 sm:opacity-90">
         <Image
-          src="/assests/rightSideLeaf.png"
+          src="/image-assets/rightSideLeaf.png"
           alt="Top Right Cascading Leaves"
           fill
           priority

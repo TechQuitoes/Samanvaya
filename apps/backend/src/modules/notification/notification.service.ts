@@ -209,8 +209,8 @@ export class NotificationService implements OnModuleInit {
             id: 'notif-' + Date.now(),
             title: template.title,
             body: template.body,
-            icon: template.icon || '/assets/04_lotus_icon_gold.png',
-            badge: '/assets/04_lotus_icon_gold.png',
+            icon: template.icon || '/image-assets/04_lotus_icon_gold.png',
+            badge: '/image-assets/04_lotus_icon_gold.png',
             actionUrl: template.actionUrl,
             data: {
               actionUrl: template.actionUrl,

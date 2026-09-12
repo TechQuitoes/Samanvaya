@@ -50,7 +50,7 @@ export default function LotusDivider({
       ) : (
         <div className="relative flex-shrink-0" style={{ width: iconSize, height: iconSize }}>
           <Image
-            src="/assests/04_lotus_icon_gold.svg"
+            src="/image-assets/04_lotus_icon_gold.svg"
             alt="Lotus Accent"
             width={iconSize}
             height={iconSize}

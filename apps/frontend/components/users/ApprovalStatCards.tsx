@@ -27,7 +27,7 @@ export default function ApprovalStatCards({
       <Card className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-[#e5d9c3] bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
           <Image
-            src="/assests/rightSideLeaf.png"
+            src="/image-assets/rightSideLeaf.png"
             alt="Leaf Accent"
             fill
             className="object-contain object-top-right"
@@ -53,7 +53,7 @@ export default function ApprovalStatCards({
       <Card className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-amber-300/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
           <Image
-            src="/assests/rightSideLeaf.png"
+            src="/image-assets/rightSideLeaf.png"
             alt="Leaf Accent"
             fill
             className="object-contain object-top-right"
@@ -79,7 +79,7 @@ export default function ApprovalStatCards({
       <Card className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-rose-200/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
           <Image
-            src="/assests/rightSideLeaf.png"
+            src="/image-assets/rightSideLeaf.png"
             alt="Leaf Accent"
             fill
             className="object-contain object-top-right"

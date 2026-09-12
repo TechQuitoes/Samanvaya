@@ -34,7 +34,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     type: NotificationType.APPROVAL_REQUEST,
     actionUrl: '/admin/approvals?tab=pending',
     defaultRecipientRole: UserRole.SUPER_ADMIN,
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.ACCOUNT_APPROVED]: (data) => ({
@@ -42,7 +42,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.userName || 'Devotee'}! Your account has been verified and approved as ${data.role || 'Member'}. Welcome to Samanvaya!`,
     type: NotificationType.ACCOUNT_APPROVED,
     actionUrl: '/dashboard',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.ACCOUNT_BLOCKED]: (data) => ({
@@ -50,7 +50,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.userName || 'User'}, your account has been temporarily suspended. Please contact your coordinator.`,
     type: NotificationType.ACCOUNT_BLOCKED,
     actionUrl: '/login',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.ACCOUNT_REJECTED]: (data) => ({
@@ -58,7 +58,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.userName || 'User'}, your registration request has been reviewed.`,
     type: NotificationType.ACCOUNT_REJECTED,
     actionUrl: '/login',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TRAVEL_PLAN_CREATED]: (data) => ({
@@ -66,7 +66,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Travel plan to ${data.destination || 'destination'} has been created for ${data.leaderName || 'Leader'}.`,
     type: NotificationType.TRAVEL,
     actionUrl: `/travel`,
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TRAVEL_PLAN_SUBMITTED]: (data) => ({
@@ -75,7 +75,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     type: NotificationType.TRAVEL,
     actionUrl: '/travel',
     defaultRecipientRole: UserRole.SUPER_ADMIN,
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TRAVEL_PLAN_APPROVED]: (data) => ({
@@ -83,7 +83,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.devoteeName || 'Devotee'}! Your travel plan "${data.title || 'Itinerary'}" to ${data.destinationCity || ''} has been approved.${data.remarks ? ' Remarks: ' + data.remarks : ''}`,
     type: NotificationType.TRAVEL,
     actionUrl: '/travel',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TRAVEL_PLAN_REJECTED]: (data) => ({
@@ -91,7 +91,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.devoteeName || 'Devotee'}, your travel plan "${data.title || 'Itinerary'}" has been rejected.${data.remarks ? ' Reason: ' + data.remarks : ''}`,
     type: NotificationType.TRAVEL,
     actionUrl: '/travel',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TASK_ASSIGNED]: (data) => ({
@@ -99,7 +99,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna ${data.assigneeName || 'Devotee'}! You have been assigned a new task: "${data.title}"${data.moduleTitle ? ' for ' + data.moduleTitle : ''}.${data.dueDate ? ' Due: ' + data.dueDate : ''}`,
     type: NotificationType.TASK,
     actionUrl: '/tasks',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TASK_COMPLETED]: (data) => ({
@@ -107,7 +107,7 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `Hare Krishna! ${data.assigneeName || 'Devotee'} has completed the task: "${data.title}"${data.moduleTitle ? ' for ' + data.moduleTitle : ''}.`,
     type: NotificationType.TASK,
     actionUrl: '/tasks',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 
   [NotificationTemplateKey.TASK_COMMENT_ADDED]: (data) => ({
@@ -115,6 +115,6 @@ export const NOTIFICATION_TEMPLATES: Record<
     body: `${data.authorName || 'Devotee'} added a comment on task "${data.title}": "${data.commentText}"`,
     type: NotificationType.TASK,
     actionUrl: '/tasks',
-    icon: '/assets/04_lotus_icon_gold.png',
+    icon: '/image-assets/04_lotus_icon_gold.png',
   }),
 };

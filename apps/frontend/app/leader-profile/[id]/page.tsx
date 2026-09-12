@@ -23,7 +23,7 @@ import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
 import apiNexus from "@/lib/api/apiNexusIntercepter";
 import { User, UserStatus } from "@/types/auth";
 import useAuth from "@/app/(auth)/hooks/useAuth";
-import ResetPasswordModal from "@/app/(admin)/components/ResetPasswordModal";
+import ResetPasswordModal from "@/components/users/ResetPasswordModal";
 
 export default function UserProfileByIdPage() {
   const router = useRouter();

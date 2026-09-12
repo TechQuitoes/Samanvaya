@@ -155,7 +155,7 @@ export default function LoginForm() {
               <>
                 <div className="relative w-5 h-5 flex-shrink-0">
                   <Image
-                    src="/assests/04_lotus_icon_gold.svg"
+                    src="/image-assets/04_lotus_icon_gold.svg"
                     alt="Lotus"
                     width={20}
                     height={20}

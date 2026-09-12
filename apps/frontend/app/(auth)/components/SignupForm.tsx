@@ -40,7 +40,7 @@ export default function SignupForm() {
       {/* Decorative Corner Foliage - Top Left */}
       <div className="absolute top-0 left-0 w-32 h-28 pointer-events-none z-0 opacity-75">
         <Image
-          src="/assests/leftSideleaf.png"
+          src="/image-assets/leftSideleaf.png"
           alt="Top Left Foliage"
           fill
           className="object-contain object-top-left"
@@ -50,7 +50,7 @@ export default function SignupForm() {
       {/* Decorative Corner Foliage - Top Right */}
       <div className="absolute top-0 right-0 w-36 h-32 pointer-events-none z-0 opacity-80">
         <Image
-          src="/assests/rightSideLeaf.png"
+          src="/image-assets/rightSideLeaf.png"
           alt="Top Right Foliage"
           fill
           className="object-contain object-top-right"
@@ -75,7 +75,7 @@ export default function SignupForm() {
         {/* Golden Lotus Logo Emblem */}
         <div className="relative w-14 h-12 mb-1.5 flex items-center justify-center">
           <Image
-            src="/assests/04_lotus_icon_gold.svg"
+            src="/image-assets/04_lotus_icon_gold.svg"
             alt="Lotus Emblem"
             width={56}
             height={46}
@@ -266,7 +266,7 @@ export default function SignupForm() {
                 <>
                   <div className="relative w-5 h-5 flex-shrink-0">
                     <Image
-                      src="/assests/04_lotus_icon_gold.svg"
+                      src="/image-assets/04_lotus_icon_gold.svg"
                       alt="Lotus"
                       width={20}
                       height={20}

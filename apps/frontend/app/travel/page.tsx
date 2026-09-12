@@ -31,7 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import EAvatar from "@/components/common/EAvatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -291,7 +291,7 @@ export default function TravelDashboardPage() {
         <div className="relative -mx-6 -mt-[76px] pb-2 overflow-hidden w-[calc(100%+3rem)] md:hidden">
           <div className="relative h-[380px] sm:h-[420px] w-full [mask-image:linear-gradient(to_bottom,black_85%,transparent_100%)]">
             <Image
-              src="/images/travel/header_img01.png"
+              src="/image-assets/header_img01.png"
               alt="Radha Rani and Vedic Temple Artwork"
               fill
               priority
@@ -308,7 +308,7 @@ export default function TravelDashboardPage() {
               {/* Sacred Lotus Icon at Top */}
               <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5">
                 <Image
-                  src="/assets/04_lotus_icon_gold.png"
+                  src="/image-assets/04_lotus_icon_gold.png"
                   alt="Lotus"
                   fill
                   className="object-contain"
@@ -422,18 +422,11 @@ export default function TravelDashboardPage() {
                           {/* Devotee Full Name & Avatar */}
                           <td className="py-4 pl-6 pr-3">
                             <div className="flex items-center gap-3 min-w-0 max-w-[220px]">
-                              <Avatar className="w-10 h-10 border border-[#174824]/20 shadow-xs flex-shrink-0">
-                                {travel.leaderId?.avatar && (
-                                  <AvatarImage
-                                    src={travel.leaderId.avatar}
-                                    alt={travel.leaderId.name || "Devotee"}
-                                    className="object-cover"
-                                  />
-                                )}
-                                <AvatarFallback className="bg-[#174824]/10 text-[#174824] font-bold text-xs">
-                                  {travel.leaderId?.name ? travel.leaderId.name.charAt(0).toUpperCase() : "D"}
-                                </AvatarFallback>
-                              </Avatar>
+                              <EAvatar
+                                src={travel.leaderId?.avatar}
+                                name={travel.leaderId?.name || "Devotee"}
+                                size="lg"
+                              />
                               <div className="min-w-0">
                                 <p className="font-bold text-[#2c221e] group-hover:text-[#174824] transition-colors truncate text-sm">
                                   {travel.leaderId?.name || "Devotee"}
@@ -585,18 +578,12 @@ export default function TravelDashboardPage() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-2.5 min-w-0">
-                          <Avatar className="w-9 h-9 border border-[#174824]/20 flex-shrink-0 mt-0.5 shadow-2xs">
-                            {travel.leaderId?.avatar && (
-                              <AvatarImage
-                                src={travel.leaderId.avatar}
-                                alt={travel.leaderId.name || "Devotee"}
-                                className="object-cover"
-                              />
-                            )}
-                            <AvatarFallback className="bg-[#174824]/10 text-[#174824] font-bold text-xs">
-                              {travel.leaderId?.name ? travel.leaderId.name.charAt(0).toUpperCase() : "D"}
-                            </AvatarFallback>
-                          </Avatar>
+                          <EAvatar
+                            src={travel.leaderId?.avatar}
+                            name={travel.leaderId?.name || "Devotee"}
+                            size="md"
+                            className="mt-0.5"
+                          />
                           <div className="min-w-0">
                             <p className="font-bold text-sm text-[#2c221e] truncate">
                               {travel.leaderId?.name || "Devotee"}
@@ -656,7 +643,7 @@ export default function TravelDashboardPage() {
         <footer className="relative mt-8 rounded-2xl sm:rounded-[28px] overflow-hidden border border-[#e5d9c3] shadow-sm">
           <div className="relative w-full aspect-[2172/469]">
             <Image
-              src="/images/travel/footer_img01.png"
+              src="/image-assets/footer_img01.png"
               alt="Sacred Samanvaya Footer Banner"
               fill
               priority={false}

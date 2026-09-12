@@ -72,7 +72,7 @@ export default function DashboardPage() {
           {/* Temple Sketch Background Illustration on Right */}
           <div className="absolute right-0 bottom-0 top-0 w-1/3 pointer-events-none overflow-hidden opacity-30 mix-blend-multiply">
             <Image
-              src="/assets/card_temple_sketch.jpg"
+              src="/image-assets/card_temple_sketch.jpg"
               alt="Temple Sketch"
               fill
               className="object-contain object-right-bottom"

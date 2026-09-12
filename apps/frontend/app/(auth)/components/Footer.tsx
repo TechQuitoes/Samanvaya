@@ -22,7 +22,7 @@ export default function Footer() {
       {/* Bottom Scenic Lotus Pond & Temple Artwork Banner */}
       <div className="relative w-full h-[160px] sm:h-[180px] overflow-hidden mt-1" style={{ position: "relative" }}>
         <Image
-          src="/assests/signin_001_mobile_bg.png"
+          src="/image-assets/signin_001_mobile_bg.png"
           alt="Lotus Pond Landscape Footer"
           fill
           priority

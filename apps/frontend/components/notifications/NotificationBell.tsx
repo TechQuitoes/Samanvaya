@@ -148,7 +148,7 @@ export default function NotificationBell() {
             <div className="py-12 px-4 text-center">
               <div className="relative w-8 h-8 mx-auto mb-2 opacity-50">
                 <Image
-                  src="/assests/flower-icon.png"
+                  src="/image-assets/flower-icon.png"
                   alt="Lotus"
                   fill
                   className="object-contain"

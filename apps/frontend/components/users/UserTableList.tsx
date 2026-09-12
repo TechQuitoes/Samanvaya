@@ -41,6 +41,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { User, UserRole, UserStatus } from "@/types/auth";
+import EAvatar from "@/components/common/EAvatar";
 import ApproveUserDrawer from "./ApproveUserDrawer";
 import ResetPasswordModal from "./ResetPasswordModal";
 
@@ -181,7 +182,7 @@ export default function UserTableList({
         </p>
         <div className="relative w-6 h-6 mt-4 opacity-60">
           <Image
-            src="/assests/flower-icon.png"
+            src="/image-assets/flower-icon.png"
             alt="Lotus"
             width={24}
             height={24}
@@ -227,21 +228,11 @@ export default function UserTableList({
               >
                 <TableCell className="pl-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#174824]/10 border border-[#174824]/20 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden relative">
-                      {user.avatar ? (
-                        <Image
-                          src={user.avatar}
-                          alt={user.name || "User Avatar"}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <span className="text-sm font-bold text-[#174824]">
-                          {user.name?.charAt(0)?.toUpperCase() || "?"}
-                        </span>
-                      )}
-                    </div>
+                    <EAvatar
+                      src={user.avatar}
+                      name={user.name}
+                      size="lg"
+                    />
                     <div>
                       <p
                         className="font-bold text-[#2c221e] text-sm hover:text-[#174824] hover:underline cursor-pointer transition-colors"
@@ -334,21 +325,11 @@ export default function UserTableList({
           <div key={user._id} className="p-4 space-y-3 bg-[#faf4e8]/60">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#174824]/10 border border-[#174824]/20 flex items-center justify-center flex-shrink-0 overflow-hidden relative">
-                  {user.avatar ? (
-                    <Image
-                      src={user.avatar}
-                      alt={user.name || "User Avatar"}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-base font-bold text-[#174824]">
-                      {user.name?.charAt(0)?.toUpperCase() || "?"}
-                    </span>
-                  )}
-                </div>
+                <EAvatar
+                  src={user.avatar}
+                  name={user.name}
+                  size="lg"
+                />
                 <div>
                   <p
                     className="font-bold text-[#2c221e] text-sm hover:text-[#174824] hover:underline cursor-pointer transition-colors"

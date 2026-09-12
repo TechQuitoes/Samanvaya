@@ -24,6 +24,10 @@ const devanagari = Noto_Serif_Devanagari({
 export const metadata: Metadata = {
   title: "LDMS - Leader Documentation & Management System",
   description: "Serving Leaders. Strengthening Seva.",
+  icons: {
+    icon: "/image-assets/06_favicon_32x32.png",
+    shortcut: "/image-assets/06_LDMS_favicon.svg",
+  },
 };
 
 export default function RootLayout({

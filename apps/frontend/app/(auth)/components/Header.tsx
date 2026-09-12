@@ -22,7 +22,7 @@ export default function Header() {
       {/* Radha Rani Top Image Container with Smooth Bottom Fade */}
       <div className="relative w-full h-[370px] overflow-hidden" style={{ position: "relative" }}>
         <Image
-          src="/assests/signin_001_mobile_bg.png"
+          src="/image-assets/signin_001_mobile_bg.png"
           alt="Divine Radha & Temple Background"
           fill
           priority
@@ -39,7 +39,7 @@ export default function Header() {
         {/* Prominent Golden Lotus Logo Emblem */}
         <div className="relative w-[86px] h-12 mb-1.5 flex items-center justify-center">
           <Image
-            src="/assests/04_lotus_icon_gold.svg"
+            src="/image-assets/04_lotus_icon_gold.svg"
             alt="Lotus Emblem"
             width={56}
             height={46}

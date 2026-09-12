@@ -31,7 +31,7 @@ function CreateTravelPageContent() {
 
         <div className="relative w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0">
           <Image
-            src="/assets/04_lotus_icon_gold.png"
+            src="/image-assets/04_lotus_icon_gold.png"
             alt="Lotus Emblem"
             fill
             className="object-contain"
@@ -51,7 +51,7 @@ function CreateTravelPageContent() {
       <footer className="mt-8 pt-8 pb-6 text-center space-y-2 border-t border-[#e5d9c3]/40 bg-gradient-to-t from-[#f5ede0] to-transparent">
         <div className="relative w-8 h-8 mx-auto opacity-80">
           <Image
-            src="/assets/04_lotus_icon_gold.png"
+            src="/image-assets/04_lotus_icon_gold.png"
             alt="Lotus Flower"
             fill
             className="object-contain"
