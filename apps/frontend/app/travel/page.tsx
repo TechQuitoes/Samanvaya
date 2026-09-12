@@ -31,6 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,12 +103,22 @@ export default function TravelDashboardPage() {
   const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
   const [selectedTravelForApproval, setSelectedTravelForApproval] = useState<Travel | null>(null);
 
-  // Auto-switch to 'upcoming' for regular users once permissions load
+  // Auto-switch to 'ongoing' or 'upcoming' if no pending items exist
   useEffect(() => {
-    if (!isSuperAdmin) {
-      setActiveTab("upcoming");
+    if (travels.length > 0) {
+      if (pendingList.length === 0 && activeTab === "pending") {
+        if (ongoingList.length > 0) {
+          setActiveTab("ongoing");
+        } else if (upcomingList.length > 0) {
+          setActiveTab("upcoming");
+        } else if (completedList.length > 0) {
+          setActiveTab("completed");
+        }
+      } else if (!isSuperAdmin && activeTab === "pending") {
+        setActiveTab(ongoingList.length > 0 ? "ongoing" : "upcoming");
+      }
     }
-  }, [isSuperAdmin]);
+  }, [travels.length, isSuperAdmin]);
 
   const filteredTravels = travels.filter((t) => {
     const q = searchQuery.toLowerCase();
@@ -121,11 +132,49 @@ export default function TravelDashboardPage() {
     );
   });
 
+  // Calculate dynamic lifecycle status based on dates
+  const getEffectiveStatus = (t: Travel): TravelStatus => {
+    if (t.status === TravelStatus.CANCELLED || t.approvalStatus === "REJECTED") {
+      return TravelStatus.CANCELLED;
+    }
+    const now = new Date();
+    const start = new Date(t.startDate);
+    const end = new Date(t.endDate);
+
+    // Yatra remains ongoing throughout its final day
+    const endOfDay = new Date(end);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    if (now > endOfDay) {
+      return TravelStatus.COMPLETED;
+    }
+    if (now >= start && now <= endOfDay) {
+      return TravelStatus.ONGOING;
+    }
+    return TravelStatus.UPCOMING;
+  };
+
   const pendingList = filteredTravels.filter((t) => (t.approvalStatus || "PENDING") === "PENDING");
-  const upcomingList = filteredTravels.filter((t) => t.status === TravelStatus.UPCOMING && t.approvalStatus !== "REJECTED");
-  const ongoingList = filteredTravels.filter((t) => t.status === TravelStatus.ONGOING && t.approvalStatus !== "REJECTED");
-  const completedList = filteredTravels.filter((t) => t.status === TravelStatus.COMPLETED);
-  const rejectedList = filteredTravels.filter((t) => t.approvalStatus === "REJECTED" || t.status === TravelStatus.CANCELLED);
+  const upcomingList = filteredTravels.filter(
+    (t) =>
+      getEffectiveStatus(t) === TravelStatus.UPCOMING &&
+      t.approvalStatus !== "REJECTED" &&
+      (t.approvalStatus || "PENDING") !== "PENDING"
+  );
+  const ongoingList = filteredTravels.filter(
+    (t) =>
+      getEffectiveStatus(t) === TravelStatus.ONGOING &&
+      t.approvalStatus !== "REJECTED" &&
+      (t.approvalStatus || "PENDING") !== "PENDING"
+  );
+  const completedList = filteredTravels.filter(
+    (t) =>
+      getEffectiveStatus(t) === TravelStatus.COMPLETED &&
+      t.approvalStatus !== "REJECTED"
+  );
+  const rejectedList = filteredTravels.filter(
+    (t) => t.approvalStatus === "REJECTED" || t.status === TravelStatus.CANCELLED
+  );
 
   const displayedList =
     activeTab === "pending"
@@ -236,27 +285,39 @@ export default function TravelDashboardPage() {
       ];
 
   return (
-    <SacredPortalLayout>
+    <SacredPortalLayout showGreeting={false}>
       <div className="space-y-6 max-w-6xl mx-auto pb-8">
         {/* ─── 1. HERO ARTWORK BANNER (Mobile Only) ─── */}
-        <div className="relative -mx-6 -mt-4 pb-2 overflow-hidden w-[calc(100%+3rem)] md:hidden">
-          <div className="relative h-48 sm:h-56 w-full [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_55%,transparent_100%)]">
+        <div className="relative -mx-6 -mt-[76px] pb-2 overflow-hidden w-[calc(100%+3rem)] md:hidden">
+          <div className="relative h-[380px] sm:h-[420px] w-full [mask-image:linear-gradient(to_bottom,black_85%,transparent_100%)]">
             <Image
-              src="/images/travel/radha_rani_hero.jpg"
+              src="/images/travel/header_img01.png"
               alt="Radha Rani and Vedic Temple Artwork"
               fill
               priority
-              className="object-cover object-[center_20%]"
+              className="object-cover object-[center_16%]"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3e9]/50 via-transparent to-[#f7f3e9]" />
+            {/* Gentle soft blur only at the very top under header bar (away from Maata's face) */}
+            <div className="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-[#f7f3e9]/50 to-transparent backdrop-blur-[1.5px] [mask-image:linear-gradient(to_bottom,black_20%,transparent_100%)] pointer-events-none" />
+            {/* Subtle bottom fade into page background */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent via-65% to-[#f7f3e9]" />
           </div>
 
-          <div className="absolute bottom-1 left-6 right-6 z-10">
-            <div className="bg-[#fffdfa]/95 backdrop-blur-md border border-[#e5d9c3] rounded-2xl p-2.5 text-center shadow-md max-w-md mx-auto relative">
+          <div className="absolute bottom-2 left-4 z-10 w-[64%] max-w-[270px]">
+            <div className="bg-[#fffdfa]/95 backdrop-blur-md border border-[#e5d9c3] rounded-2xl p-2.5 pt-3.5 text-center shadow-md relative">
+              {/* Sacred Lotus Icon at Top */}
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5">
+                <Image
+                  src="/assets/04_lotus_icon_gold.png"
+                  alt="Lotus"
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <p className="font-serif-display text-[11px] sm:text-xs italic font-bold text-[#174824] leading-tight">
                 &ldquo;Travel to serve, Serve to inspire, Inspire to glorify.&rdquo;
               </p>
-              <p className="text-[9px] sm:text-[10px] font-semibold text-[#8c7865] mt-0.5">
+              <p className="text-[9px] sm:text-[10px] font-semibold text-[#8c7865] mt-1">
                 &mdash; Srila Prabhupada
               </p>
             </div>
@@ -337,7 +398,7 @@ export default function TravelDashboardPage() {
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="border-b border-[#e5d9c3] bg-[#faf4e8]/80 text-[#5a4836] font-bold text-xs uppercase tracking-wider">
-                      <th className="py-3.5 pl-6 pr-3">Event & Creator</th>
+                      <th className="py-3.5 pl-6 pr-3">Devotee</th>
                       <th className="py-3.5 px-3">Route</th>
                       <th className="py-3.5 px-3">Dates</th>
                       <th className="py-3.5 px-3">Transport</th>
@@ -358,19 +419,30 @@ export default function TravelDashboardPage() {
                           onClick={() => setSelectedTravelForApproval(travel)}
                           className="hover:bg-[#fcfaf5] transition-colors cursor-pointer group"
                         >
-                          {/* Event Title & Creator Devotee */}
+                          {/* Devotee Full Name & Avatar */}
                           <td className="py-4 pl-6 pr-3">
                             <div className="flex items-center gap-3 min-w-0 max-w-[220px]">
-                              <div className="w-10 h-10 rounded-full bg-[#174824]/10 border border-[#174824]/20 text-[#174824] flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs">
-                                {travel.leaderId?.name ? travel.leaderId.name.charAt(0).toUpperCase() : "D"}
-                              </div>
+                              <Avatar className="w-10 h-10 border border-[#174824]/20 shadow-xs flex-shrink-0">
+                                {travel.leaderId?.avatar && (
+                                  <AvatarImage
+                                    src={travel.leaderId.avatar}
+                                    alt={travel.leaderId.name || "Devotee"}
+                                    className="object-cover"
+                                  />
+                                )}
+                                <AvatarFallback className="bg-[#174824]/10 text-[#174824] font-bold text-xs">
+                                  {travel.leaderId?.name ? travel.leaderId.name.charAt(0).toUpperCase() : "D"}
+                                </AvatarFallback>
+                              </Avatar>
                               <div className="min-w-0">
-                                <p className="font-bold text-[#2c221e] group-hover:text-[#174824] transition-colors truncate">
-                                  {travel.title}
+                                <p className="font-bold text-[#2c221e] group-hover:text-[#174824] transition-colors truncate text-sm">
+                                  {travel.leaderId?.name || "Devotee"}
                                 </p>
-                                <p className="text-[11px] text-[#8c7865] truncate font-medium">
-                                  By: {travel.leaderId?.name || "Devotee"}
-                                </p>
+                                {travel.title && (
+                                  <p className="text-[11px] text-[#8c7865] truncate font-medium">
+                                    {travel.title}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           </td>
@@ -457,7 +529,7 @@ export default function TravelDashboardPage() {
                                 className="h-8 px-3 rounded-xl border-[#e5d9c3] hover:border-[#174824] text-xs font-semibold text-[#174824] hover:bg-[#174824]/5 shadow-2xs gap-1 cursor-pointer"
                               >
                                 <Eye className="w-3.5 h-3.5 text-[#174824]" />
-                                <span>{approval === "PENDING" && isSuperAdmin ? "Review & Decide" : "View Details"}</span>
+                                <span>{approval === "PENDING" && isSuperAdmin ? "Review" : "View Details"}</span>
                               </Button>
 
                               <DropdownMenu>
@@ -475,7 +547,7 @@ export default function TravelDashboardPage() {
                                     onClick={() => setSelectedTravelForApproval(travel)}
                                     className="text-xs font-medium cursor-pointer"
                                   >
-                                    {approval === "PENDING" ? "Review & Decide" : "Manage Approval"}
+                                    {approval === "PENDING" ? "Review" : "Manage Approval"}
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     onClick={() => {
@@ -513,14 +585,27 @@ export default function TravelDashboardPage() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-2.5 min-w-0">
-                          <div className="w-9 h-9 rounded-full bg-[#174824] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5 shadow-2xs">
-                            <TransportIcon className="w-4 h-4 text-amber-300" />
-                          </div>
+                          <Avatar className="w-9 h-9 border border-[#174824]/20 flex-shrink-0 mt-0.5 shadow-2xs">
+                            {travel.leaderId?.avatar && (
+                              <AvatarImage
+                                src={travel.leaderId.avatar}
+                                alt={travel.leaderId.name || "Devotee"}
+                                className="object-cover"
+                              />
+                            )}
+                            <AvatarFallback className="bg-[#174824]/10 text-[#174824] font-bold text-xs">
+                              {travel.leaderId?.name ? travel.leaderId.name.charAt(0).toUpperCase() : "D"}
+                            </AvatarFallback>
+                          </Avatar>
                           <div className="min-w-0">
-                            <p className="font-bold text-sm text-[#2c221e] truncate">{travel.title}</p>
-                            <p className="text-[11px] text-[#8c7865] font-medium">
-                              By: {travel.leaderId?.name || "Devotee"}
+                            <p className="font-bold text-sm text-[#2c221e] truncate">
+                              {travel.leaderId?.name || "Devotee"}
                             </p>
+                            {travel.title && (
+                              <p className="text-[11px] text-[#8c7865] font-medium truncate">
+                                {travel.title}
+                              </p>
+                            )}
                           </div>
                         </div>
 
@@ -556,7 +641,7 @@ export default function TravelDashboardPage() {
                           className="h-8 px-3 rounded-xl border-[#e5d9c3] hover:border-[#174824] text-xs font-semibold text-[#174824]"
                         >
                           <Eye className="w-3.5 h-3.5 text-[#174824]" />
-                          <span>{approval === "PENDING" && isSuperAdmin ? "Review & Decide" : "View Details"}</span>
+                          <span>{approval === "PENDING" && isSuperAdmin ? "Review" : "View Details"}</span>
                         </Button>
                       </div>
                     </div>
@@ -567,33 +652,16 @@ export default function TravelDashboardPage() {
           )}
         </SacredTableContainer>
 
-        {/* ─── 6. SACRED FOOTER ARTWORK & QUOTE ─── */}
-        <footer className="relative mt-8 rounded-[28px] overflow-hidden border border-[#e5d9c3] shadow-md p-6 sm:p-8 text-center space-y-3 bg-[#faf5eb]">
-          <div className="absolute inset-0 -z-0 opacity-40">
+        {/* ─── 6. SACRED FOOTER ARTWORK ─── */}
+        <footer className="relative mt-8 rounded-2xl sm:rounded-[28px] overflow-hidden border border-[#e5d9c3] shadow-sm">
+          <div className="relative w-full aspect-[2172/469]">
             <Image
-              src="/images/travel/travel_footer.jpg"
-              alt="Sacred Lotus Pond and Temple Artwork"
+              src="/images/travel/footer_img01.png"
+              alt="Sacred Samanvaya Footer Banner"
               fill
-              className="object-cover object-bottom"
+              priority={false}
+              className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#fbf8f2]/95 via-[#fbf8f2]/70 to-[#fbf8f2]/85" />
-          </div>
-
-          <div className="relative z-10 space-y-2">
-            <div className="relative w-7 h-7 mx-auto opacity-90">
-              <Image
-                src="/assets/04_lotus_icon_gold.png"
-                alt="Lotus Flower"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <p className="text-xs sm:text-sm font-serif-display italic text-[#174824] max-w-md mx-auto px-4 font-bold leading-relaxed">
-              &ldquo;Every journey is an opportunity to serve and spread Krishna Consciousness.&rdquo;
-            </p>
-            <p className="text-[10px] text-[#8c7865] font-bold uppercase tracking-widest pt-0.5">
-              LDMS &bull; Sacred Samanvaya Portal
-            </p>
           </div>
         </footer>
       </div>

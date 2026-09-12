@@ -40,13 +40,57 @@ export class TravelService {
     if (statusFilter) {
       query.status = statusFilter;
     }
-    return this.travelModel
+    const travels = await this.travelModel
       .find(query)
-      .populate('leaderId', 'name email mobile initiatedName spiritualName')
-      .populate('approvedBy', 'name email initiatedName')
+      .populate('leaderId', 'name email mobile initiatedName spiritualName avatar')
+      .populate('approvedBy', 'name email initiatedName avatar')
       .populate('destinationTempleId', 'name city state')
       .sort({ startDate: -1 })
       .exec();
+
+    // Dynamically reconcile and sync status based on dates
+    const updateOps: any[] = [];
+    for (const travel of travels) {
+      if (travel.status !== TravelStatus.CANCELLED) {
+        const computed = this.computeEffectiveStatus(travel.startDate, travel.endDate, travel.status);
+        if (computed !== travel.status) {
+          travel.status = computed;
+          updateOps.push({
+            updateOne: {
+              filter: { _id: travel._id },
+              update: { $set: { status: computed } },
+            },
+          });
+        }
+      }
+    }
+
+    if (updateOps.length > 0) {
+      this.travelModel.bulkWrite(updateOps).catch((err) => {
+        this.logger.error(`Failed to sync travel statuses: ${err.message}`);
+      });
+    }
+
+    return travels;
+  }
+
+  private computeEffectiveStatus(startDate: Date, endDate: Date, currentStatus: TravelStatus): TravelStatus {
+    if (currentStatus === TravelStatus.CANCELLED) return TravelStatus.CANCELLED;
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Yatra remains ongoing throughout its final day
+    const endOfDay = new Date(end);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    if (now > endOfDay) {
+      return TravelStatus.COMPLETED;
+    }
+    if (now >= start && now <= endOfDay) {
+      return TravelStatus.ONGOING;
+    }
+    return TravelStatus.UPCOMING;
   }
 
   async updateApproval(
@@ -102,12 +146,20 @@ export class TravelService {
   async findById(id: string): Promise<TravelDocument> {
     const travel = await this.travelModel
       .findById(id)
-      .populate('leaderId', 'name email mobile')
+      .populate('leaderId', 'name email mobile avatar')
       .populate('destinationTempleId', 'name city state')
       .exec();
 
     if (!travel) {
       throw new NotFoundException(`Travel record with ID ${id} not found.`);
+    }
+
+    if (travel.status !== TravelStatus.CANCELLED) {
+      const computed = this.computeEffectiveStatus(travel.startDate, travel.endDate, travel.status);
+      if (computed !== travel.status) {
+        travel.status = computed;
+        await this.travelModel.updateOne({ _id: travel._id }, { $set: { status: computed } });
+      }
     }
 
     return travel;
@@ -118,14 +170,9 @@ export class TravelService {
     const endDate = new Date(createDto.endDate);
     const now = new Date();
 
-    // Auto-detect status if not explicitly passed
-    let computedStatus = createDto.status || TravelStatus.UPCOMING;
-    if (!createDto.status) {
-      if (endDate < now) {
-        computedStatus = TravelStatus.COMPLETED;
-      } else if (startDate <= now && endDate >= now) {
-        computedStatus = TravelStatus.ONGOING;
-      }
+    let computedStatus = createDto.status;
+    if (!computedStatus || computedStatus !== TravelStatus.CANCELLED) {
+      computedStatus = this.computeEffectiveStatus(startDate, endDate, TravelStatus.UPCOMING);
     }
 
     const isBackdated = createDto.isBackdated ?? (endDate < now);

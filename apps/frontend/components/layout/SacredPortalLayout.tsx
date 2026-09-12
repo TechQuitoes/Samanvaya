@@ -7,9 +7,13 @@ import AdminHeader from "@/app/(admin)/components/AdminHeader";
 
 interface SacredPortalLayoutProps {
   children: React.ReactNode;
+  showGreeting?: boolean;
 }
 
-export default function SacredPortalLayout({ children }: SacredPortalLayoutProps) {
+export default function SacredPortalLayout({
+  children,
+  showGreeting = true,
+}: SacredPortalLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -55,7 +59,7 @@ export default function SacredPortalLayout({ children }: SacredPortalLayoutProps
       {/* Main Workspace Area — ONLY this area scrolls */}
       <div className="relative z-20 flex-1 flex flex-col min-h-0 min-w-0 overflow-y-auto">
         {/* Top Header Bar */}
-        <AdminHeader onToggleSidebar={() => setSidebarOpen(true)} />
+        <AdminHeader onToggleSidebar={() => setSidebarOpen(true)} showGreeting={showGreeting} />
 
         {/* Main Page Content */}
         <main className="flex-1 w-full px-6 py-4 pb-8 space-y-6">

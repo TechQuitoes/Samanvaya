@@ -358,7 +358,14 @@ export default function TravelWizardForm({ onSuccess, onCancel }: TravelWizardFo
       destinationCity: formData.destinationCity.trim(),
       startDate: new Date(formData.startDate).toISOString(),
       endDate: new Date(formData.endDate).toISOString(),
-      status: formData.status || TravelStatus.UPCOMING,
+      status: (() => {
+        const start = new Date(formData.startDate);
+        const end = new Date(formData.endDate);
+        const now = new Date();
+        if (end < now) return TravelStatus.COMPLETED;
+        if (start <= now && end >= now) return TravelStatus.ONGOING;
+        return TravelStatus.UPCOMING;
+      })(),
       isBackdated: formData.isBackdated || false,
       transportDetails: [cleanTransport],
       ...(cleanStay && { stayDetails: cleanStay }),

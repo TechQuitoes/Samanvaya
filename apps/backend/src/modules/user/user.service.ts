@@ -132,4 +132,19 @@ export class UserService {
 
     return userObj;
   }
+
+  async resetPassword(userId: string, newPassword: string): Promise<{ message: string }> {
+    const user = await this.userModel.findById(userId).select('+password').exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    return { message: 'Password updated successfully' };
+  }
 }

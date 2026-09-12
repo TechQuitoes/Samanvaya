@@ -337,10 +337,12 @@ export default function TravelApprovalDrawer({
                           {isDone && <Check className="w-3 h-3" />}
                         </button>
                         <div
-                          className="min-w-0 flex-1 cursor-pointer"
+                          className={`min-w-0 flex-1 ${isDone ? "" : "cursor-pointer"}`}
                           onClick={() => {
-                            setTaskToEdit(t);
-                            setIsAssignTaskOpen(true);
+                            if (!isDone) {
+                              setTaskToEdit(t);
+                              setIsAssignTaskOpen(true);
+                            }
                           }}
                         >
                           <p
@@ -367,17 +369,19 @@ export default function TravelApprovalDrawer({
                           {isDone ? "Done" : "Pending"}
                         </span>
 
-                        <button
-                          type="button"
-                          title="Edit Task"
-                          onClick={() => {
-                            setTaskToEdit(t);
-                            setIsAssignTaskOpen(true);
-                          }}
-                          className="p-1 rounded-lg text-[#8c7865] hover:text-[#174824] hover:bg-[#faf5eb] border border-transparent hover:border-[#e5d9c3] cursor-pointer transition-colors"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
+                        {!isDone && (
+                          <button
+                            type="button"
+                            title="Edit Task"
+                            onClick={() => {
+                              setTaskToEdit(t);
+                              setIsAssignTaskOpen(true);
+                            }}
+                            className="p-1 rounded-lg text-[#8c7865] hover:text-[#174824] hover:bg-[#faf5eb] border border-transparent hover:border-[#e5d9c3] cursor-pointer transition-colors"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   );

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/co
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
+import { AdminResetPasswordDto } from './dto/admin-reset-password.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -60,5 +61,14 @@ export class UserController {
       updateUserStatusDto.role,
       updateUserStatusDto.permissions,
     );
+  }
+
+  @Patch(':id/reset-password')
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  async resetPassword(
+    @Param('id') id: string,
+    @Body() dto: AdminResetPasswordDto,
+  ) {
+    return this.userService.resetPassword(id, dto.newPassword);
   }
 }

@@ -138,6 +138,7 @@ export interface Travel {
     name: string;
     email: string;
     mobile: string;
+    avatar?: string;
   };
   title: string;
   purpose: string;
@@ -159,6 +160,7 @@ export interface Travel {
     name: string;
     email: string;
     initiatedName?: string;
+    avatar?: string;
   };
   approvedAt?: string;
   isBackdated: boolean;

@@ -23,6 +23,7 @@ export const adminEndpoints = {
   GET_REJECTED_USERS: '/users/rejected',
   GET_USERS_BY_STATUS: '/users/status/{status}',
   PATCH_USER_STATUS: '/users/{id}/status',
+  PATCH_ADMIN_RESET_PASSWORD: '/users/{id}/reset-password',
 };
 
 export const leaderProfileEndpoints = {

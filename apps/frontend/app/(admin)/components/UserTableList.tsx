@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Clock,
   XCircle,
@@ -15,6 +16,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   Settings2,
+  KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +42,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { User, UserRole, UserStatus } from "@/types/auth";
 import ApproveUserDrawer from "./ApproveUserDrawer";
+import ResetPasswordModal from "./ResetPasswordModal";
 
 function formatDate(dateStr?: string): string {
   if (!dateStr) return "—";
@@ -117,12 +120,20 @@ export default function UserTableList({
   isUpdating,
   updateUserStatus,
 }: UserTableListProps) {
+  const router = useRouter();
   const [selectedUserForApproval, setSelectedUserForApproval] = useState<User | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedUserForResetPw, setSelectedUserForResetPw] = useState<User | null>(null);
+  const [isResetPwOpen, setIsResetPwOpen] = useState(false);
 
   const handleOpenApproveDrawer = (user: User) => {
     setSelectedUserForApproval(user);
     setIsDrawerOpen(true);
+  };
+
+  const handleOpenResetPassword = (user: User) => {
+    setSelectedUserForResetPw(user);
+    setIsResetPwOpen(true);
   };
 
   const handleConfirmApproval = async (userId: string, role: string, permissions: any) => {
@@ -232,7 +243,10 @@ export default function UserTableList({
                       )}
                     </div>
                     <div>
-                      <p className="font-bold text-[#2c221e] text-sm">
+                      <p
+                        className="font-bold text-[#2c221e] text-sm hover:text-[#174824] hover:underline cursor-pointer transition-colors"
+                        onClick={(e) => { e.stopPropagation(); router.push(`/leader-profile/${user._id}`); }}
+                      >
                         {user.name}
                       </p>
                       <div className="flex items-center gap-1.5 flex-wrap mt-1">
@@ -304,6 +318,7 @@ export default function UserTableList({
                       isUpdating={isUpdating}
                       updateUserStatus={updateUserStatus}
                       onApproveClick={handleOpenApproveDrawer}
+                      onResetPasswordClick={handleOpenResetPassword}
                     />
                   </div>
                 </TableCell>
@@ -335,7 +350,10 @@ export default function UserTableList({
                   )}
                 </div>
                 <div>
-                  <p className="font-bold text-[#2c221e] text-sm">
+                  <p
+                    className="font-bold text-[#2c221e] text-sm hover:text-[#174824] hover:underline cursor-pointer transition-colors"
+                    onClick={(e) => { e.stopPropagation(); router.push(`/leader-profile/${user._id}`); }}
+                  >
                     {user.name}
                   </p>
                   <div className="flex items-center gap-1.5 flex-wrap mt-1">
@@ -400,6 +418,7 @@ export default function UserTableList({
                 isUpdating={isUpdating}
                 updateUserStatus={updateUserStatus}
                 onApproveClick={handleOpenApproveDrawer}
+                onResetPasswordClick={handleOpenResetPassword}
               />
             </div>
           </div>
@@ -417,6 +436,16 @@ export default function UserTableList({
         isUpdating={isUpdating === selectedUserForApproval?._id}
         onConfirmApproval={handleConfirmApproval}
       />
+
+      {/* Admin Reset Password Modal */}
+      <ResetPasswordModal
+        user={selectedUserForResetPw}
+        isOpen={isResetPwOpen}
+        onClose={() => {
+          setIsResetPwOpen(false);
+          setSelectedUserForResetPw(null);
+        }}
+      />
     </>
   );
 }
@@ -427,6 +456,7 @@ interface ActionButtonsProps {
   isUpdating: string | null;
   updateUserStatus: (userId: string, status: UserStatus) => Promise<void>;
   onApproveClick: (user: User) => void;
+  onResetPasswordClick: (user: User) => void;
 }
 
 function ActionButtons({
@@ -434,6 +464,7 @@ function ActionButtons({
   isUpdating,
   updateUserStatus,
   onApproveClick,
+  onResetPasswordClick,
 }: ActionButtonsProps) {
   const isThisUpdating = isUpdating === user._id;
   const isPending = user.status === UserStatus.PENDING_APPROVAL;
@@ -449,7 +480,7 @@ function ActionButtons({
 
   return (
     <>
-      {/* 1. If Approved: Edit Permissions & Block */}
+      {/* 1. If Approved: Edit Permissions, Reset Password & Block */}
       {isApproved && (
         <>
           <Button
@@ -461,6 +492,17 @@ function ActionButtons({
           >
             <Settings2 className="w-3.5 h-3.5 text-[#174824]" />
             <span>Edit Permissions</span>
+          </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isThisUpdating}
+            onClick={() => onResetPasswordClick(user)}
+            className="border-amber-700/30 text-[#855319] hover:bg-amber-50 rounded-xl text-xs font-semibold gap-1.5 px-3 h-8.5 transition-all cursor-pointer"
+          >
+            <KeyRound className="w-3.5 h-3.5 text-amber-700" />
+            <span>Reset Password</span>
           </Button>
 
           {!isSuperAdminUser && (
@@ -505,7 +547,7 @@ function ActionButtons({
         </>
       )}
 
-      {/* 2. If Blocked: Unblock & Edit Permissions */}
+      {/* 2. If Blocked: Unblock, Edit Permissions & Reset Password */}
       {isBlocked && (
         <>
           <Button
@@ -527,6 +569,17 @@ function ActionButtons({
           >
             <Settings2 className="w-3.5 h-3.5 text-[#174824]" />
             <span>Edit Permissions</span>
+          </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isThisUpdating}
+            onClick={() => onResetPasswordClick(user)}
+            className="border-amber-700/30 text-[#855319] hover:bg-amber-50 rounded-xl text-xs font-semibold gap-1.5 px-3 h-8.5 transition-all cursor-pointer"
+          >
+            <KeyRound className="w-3.5 h-3.5 text-amber-700" />
+            <span>Reset Password</span>
           </Button>
         </>
       )}

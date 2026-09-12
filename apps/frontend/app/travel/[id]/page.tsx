@@ -120,7 +120,7 @@ export default function TravelDetailPage() {
 
   if (isLoading || !travel) {
     return (
-      <SacredPortalLayout>
+      <SacredPortalLayout showGreeting={false}>
         <Skeleton className="h-44 w-full rounded-[24px] bg-[#e5d9c3]/60" />
         <Skeleton className="h-64 w-full rounded-[24px] bg-[#e5d9c3]/60" />
       </SacredPortalLayout>
@@ -130,7 +130,7 @@ export default function TravelDetailPage() {
   const totalExpenses = travel.expenses?.reduce((sum, e) => sum + (e.amount || 0), 0) || 0;
 
   return (
-    <SacredPortalLayout>
+    <SacredPortalLayout showGreeting={false}>
       {/* Back Link */}
       <button
         type="button"

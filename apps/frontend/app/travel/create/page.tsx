@@ -70,7 +70,7 @@ function CreateTravelPageContent() {
 
 export default function CreateTravelWizardPage() {
   return (
-    <SacredPortalLayout>
+    <SacredPortalLayout showGreeting={false}>
       <Suspense fallback={<div className="p-8 text-center text-[#174824] font-bold">Loading travel wizard...</div>}>
         <CreateTravelPageContent />
       </Suspense>
