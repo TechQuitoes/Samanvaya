@@ -9,7 +9,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { AccommodationType, TransportMode, TravelStatus } from '../schemas/travel.schema';
+import { AccommodationType, TransportMode, TravelCategory, TravelStatus } from '../schemas/travel.schema';
 import { TaskPriority, TaskStatus } from '../schemas/travel-task.schema';
 
 export class TransportDetailDto {
@@ -262,6 +262,10 @@ export class AttachmentDto {
   @IsOptional()
   @IsString()
   key?: string;
+
+  @IsOptional()
+  @IsString()
+  uploadedAt?: string;
 }
 
 export class ExpenseDto {
@@ -291,6 +295,10 @@ export class ExpenseDto {
 export class CreateTravelDto {
   @IsString()
   title: string;
+
+  @IsOptional()
+  @IsEnum(TravelCategory)
+  category?: TravelCategory;
 
   @IsOptional()
   @IsString()

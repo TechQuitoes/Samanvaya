@@ -98,7 +98,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: "users",
     title: "Users",
-    href: "/admin/approvals",
+    href: "/leader-profile/approvals",
     icon: UsersRound,
   },
   {

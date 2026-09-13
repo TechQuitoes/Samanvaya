@@ -40,7 +40,7 @@ export const ALL_QUICK_ACTIONS: ActionItem[] = [
   { id: "contacts", title: "Contacts", icon: Contact, href: "/contacts" },
   { id: "archival", title: "Archival", icon: Archive, href: "/archival" },
   { id: "reports", title: "Reports", icon: BarChart3, href: "/reports" },
-  { id: "users", title: "Users", icon: UsersRound, href: "/admin/approvals" },
+  { id: "users", title: "Users", icon: UsersRound, href: "/leader-profile/approvals" },
   { id: "settings", title: "Settings", icon: Settings, href: "/settings" },
 ];
 

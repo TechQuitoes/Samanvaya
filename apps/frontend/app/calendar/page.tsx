@@ -1,150 +1,48 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import React from "react";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
-  Plus,
   Plane,
   Users,
-  Clock,
-  MapPin,
   Sparkles,
-  Filter,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import ECard from "@/components/common/ECard";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
 import DayScheduleDrawer from "@/components/calendar/DayScheduleDrawer";
-import { useCalendarMonth } from "@/hooks/useCalendar";
+import { useCalendarPage } from "@/hooks/calendar";
 
 export default function CalendarPage() {
-  const router = useRouter();
-
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string>("ALL");
-
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1; // 1-indexed
-
-  // Fetch from dedicated backend API
-  const { data: monthData, isLoading } = useCalendarMonth(currentYear, currentMonth);
-
-  const monthName = currentDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
-
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  // Compute month cells dynamically
-  const { cells } = useMemo(() => {
-    const jsMonth = currentMonth - 1;
-    const firstDayIndex = new Date(currentYear, jsMonth, 1).getDay();
-    const totalDays = new Date(currentYear, currentMonth, 0).getDate();
-    const prevMonthTotalDays = new Date(currentYear, jsMonth, 0).getDate();
-
-    const cellList: Array<{
-      day: number;
-      isCurrentMonth: boolean;
-      dateObj: Date;
-      travelsOnDay: any[];
-    }> = [];
-
-    const travels = monthData?.activeTravels || [];
-
-    // 1. Trailing days from previous month
-    for (let i = firstDayIndex - 1; i >= 0; i--) {
-      const prevDay = prevMonthTotalDays - i;
-      const d = new Date(currentYear, jsMonth - 1, prevDay);
-      cellList.push({
-        day: prevDay,
-        isCurrentMonth: false,
-        dateObj: d,
-        travelsOnDay: [],
-      });
-    }
-
-    // 2. Days of current month
-    for (let day = 1; day <= totalDays; day++) {
-      const d = new Date(currentYear, jsMonth, day);
-      const dStr = `${currentYear}-${String(currentMonth).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-      const travelsOnDay = travels.filter((t) => {
-        if (!t.startDate || !t.endDate) return false;
-        const start = new Date(t.startDate).toISOString().slice(0, 10);
-        const end = new Date(t.endDate).toISOString().slice(0, 10);
-        return dStr >= start && dStr <= end;
-      });
-
-      cellList.push({
-        day,
-        isCurrentMonth: true,
-        dateObj: d,
-        travelsOnDay,
-      });
-    }
-
-    return { cells: cellList };
-  }, [currentYear, currentMonth, monthData]);
-
-  const handleDateClick = (dateObj: Date) => {
-    setSelectedDate(dateObj);
-    setIsDrawerOpen(true);
-  };
-
-  const isToday = (dateObj: Date) => {
-    const today = new Date();
-    return (
-      dateObj.getDate() === today.getDate() &&
-      dateObj.getMonth() === today.getMonth() &&
-      dateObj.getFullYear() === today.getFullYear()
-    );
-  };
+  const {
+    monthName,
+    daysOfWeek,
+    cells,
+    monthData,
+    isDrawerOpen,
+    setIsDrawerOpen,
+    selectedDate,
+    goToPrevMonth,
+    goToNextMonth,
+    goToToday,
+    handleDateClick,
+  } = useCalendarPage();
 
   return (
-    <SacredPortalLayout>
-      {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2.5 rounded-2xl bg-[#174824] text-white shadow-xs">
-            <CalendarIcon className="w-5 h-5 text-amber-300" />
-          </div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#174824] font-serif-display">
-              Master Calendar & Schedule
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5a4836] font-medium">
-              Click on any day to view and manage detailed hour-by-hour timeline
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => router.push("/travel/create")}
-            className="px-4 py-2 rounded-2xl bg-[#174824] hover:bg-[#12381c] text-white text-xs sm:text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4 text-amber-300" />
-            <span>Create Travel Event</span>
-          </button>
-        </div>
-      </div>
-
+    <SacredPortalLayout
+      title="Master Calendar & Schedule"
+      subtitle="Click on any day to view and manage detailed hour-by-hour timeline"
+      icon={CalendarIcon}
+    >
       {/* ── Navigation Bar & Category Filter ── */}
-      <Card className="rounded-[24px] border border-[#e5d9c3] bg-[#fbf8f0] p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <ECard className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Month Picker Controls */}
         <div className="flex items-center gap-2">
           <div className="flex items-center bg-white border border-[#e5d9c3] rounded-xl p-0.5 shadow-2xs">
             <button
               type="button"
-              onClick={() => setCurrentDate(new Date(currentYear, currentMonth - 2, 1))}
+              onClick={goToPrevMonth}
               className="p-1.5 rounded-lg hover:bg-[#174824]/10 text-[#5a4836] hover:text-[#174824] transition-colors cursor-pointer"
               title="Previous Month"
             >
@@ -152,14 +50,14 @@ export default function CalendarPage() {
             </button>
             <button
               type="button"
-              onClick={() => setCurrentDate(new Date())}
+              onClick={goToToday}
               className="px-2.5 py-1 text-xs font-bold text-[#174824] hover:bg-[#174824]/10 rounded-lg transition-colors cursor-pointer"
             >
               Today
             </button>
             <button
               type="button"
-              onClick={() => setCurrentDate(new Date(currentYear, currentMonth, 1))}
+              onClick={goToNextMonth}
               className="p-1.5 rounded-lg hover:bg-[#174824]/10 text-[#5a4836] hover:text-[#174824] transition-colors cursor-pointer"
               title="Next Month"
             >
@@ -188,10 +86,10 @@ export default function CalendarPage() {
             <span>Satsang</span>
           </span>
         </div>
-      </Card>
+      </ECard>
 
       {/* ── Main Month Grid ── */}
-      <Card className="rounded-[28px] border border-[#e5d9c3] bg-[#fffdfa] p-4 sm:p-6 shadow-sm overflow-hidden">
+      <ECard className="p-4 sm:p-6 overflow-hidden">
         {/* Days of Week Header */}
         <div className="grid grid-cols-7 text-center pb-2 border-b border-[#e5d9c3]">
           {daysOfWeek.map((day) => (
@@ -207,8 +105,8 @@ export default function CalendarPage() {
         {/* Month Day Cells */}
         <div className="grid grid-cols-7 gap-1 sm:gap-2 pt-2">
           {cells.map((cell, idx) => {
-            const today = isToday(cell.dateObj) && cell.isCurrentMonth;
-            const hasTravel = cell.travelsOnDay.length > 0;
+            const today = cell.isToday && cell.isCurrentMonth;
+            const hasTravel = cell.hasTravel;
 
             return (
               <div
@@ -255,7 +153,7 @@ export default function CalendarPage() {
                   ))}
 
                   {/* Recurring Program indicator for sacred days */}
-                  {cell.isCurrentMonth && (cell.day === 4 || cell.day === 15 || cell.day === 28) && (
+                  {cell.isCurrentMonth && cell.hasSacredMeeting && (
                     <div className="px-1.5 py-0.5 rounded-lg bg-purple-100/90 text-purple-900 border border-purple-300 text-[9.5px] font-bold truncate flex items-center gap-1">
                       <Users className="w-2.5 h-2.5 text-purple-700 shrink-0" />
                       <span className="truncate">Leadership Meeting</span>
@@ -273,7 +171,7 @@ export default function CalendarPage() {
             );
           })}
         </div>
-      </Card>
+      </ECard>
 
       {/* ── Responsive Day Schedule Timeline Drawer ── */}
       <DayScheduleDrawer

@@ -18,7 +18,7 @@ self.addEventListener('push', (event) => {
   }
 
   const title = data.title || 'Samanvaya Notification';
-  const actionUrl = data.actionUrl || data.data?.actionUrl || '/admin/approvals';
+  const actionUrl = data.actionUrl || data.data?.actionUrl || '/leader-profile/approvals';
 
   const options = {
     body: data.body || '',
@@ -53,7 +53,7 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const actionUrl = event.notification.data?.actionUrl || '/admin/approvals';
+  const actionUrl = event.notification.data?.actionUrl || '/leader-profile/approvals';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {

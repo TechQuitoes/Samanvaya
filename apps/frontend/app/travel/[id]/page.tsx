@@ -1,153 +1,118 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
 import {
   Plane,
   Calendar,
   MapPin,
-  Clock,
   ArrowLeft,
   CheckCircle2,
-  XCircle,
   Building,
-  User,
-  Phone,
-  FileText,
   DollarSign,
   Plus,
-  Trash2,
   CheckSquare,
-  MessageSquare,
-  AlertCircle,
+  Crown,
+  Users,
+  Paperclip,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import LotusDivider from "@/components/ui/LotusDivider";
+import S3Uploader from "@/components/common/S3Uploader";
+import EButton from "@/components/common/EButton";
+import ECard from "@/components/common/ECard";
+import EInput from "@/components/common/EInput";
+import ESelect from "@/components/common/ESelect";
+import ESkeleton from "@/components/common/ESkeleton";
+import EModal from "@/components/common/EModal";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
 import CreateTaskDrawer from "@/components/task/CreateTaskDrawer";
 import TaskDetailDrawer from "@/components/task/TaskDetailDrawer";
-import apiNexus from "@/lib/api/apiNexusIntercepter";
-import useTasks from "@/hooks/useTasks";
-import { Travel } from "@/types/travel";
-import { Task, TaskModuleType, TaskStatus } from "@/types/task";
-import { toast } from "sonner";
-
-function formatDate(dateStr?: string): string {
-  if (!dateStr) return "—";
-  return new Date(dateStr).toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
+import useTravelDetail from "@/hooks/travel/useTravelDetail";
+import { TravelCategory } from "@/types/travel";
+import { TaskModuleType, TaskStatus } from "@/types/task";
 
 export default function TravelDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const travelId = params.id as string;
+  const {
+    travelId,
+    travel,
+    isLoading,
+    totalExpenses,
+    router,
 
-  const [travel, setTravel] = useState<Travel | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+    // Tasks
+    tasks,
+    fetchTasks,
+    updateTaskStatus,
+    isTaskDrawerOpen,
+    setIsTaskDrawerOpen,
+    selectedTask,
+    setSelectedTask,
+    taskToEdit,
+    setTaskToEdit,
 
-  // Unified Tasks Hook
-  const { tasks, fetchTasks, updateTaskStatus } = useTasks(
-    travelId ? { moduleType: TaskModuleType.TRAVEL, moduleRefId: travelId } : undefined
-  );
-  const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+    // Expenses
+    expenseModalOpen,
+    setExpenseModalOpen,
+    expenseTitle,
+    setExpenseTitle,
+    expenseCategory,
+    setExpenseCategory,
+    expenseAmount,
+    setExpenseAmount,
+    isSubmittingExpense,
+    handleAddExpense,
 
-  // Expense Modal State
-  const [expenseModalOpen, setExpenseModalOpen] = useState(false);
-  const [expenseTitle, setExpenseTitle] = useState("");
-  const [expenseCategory, setExpenseCategory] = useState("TRANSPORT");
-  const [expenseAmount, setExpenseAmount] = useState<number>(500);
-
-  const fetchTravelData = useCallback(async () => {
-    if (!travelId) return;
-    setIsLoading(true);
-    try {
-      const travelRes = await apiNexus.call<Travel>("GET_TRAVEL_BY_ID", { params: { id: travelId } });
-
-      if (travelRes.isSuccess && travelRes.data) {
-        setTravel(travelRes.data);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to load travel details.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [travelId]);
-
-  useEffect(() => {
-    fetchTravelData();
-  }, [fetchTravelData]);
-
-  const handleAddExpense = async () => {
-    if (!expenseTitle.trim() || !expenseAmount) return;
-    try {
-      const response = await apiNexus.call<Travel>("POST_ADD_TRAVEL_EXPENSE", {
-        params: { id: travelId },
-        payload: {
-          title: expenseTitle,
-          category: expenseCategory,
-          amount: expenseAmount,
-          currency: "INR",
-        },
-      });
-
-      if (response.isSuccess) {
-        toast.success("Expense added to travel!");
-        setExpenseModalOpen(false);
-        fetchTravelData();
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to add expense.");
-    }
-  };
+    // Utilities
+    formatDate,
+  } = useTravelDetail();
 
   if (isLoading || !travel) {
     return (
       <SacredPortalLayout showGreeting={false}>
-        <Skeleton className="h-44 w-full rounded-[24px] bg-[#e5d9c3]/60" />
-        <Skeleton className="h-64 w-full rounded-[24px] bg-[#e5d9c3]/60" />
+        <div className="space-y-6">
+          <ESkeleton variant="card" height={160} className="w-full" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ESkeleton variant="card" height={220} className="w-full" />
+            <ESkeleton variant="card" height={220} className="w-full" />
+          </div>
+          <ESkeleton variant="card" height={200} className="w-full" />
+          <ESkeleton variant="card" height={200} className="w-full" />
+        </div>
       </SacredPortalLayout>
     );
   }
 
-  const totalExpenses = travel.expenses?.reduce((sum, e) => sum + (e.amount || 0), 0) || 0;
-
   return (
     <SacredPortalLayout showGreeting={false}>
       {/* Back Link */}
-      <button
-        type="button"
-        onClick={() => router.push("/travel")}
-        className="flex items-center gap-1.5 text-xs font-bold text-[#174824] hover:underline cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Back to Travel Listing</span>
-      </button>
+      <div>
+        <EButton
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push("/travel")}
+          leftIcon={<ArrowLeft className="w-4 h-4" />}
+          className="text-[#174824] hover:text-[#12391c] font-bold px-0 hover:bg-transparent hover:underline cursor-pointer"
+        >
+          Back to Travel Listing
+        </EButton>
+      </div>
 
       {/* Main Header Banner */}
-      <Card className="rounded-[24px] sm:rounded-[28px] border border-[#e5d9c3] bg-[#faf4e8] p-6 shadow-xs space-y-4">
+      <ECard>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-2xl font-bold text-[#174824]">{travel.title}</h2>
-              <Badge className="bg-[#174824] text-amber-200 text-xs font-bold">{travel.status}</Badge>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#174824] text-amber-200 text-xs font-bold leading-none">{travel.status}</span>
+              {travel.category === TravelCategory.MAHARAJ_JI ? (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold border border-amber-300 bg-amber-50 text-amber-900 inline-flex items-center gap-1">
+                  <Crown className="w-3 h-3 text-amber-600" />
+                  <span>Maharaj Ji</span>
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#174824]/20 bg-[#174824]/5 text-[#174824] inline-flex items-center gap-1">
+                  <Users className="w-3 h-3 text-[#174824]" />
+                  <span>General</span>
+                </span>
+              )}
             </div>
             <p className="text-xs text-[#5a4836] font-medium">{travel.purpose}</p>
           </div>
@@ -173,37 +138,35 @@ export default function TravelDetailPage() {
             <span>{formatDate(travel.startDate)} - {formatDate(travel.endDate)}</span>
           </div>
         </div>
-      </Card>
+      </ECard>
 
       {/* Transport & Accommodation Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Transport Card */}
-        <Card className="rounded-[24px] p-6 border border-[#e5d9c3] bg-[#faf4e8] space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#e5d9c3]/60 pb-3">
-            <Plane className="w-5 h-5 text-[#174824]" />
-            <h3 className="text-base font-bold text-[#174824]">Transport & Transit Details</h3>
-          </div>
-
+        <ECard
+          title="Transport & Transit Details"
+          icon={<Plane className="w-5 h-5 text-[#174824]" />}
+          headerDivider
+        >
           {travel.transportDetails?.map((t, idx) => (
             <div key={idx} className="p-3.5 rounded-xl bg-[#fcfaf5] border border-[#e5d9c3] space-y-1 text-xs">
-              <Badge variant="outline" className="text-[10px] border-amber-300 text-amber-900 bg-amber-50">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-amber-300 text-amber-900 bg-amber-50">
                 {t.mode}
-              </Badge>
+              </span>
               <p className="font-bold text-[#2c221e]">
                 {t.flightNo || t.trainNo || t.vehicleNo || "Transit Details"}
               </p>
               {t.pnr && <p className="text-[#5a4836]">PNR: {t.pnr}</p>}
             </div>
           ))}
-        </Card>
+        </ECard>
 
         {/* Stay & Local Contacts */}
-        <Card className="rounded-[24px] p-6 border border-[#e5d9c3] bg-[#faf4e8] space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#e5d9c3]/60 pb-3">
-            <Building className="w-5 h-5 text-[#174824]" />
-            <h3 className="text-base font-bold text-[#174824]">Stay & Accommodation</h3>
-          </div>
-
+        <ECard
+          title="Stay & Accommodation"
+          icon={<Building className="w-5 h-5 text-[#174824]" />}
+          headerDivider
+        >
           <div className="space-y-2 text-xs">
             <p className="font-bold text-[#2c221e] text-sm">{travel.stayDetails?.name || "Temple Guest House"}</p>
             <p className="text-[#5a4836]">{travel.stayDetails?.address}</p>
@@ -213,25 +176,36 @@ export default function TravelDetailPage() {
               </p>
             )}
           </div>
-        </Card>
+        </ECard>
       </div>
 
-      {/* Embedded Contextual Expenses Section */}
-      <Card className="rounded-[24px] p-6 border border-[#e5d9c3] bg-[#faf4e8] space-y-4">
-        <div className="flex items-center justify-between border-b border-[#e5d9c3]/60 pb-3">
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-emerald-800" />
-            <h3 className="text-base font-bold text-[#174824]">Contextual Travel Expenses</h3>
-          </div>
-          <Button
-            size="sm"
-            onClick={() => setExpenseModalOpen(true)}
-            className="bg-[#174824] text-white rounded-xl text-xs font-bold gap-1"
-          >
-            <Plus className="w-3.5 h-3.5" /> Add Expense
-          </Button>
-        </div>
+      {/* Attached Documents */}
+      {travel.attachments && travel.attachments.length > 0 && (
+        <ECard
+          title={`Attached Documents (${travel.attachments.length})`}
+          icon={<Paperclip className="w-5 h-5 text-[#174824]" />}
+          headerDivider
+        >
+          <S3Uploader files={travel.attachments} viewOnly />
+        </ECard>
+      )}
 
+      {/* Embedded Contextual Expenses Section */}
+      <ECard
+        title="Contextual Travel Expenses"
+        icon={<DollarSign className="w-5 h-5 text-emerald-800" />}
+        headerDivider
+        headerAction={
+          <EButton
+            size="sm"
+            variant="sacred-primary"
+            onClick={() => setExpenseModalOpen(true)}
+            leftIcon={<Plus className="w-3.5 h-3.5" />}
+          >
+            Add Expense
+          </EButton>
+        }
+      >
         {travel.expenses?.length === 0 ? (
           <p className="text-xs text-[#5a4836]">No travel expenses logged yet.</p>
         ) : (
@@ -247,23 +221,24 @@ export default function TravelDetailPage() {
             ))}
           </div>
         )}
-      </Card>
+      </ECard>
 
       {/* Travel Tasks Integration Section */}
-      <Card className="rounded-[24px] p-6 border border-[#e5d9c3] bg-[#faf4e8] space-y-4">
-        <div className="flex items-center justify-between border-b border-[#e5d9c3]/60 pb-3">
-          <div className="flex items-center gap-2">
-            <CheckSquare className="w-5 h-5 text-[#174824]" />
-            <h3 className="text-base font-bold text-[#174824]">Travel Tasks & Seva ({tasks.length})</h3>
-          </div>
-          <Button
+      <ECard
+        title={`Travel Tasks & Seva (${tasks.length})`}
+        icon={<CheckSquare className="w-5 h-5 text-[#174824]" />}
+        headerDivider
+        headerAction={
+          <EButton
             size="sm"
+            variant="sacred-primary"
             onClick={() => setIsTaskDrawerOpen(true)}
-            className="bg-[#174824] text-white rounded-xl text-xs font-bold gap-1 cursor-pointer"
+            leftIcon={<Plus className="w-3.5 h-3.5 text-amber-300" />}
           >
-            <Plus className="w-3.5 h-3.5 text-amber-300" /> Assign Seva Task
-          </Button>
-        </div>
+            Assign Seva Task
+          </EButton>
+        }
+      >
 
         {tasks.length === 0 ? (
           <p className="text-xs text-[#5a4836] italic">No tasks assigned to this travel tour yet. Click &quot;Assign Seva Task&quot; to delegate duties.</p>
@@ -318,23 +293,68 @@ export default function TravelDetailPage() {
             })}
           </div>
         )}
-      </Card>
+      </ECard>
 
       {/* Add Expense Modal */}
-      <Dialog open={expenseModalOpen} onOpenChange={setExpenseModalOpen}>
-        <DialogContent className="bg-[#faf4e8] border-[#e5d9c3] rounded-2xl max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-[#174824]">Add Contextual Travel Expense</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3 py-2">
-            <Input label="Expense Title" value={expenseTitle} onChange={(e) => setExpenseTitle(e.target.value)} placeholder="e.g. Flight Ticket / Cab Fare" />
-            <Input type="number" label="Amount (₹)" value={expenseAmount} onChange={(e) => setExpenseAmount(Number(e.target.value))} />
+      <EModal
+        open={expenseModalOpen}
+        onOpenChange={setExpenseModalOpen}
+        title="Add Contextual Travel Expense"
+        subtitle="Record expenses directly linked to this spiritual tour"
+        icon={<DollarSign className="w-5 h-5 text-emerald-800" />}
+        size="sm"
+        footer={
+          <div className="flex items-center justify-end gap-2.5">
+            <EButton
+              variant="outline"
+              size="sm"
+              onClick={() => setExpenseModalOpen(false)}
+              disabled={isSubmittingExpense}
+            >
+              Cancel
+            </EButton>
+            <EButton
+              variant="sacred-primary"
+              size="sm"
+              onClick={handleAddExpense}
+              isLoading={isSubmittingExpense}
+              loadingText="Adding..."
+            >
+              Add Expense
+            </EButton>
           </div>
-          <DialogFooter>
-            <Button onClick={handleAddExpense} className="bg-[#174824] text-white rounded-xl">Add Expense</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        }
+      >
+        <div className="space-y-3.5 py-1">
+          <EInput
+            label="Expense Title"
+            required
+            value={expenseTitle}
+            onChange={(e) => setExpenseTitle(e.target.value)}
+            placeholder="e.g. Flight Ticket / Cab Fare / Prasadam"
+          />
+          <ESelect
+            label="Category"
+            value={expenseCategory}
+            onChange={(val) => setExpenseCategory(val)}
+            options={[
+              { value: "TRANSPORT", label: "Transport" },
+              { value: "ACCOMMODATION", label: "Accommodation" },
+              { value: "PRASADAM", label: "Prasadam / Food" },
+              { value: "SEVA_SUPPLIES", label: "Seva Supplies" },
+              { value: "MISC", label: "Miscellaneous" },
+            ]}
+          />
+          <EInput
+            type="number"
+            label="Amount (₹)"
+            required
+            value={expenseAmount || ""}
+            onChange={(e) => setExpenseAmount(Number(e.target.value))}
+            min={1}
+          />
+        </div>
+      </EModal>
 
       {/* Unified Create / Edit Task Drawer */}
       <CreateTaskDrawer

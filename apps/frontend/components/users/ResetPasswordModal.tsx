@@ -8,10 +8,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { KeyRound, Eye, EyeOff, Loader2, User as UserIcon } from "lucide-react";
+import { KeyRound, Loader2, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 import apiNexus from "@/lib/api/apiNexusIntercepter";
+import EPasswordInput from "@/components/common/EPasswordInput";
 
 interface TargetUser {
   _id: string;
@@ -34,15 +34,11 @@ export default function ResetPasswordModal({
 }: ResetPasswordModalProps) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showNewPw, setShowNewPw] = useState(false);
-  const [showConfirmPw, setShowConfirmPw] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleResetState = () => {
     setNewPassword("");
     setConfirmPassword("");
-    setShowNewPw(false);
-    setShowConfirmPw(false);
     setIsSubmitting(false);
   };
 
@@ -121,41 +117,21 @@ export default function ResetPasswordModal({
         )}
 
         <form onSubmit={handleSubmit} className="space-y-3.5 py-1">
-          <Input
+          <EPasswordInput
             label="New Password"
-            type={showNewPw ? "text" : "password"}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             placeholder="Enter new password (min 6 chars)"
             autoFocus
-            rightIcon={
-              <button
-                type="button"
-                onClick={() => setShowNewPw(!showNewPw)}
-                className="cursor-pointer text-[#8c7865] hover:text-[#174824] transition-colors"
-                tabIndex={-1}
-              >
-                {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            }
+            required
           />
 
-          <Input
+          <EPasswordInput
             label="Confirm Password"
-            type={showConfirmPw ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Re-enter new password"
-            rightIcon={
-              <button
-                type="button"
-                onClick={() => setShowConfirmPw(!showConfirmPw)}
-                className="cursor-pointer text-[#8c7865] hover:text-[#174824] transition-colors"
-                tabIndex={-1}
-              >
-                {showConfirmPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            }
+            required
           />
 
           {confirmPassword.length > 0 && newPassword !== confirmPassword && (

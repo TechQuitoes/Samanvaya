@@ -23,6 +23,11 @@ export enum AccommodationType {
   OTHER = 'OTHER',
 }
 
+export enum TravelCategory {
+  GENERAL = 'GENERAL',
+  MAHARAJ_JI = 'MAHARAJ_JI',
+}
+
 export enum TaskPriority {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
@@ -141,6 +146,7 @@ export interface Travel {
     avatar?: string;
   };
   title: string;
+  category?: TravelCategory;
   purpose: string;
   fromLocation: string;
   destinationCity: string;
@@ -214,6 +220,7 @@ export interface CreateTravelTaskInput {
 
 export interface CreateTravelPayload {
   title: string;
+  category?: TravelCategory;
   purpose?: string;
   fromLocation: string;
   destinationCity: string;

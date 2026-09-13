@@ -2,19 +2,14 @@
 
 import { useState, useEffect } from "react";
 import {
-  CheckSquare,
   User,
-  Calendar,
-  AlertCircle,
-  Clock,
-  Sparkles,
   Plane,
-  X,
   Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import EButton from "@/components/common/EButton";
+import ECard from "@/components/common/ECard";
+import EInput from "@/components/common/EInput";
+import ETextarea from "@/components/common/ETextarea";
 import EResponsiveDrawer from "@/components/common/EResponsiveDrawer";
 import ESelect, { ESelectOption } from "@/components/common/ESelect";
 import EDateTimePicker from "@/components/common/EDateTimePicker";
@@ -175,7 +170,7 @@ export default function CreateTaskDrawer({
         <div className="flex-1 space-y-4 pb-4">
           {/* Module Context Banner if linked */}
           {initialModuleType === TaskModuleType.TRAVEL && initialModuleTitle && (
-            <div className="p-3 rounded-2xl bg-[#faf5eb] border border-[#e5d9c3] flex items-center gap-2.5">
+            <ECard variant="sacred" className="p-3 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-[#174824] text-white flex items-center justify-center flex-shrink-0">
                 <Plane className="w-4 h-4 text-amber-300" />
               </div>
@@ -187,35 +182,29 @@ export default function CreateTaskDrawer({
                   {initialModuleTitle}
                 </p>
               </div>
-            </div>
+            </ECard>
           )}
 
           {/* Task Title */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-[#174824] uppercase tracking-wider">
-              Task Title <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
+          <div>
+            <EInput
+              label="Task Title"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Airport Pickup Coordination / Garland Seva"
-              className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-[#174824] outline-none p-3 placeholder:text-[#8c7865]/60 transition-all"
+              inputSize="md"
             />
           </div>
 
           {/* Description */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-[#174824] uppercase tracking-wider">
-              Instructions / Description
-            </label>
-            <textarea
+          <div>
+            <ETextarea
+              label="Instructions / Description"
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Detailed instructions, contact numbers, special arrangements..."
-              className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-[#174824] outline-none p-3 placeholder:text-[#8c7865]/60 transition-all resize-none"
             />
           </div>
 
@@ -234,7 +223,7 @@ export default function CreateTaskDrawer({
 
           {/* Priority Selection */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-[#174824] uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#2c221e]">
               Priority
             </label>
             <div className="grid grid-cols-4 gap-2">
@@ -274,31 +263,27 @@ export default function CreateTaskDrawer({
 
         {/* Sticky Bottom Actions Bar */}
         <div className="mt-auto sticky bottom-0 bg-[#fffdfa] pt-3 pb-1 border-t border-[#e5d9c3]/70 flex items-center gap-2.5">
-          <Button
+          <EButton
             type="button"
             variant="outline"
+            size="md"
             onClick={() => onOpenChange(false)}
-            className="flex-1 rounded-xl border-[#e5d9c3] text-xs font-bold h-11 cursor-pointer"
+            className="flex-1"
           >
             Cancel
-          </Button>
+          </EButton>
 
-          <Button
+          <EButton
             type="submit"
-            disabled={isSubmitting}
-            className="flex-1 rounded-xl bg-[#174824] hover:bg-[#174824]/90 text-white text-xs font-bold h-11 cursor-pointer shadow-md gap-1.5"
+            variant="sacred-primary"
+            size="md"
+            isLoading={isSubmitting}
+            loadingText={isEditMode ? "Saving Changes..." : "Assigning..."}
+            leftIcon={<Check className="w-4 h-4 text-amber-300" />}
+            className="flex-1"
           >
-            <Check className="w-4 h-4 text-amber-300" />
-            <span>
-              {isSubmitting
-                ? isEditMode
-                  ? "Saving Changes..."
-                  : "Assigning..."
-                : isEditMode
-                ? "Save Changes"
-                : "Assign Task"}
-            </span>
-          </Button>
+            {isEditMode ? "Save Changes" : "Assign Task"}
+          </EButton>
         </div>
       </form>
     </EResponsiveDrawer>

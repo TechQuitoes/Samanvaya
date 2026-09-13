@@ -11,7 +11,6 @@ import {
   Building,
   Clock,
   MapPin,
-  Plus,
   ChevronRight,
   CheckSquare,
   Loader2,
@@ -117,21 +116,13 @@ export default function DayScheduleDrawer({
                 No travel or tasks scheduled for this date.
               </p>
             </div>
-            <div className="pt-2 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => { onOpenChange(false); router.push("/travel/create"); }}
-                className="px-4 py-2 rounded-xl bg-[#174824] hover:bg-[#12381c] text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5 text-amber-300" />
-                <span>Create Travel</span>
-              </button>
+            <div className="pt-2 flex items-center justify-center">
               <button
                 type="button"
                 onClick={() => { onOpenChange(false); router.push("/tasks"); }}
-                className="px-4 py-2 rounded-xl border border-[#e5d9c3] bg-white hover:bg-[#faf5eb] text-[#5a4836] text-xs font-bold shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#174824] hover:bg-[#12381c] text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
               >
-                <CheckSquare className="w-3.5 h-3.5 text-[#174824]" />
+                <CheckSquare className="w-3.5 h-3.5 text-amber-300" />
                 <span>Assign Task</span>
               </button>
             </div>
@@ -324,19 +315,6 @@ export default function DayScheduleDrawer({
             )}
           </div>
         )}
-
-        {/* ── Floating Action Button ── */}
-        <div className="sticky bottom-4 flex justify-end pointer-events-none mt-4">
-          <button
-            type="button"
-            onClick={() => { onOpenChange(false); router.push("/travel/create"); }}
-            className="w-12 h-12 rounded-full bg-[#174824] hover:bg-[#12381c] text-white shadow-xl flex items-center justify-center pointer-events-auto transition-transform active:scale-95 hover:scale-105 border-2 border-white cursor-pointer"
-            title="Create Travel"
-            aria-label="Add Travel"
-          >
-            <Plus className="w-6 h-6 text-amber-300 stroke-[2.5]" />
-          </button>
-        </div>
       </div>
     </EResponsiveDrawer>
   );

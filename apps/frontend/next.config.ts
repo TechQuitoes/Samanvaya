@@ -25,6 +25,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/admin/approvals",
+        destination: "/leader-profile/approvals",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

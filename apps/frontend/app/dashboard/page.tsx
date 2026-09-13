@@ -3,29 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-  Calendar as CalendarIcon,
-  BookOpen,
-  FileText,
-  CheckSquare,
-  MapPin,
-  Sparkles,
-  UserCheck,
-  Building,
-  HeartHandshake,
-  Plane,
-  Heart,
-  Users,
-  MoreHorizontal,
-  Archive,
-  BarChart3,
-  Settings,
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import LotusDivider from "@/components/ui/LotusDivider";
+import { MapPin } from "lucide-react";
+import ECard from "@/components/common/ECard";
 import SacredPortalLayout from "@/components/layout/SacredPortalLayout";
-import QuickActions from "@/components/dashboard/QuickActions";
+import QuickActions from "@/components/dashboard/quickaction";
 import TodayScheduleCard from "@/components/dashboard/widgets/TodayScheduleCard";
 import UpcomingTravelCard from "@/components/dashboard/widgets/UpcomingTravelCard";
 import UpcomingMeetingsCard from "@/components/dashboard/widgets/UpcomingMeetingsCard";
@@ -39,7 +20,6 @@ import DataManager from "@/lib/data-manager";
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [moreActionsOpen, setMoreActionsOpen] = useState(false);
 
   useEffect(() => {
     const token = DataManager.getToken();
@@ -68,7 +48,7 @@ export default function DashboardPage() {
       {/* Top 2 Cards Row: Current Location (with Temple Sketch) & Today's Summary (with Lotus Accent) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* 1. Current Location Card */}
-        <Card className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] px-5 sm:px-6 py-5 sm:py-6 border border-[#e5d9c3] bg-[#fbf8f0] shadow-xs flex flex-col justify-center">
+        <ECard className="relative overflow-hidden bg-[#fbf8f0] px-5 sm:px-6 py-5 sm:py-6 flex flex-col justify-center">
           {/* Temple Sketch Background Illustration on Right */}
           <div className="absolute right-0 bottom-0 top-0 w-1/3 pointer-events-none overflow-hidden opacity-30 mix-blend-multiply">
             <Image
@@ -101,14 +81,14 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-        </Card>
+        </ECard>
 
         {/* 2. Today's Summary Card */}
         <div className="space-y-2 flex flex-col justify-end">
           <h4 className="text-sm font-semibold text-[#2c221e] md:hidden px-0.5">
             Today&apos;s Summary
           </h4>
-          <Card className="relative overflow-hidden rounded-[20px] sm:rounded-[28px] px-4 sm:px-6 py-4 sm:py-5 border border-[#e5d9c3] bg-[#fbf8f0] shadow-xs flex flex-col justify-center">
+          <ECard className="relative overflow-hidden bg-[#fbf8f0] px-4 sm:px-6 py-4 sm:py-5 flex flex-col justify-center">
             <div className="relative z-10 space-y-2">
               <h4 className="hidden md:block text-xs sm:text-sm font-semibold text-[#2c221e]">
                 Today&apos;s Summary
@@ -144,7 +124,7 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-          </Card>
+          </ECard>
         </div>
       </div>
 

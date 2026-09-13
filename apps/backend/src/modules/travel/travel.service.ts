@@ -22,7 +22,12 @@ export class TravelService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  async findAll(leaderId: string, statusFilter?: TravelStatus, userRole?: string): Promise<TravelDocument[]> {
+  async findAll(
+    leaderId: string,
+    statusFilter?: TravelStatus,
+    userRole?: string,
+    categoryFilter?: string,
+  ): Promise<TravelDocument[]> {
     const query: any = {};
     const r = (userRole || '').toLowerCase().trim();
     const isElevatedAdmin =
@@ -39,6 +44,17 @@ export class TravelService {
     }
     if (statusFilter) {
       query.status = statusFilter;
+    }
+    if (categoryFilter && categoryFilter !== 'ALL') {
+      if (categoryFilter === 'GENERAL') {
+        query.$or = [
+          { category: 'GENERAL' },
+          { category: { $exists: false } },
+          { category: null },
+        ];
+      } else {
+        query.category = categoryFilter;
+      }
     }
     const travels = await this.travelModel
       .find(query)

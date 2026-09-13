@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Clock, Users, ShieldAlert } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import ECard from "@/components/common/ECard";
 
 interface ApprovalStatCardsProps {
   approvedCount: number;
@@ -24,7 +24,7 @@ export default function ApprovalStatCards({
   return (
     <div className="grid grid-cols-3 gap-2 sm:gap-4">
       {/* Card 1: Active Users */}
-      <Card className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-[#e5d9c3] bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
+      <ECard className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-[#e5d9c3] bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
           <Image
             src="/image-assets/rightSideLeaf.png"
@@ -47,10 +47,10 @@ export default function ApprovalStatCards({
         <div className="p-1.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-[#174824]/10 border border-[#174824]/20 shadow-xs relative z-10 flex-shrink-0">
           <Users className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-[#174824]" />
         </div>
-      </Card>
+      </ECard>
 
       {/* Card 2: Pending Approvals */}
-      <Card className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-amber-300/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
+      <ECard className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-amber-300/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
           <Image
             src="/image-assets/rightSideLeaf.png"
@@ -73,10 +73,10 @@ export default function ApprovalStatCards({
         <div className="p-1.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-amber-100/90 border border-amber-300/60 shadow-xs relative z-10 flex-shrink-0">
           <Clock className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-amber-700 animate-pulse" />
         </div>
-      </Card>
+      </ECard>
 
       {/* Card 3: Blocked & Rejected Accounts */}
-      <Card className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-rose-200/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
+      <ECard className="relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border border-rose-200/80 bg-[#faf4e8] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-12 sm:h-20 pointer-events-none opacity-40 sm:opacity-60">
           <Image
             src="/image-assets/rightSideLeaf.png"
@@ -99,7 +99,7 @@ export default function ApprovalStatCards({
         <div className="p-1.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-rose-100/90 border border-rose-300/60 shadow-xs relative z-10 flex-shrink-0">
           <ShieldAlert className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-rose-700" />
         </div>
-      </Card>
+      </ECard>
     </div>
   );
 }

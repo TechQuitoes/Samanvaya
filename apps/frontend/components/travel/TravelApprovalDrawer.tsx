@@ -21,16 +21,20 @@ import {
   CheckSquare,
   Plus,
   Pencil,
+  Crown,
+  Users,
+  Paperclip,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import S3Uploader from "@/components/common/S3Uploader";
+import EButton from "@/components/common/EButton";
+import ECard from "@/components/common/ECard";
+import ETextarea from "@/components/common/ETextarea";
 import EResponsiveDrawer from "@/components/common/EResponsiveDrawer";
 import CreateTaskDrawer from "@/components/task/CreateTaskDrawer";
-import useTravel from "@/hooks/useTravel";
+import useTravel from "@/hooks/travel/useTravel";
 import useTasks from "@/hooks/useTasks";
 import { usePermissions } from "@/hooks/usePermissions";
-import { TransportMode, Travel, TravelStatus } from "@/types/travel";
+import { TransportMode, Travel, TravelStatus, TravelCategory } from "@/types/travel";
 import { Task, TaskModuleType, TaskStatus } from "@/types/task";
 
 interface TravelApprovalDrawerProps {
@@ -105,22 +109,35 @@ export default function TravelApprovalDrawer({
             </div>
           </div>
 
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                approvalStatus === "APPROVED"
-                  ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+          <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+            <div className="flex items-center gap-1.5">
+              {travel.category === TravelCategory.MAHARAJ_JI ? (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-amber-300 bg-amber-50 text-amber-900 inline-flex items-center gap-1">
+                  <Crown className="w-2.5 h-2.5 text-amber-600" />
+                  <span>Maharaj Ji</span>
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-[#174824]/20 bg-[#174824]/5 text-[#174824] inline-flex items-center gap-1">
+                  <Users className="w-2.5 h-2.5 text-[#174824]" />
+                  <span>General</span>
+                </span>
+              )}
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                  approvalStatus === "APPROVED"
+                    ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                    : approvalStatus === "REJECTED"
+                    ? "bg-red-100 text-red-900 border-red-300"
+                    : "bg-amber-100 text-amber-950 border-amber-300"
+                }`}
+              >
+                {approvalStatus === "APPROVED"
+                  ? "✓ Approved"
                   : approvalStatus === "REJECTED"
-                  ? "bg-red-100 text-red-900 border-red-300"
-                  : "bg-amber-100 text-amber-950 border-amber-300"
-              }`}
-            >
-              {approvalStatus === "APPROVED"
-                ? "✓ Approved"
-                : approvalStatus === "REJECTED"
-                ? "✕ Rejected"
-                : "⏳ Pending Approval"}
-            </span>
+                  ? "✕ Rejected"
+                  : "⏳ Pending Approval"}
+              </span>
+            </div>
             <span className="text-[10px] text-[#8c7865] font-semibold">
               Travel: {travel.status}
             </span>
@@ -128,16 +145,29 @@ export default function TravelApprovalDrawer({
         </div>
 
         {/* Unified Travel Details Card */}
-        <Card className="rounded-[22px] sm:rounded-3xl p-4 sm:p-5 border border-[#e5d9c3] bg-[#fffdfa] shadow-xs space-y-0 divide-y divide-[#e5d9c3]/70">
+        <ECard className="p-4 sm:p-5 space-y-0 divide-y divide-[#e5d9c3]/70">
           {/* 1. Basic Details */}
           <div className="py-3 flex items-start gap-3">
             <div className="w-8 h-8 rounded-xl bg-[#faf5eb] border border-[#e5d9c3] text-[#174824] flex items-center justify-center flex-shrink-0 mt-0.5">
               <Calendar className="w-4 h-4 text-[#174824]" />
             </div>
-            <div className="min-w-0 space-y-0.5">
-              <p className="text-[11px] font-bold text-[#8c7865] uppercase tracking-wider">
-                Basic Details
-              </p>
+            <div className="min-w-0 space-y-0.5 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] font-bold text-[#8c7865] uppercase tracking-wider">
+                  Basic Details
+                </p>
+                {travel.category === TravelCategory.MAHARAJ_JI ? (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-amber-300 bg-amber-50 text-amber-900 inline-flex items-center gap-1">
+                    <Crown className="w-2.5 h-2.5 text-amber-600" />
+                    <span>Maharaj Ji</span>
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-[#174824]/20 bg-[#174824]/5 text-[#174824] inline-flex items-center gap-1">
+                    <Users className="w-2.5 h-2.5 text-[#174824]" />
+                    <span>General</span>
+                  </span>
+                )}
+              </div>
               <p className="text-sm font-bold text-[#2c221e] truncate">{travel.title}</p>
               <p className="text-xs text-[#5a4836] font-medium">
                 {new Date(travel.startDate).toLocaleDateString("en-IN", {
@@ -266,7 +296,20 @@ export default function TravelApprovalDrawer({
             </div>
           </div>
 
-          {/* 5. Special Notes */}
+          {/* 5. Attached Documents */}
+          <div className="py-3 flex items-start gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#faf5eb] border border-[#e5d9c3] text-[#174824] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Paperclip className="w-4 h-4 text-amber-700" />
+            </div>
+            <div className="min-w-0 space-y-1.5 flex-1">
+              <p className="text-[11px] font-bold text-[#8c7865] uppercase tracking-wider">
+                Attached Documents ({travel.attachments?.length || 0})
+              </p>
+              <S3Uploader files={travel.attachments} viewOnly />
+            </div>
+          </div>
+
+          {/* 6. Special Notes */}
           <div className="py-3 flex items-start gap-3">
             <div className="w-8 h-8 rounded-xl bg-[#faf5eb] border border-[#e5d9c3] text-[#174824] flex items-center justify-center flex-shrink-0 mt-0.5">
               <FileText className="w-4 h-4 text-amber-700" />
@@ -280,7 +323,30 @@ export default function TravelApprovalDrawer({
               </p>
             </div>
           </div>
-        </Card>
+
+          {/* 7. Submission Timestamp */}
+          <div className="pt-3 flex items-center justify-between text-[11px] text-[#8c7865]">
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              <span>
+                Created{" "}
+                {travel.createdAt
+                  ? new Date(travel.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+                  : "recently"}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#174824]" />
+              <p className="font-semibold text-[#174824]">
+                ID: {travel._id.slice(-6).toUpperCase()}
+              </p>
+            </div>
+          </div>
+        </ECard>
 
         {/* Seva Tasks Section (Visible on Approved plans) */}
         {approvalStatus === "APPROVED" && (
@@ -291,18 +357,19 @@ export default function TravelApprovalDrawer({
                 <span>Seva Tasks ({tasks.length})</span>
               </div>
               {isSuperAdmin && (
-                <Button
+                <EButton
                   type="button"
+                  variant="sacred-primary"
                   size="sm"
                   onClick={() => {
                     setTaskToEdit(null);
                     setIsAssignTaskOpen(true);
                   }}
-                  className="h-7 px-2.5 rounded-lg bg-[#174824] text-white text-[11px] font-bold gap-1 cursor-pointer"
+                  leftIcon={<Plus className="w-3 h-3 text-amber-300" />}
+                  className="h-7 px-2.5 text-[11px]"
                 >
-                  <Plus className="w-3 h-3 text-amber-300" />
-                  <span>Assign Seva Task</span>
-                </Button>
+                  Assign Seva Task
+                </EButton>
               )}
             </div>
 
@@ -449,66 +516,65 @@ export default function TravelApprovalDrawer({
                 <span className="text-xs font-bold">This plan is currently Approved</span>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-[11px] font-bold text-[#8c7865] uppercase tracking-wider">
-                  Reason for Revocation / Rejection
-                </label>
-                <textarea
+              <div>
+                <ETextarea
+                  label="Reason for Revocation / Rejection"
                   rows={2}
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
                   placeholder="Specify reason to revoke approval or cancel plan..."
-                  className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-red-500 outline-none p-2.5 placeholder:text-[#8c7865]/60 transition-all resize-none"
                 />
               </div>
 
-              <Button
+              <EButton
                 type="button"
+                variant="destructive"
+                size="md"
+                fullWidth
                 disabled={isSubmitting}
                 onClick={() => handleDecision("REJECTED")}
-                className="w-full rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold h-10 cursor-pointer gap-1.5 shadow-sm"
+                leftIcon={<X className="w-4 h-4" />}
               >
-                <X className="w-4 h-4" />
-                <span>Revoke Approval & Reject Plan</span>
-              </Button>
+                Revoke Approval & Reject Plan
+              </EButton>
             </div>
           ) : (
             /* PENDING APPROVAL - Show Both Options to Admin */
             <div className="p-4 rounded-2xl bg-[#fffdfa] border-2 border-[#174824]/20 space-y-3 shadow-xs">
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-[#174824] uppercase tracking-wider">
-                  Approval / Rejection Remarks (Optional)
-                </label>
-                <textarea
+              <div>
+                <ETextarea
+                  label="Approval / Rejection Remarks (Optional)"
                   rows={2}
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
                   placeholder="Add approval clearance notes or instructions..."
-                  className="w-full text-xs font-medium text-[#2c221e] bg-[#faf5eb]/70 rounded-xl border border-[#e5d9c3] focus:border-[#174824] outline-none p-2.5 placeholder:text-[#8c7865]/60 transition-all resize-none"
                 />
               </div>
 
               <div className="flex items-center gap-2.5 pt-1">
-                <Button
+                <EButton
                   type="button"
+                  variant="outline"
+                  size="md"
                   disabled={isSubmitting}
                   onClick={() => handleDecision("REJECTED")}
-                  variant="outline"
-                  className="flex-1 rounded-xl border-red-300 bg-red-50/50 hover:bg-red-100 text-red-700 text-xs font-bold h-11 cursor-pointer gap-1.5"
+                  leftIcon={<X className="w-4 h-4 text-red-600" />}
+                  className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
                 >
-                  <X className="w-4 h-4" />
-                  <span>Reject Plan</span>
-                </Button>
+                  Reject Plan
+                </EButton>
 
-                <Button
+                <EButton
                   type="button"
+                  variant="sacred-primary"
+                  size="md"
                   disabled={isSubmitting}
                   onClick={() => handleDecision("APPROVED")}
-                  className="flex-1 rounded-xl bg-[#174824] hover:bg-[#174824]/90 text-white text-xs font-bold h-11 cursor-pointer gap-1.5 shadow-md"
+                  leftIcon={<Check className="w-4 h-4 text-amber-300" />}
+                  className="flex-1"
                 >
-                  <Check className="w-4 h-4 text-amber-300" />
-                  <span>Approve Plan</span>
-                </Button>
+                  Approve Plan
+                </EButton>
               </div>
             </div>
           )

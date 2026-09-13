@@ -2,26 +2,23 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
   User,
-  Loader2,
   Clock,
   ShieldAlert,
   AlertCircle,
   X,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import GoogleAuthButton from "./GoogleAuthButton";
 import LotusDivider from "@/components/ui/LotusDivider";
+import EEmailInput from "@/components/common/EEmailInput";
+import EPasswordInput from "@/components/common/EPasswordInput";
+import EButton from "@/components/common/EButton";
 import { useLogin } from "../hooks/useLogin";
 
 export default function DesktopLogin() {
+  const router = useRouter();
   const {
     email,
     setEmail,
@@ -34,9 +31,6 @@ export default function DesktopLogin() {
     isRejected,
     handleSubmit,
   } = useLogin();
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   return (
     <div className="relative w-full min-h-screen flex flex-row overflow-hidden bg-[#fcf9f2]">
@@ -146,82 +140,43 @@ export default function DesktopLogin() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Email Field */}
-            <Input
+            {/* Email Field with EEmailInput */}
+            <EEmailInput
               id="desktop-email"
-              type="email"
-              label="Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email address"
-              leftIcon={<Mail className="w-4 h-4 text-[#4a3e31]" />}
               required
             />
 
-            {/* Password Field */}
-            <Input
+            {/* Password Field with EPasswordInput */}
+            <EPasswordInput
               id="desktop-password"
-              type={showPassword ? "text" : "password"}
               label="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              leftIcon={<Lock className="w-4 h-4 text-[#4a3e31]" />}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="text-[#8c7865] hover:text-[#4a3e31] transition-colors p-0.5"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4 text-[#4a3e31]" /> : <Eye className="w-4 h-4 text-[#4a3e31]" />}
-                </button>
-              }
               required
             />
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between text-xs my-0.5">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#174824] text-[#174824] focus:ring-[#174824] accent-[#174824] cursor-pointer"
-                />
-                <span className="font-semibold text-[#2c221e]">Remember Me</span>
-              </label>
+            {/* Forgot Password Link (right-aligned) */}
+            <div className="flex items-center justify-end text-xs my-0.5">
               <a href="#forgot-password" className="font-semibold text-[#174824] hover:underline">
                 Forgot Password?
               </a>
             </div>
 
             {/* Sign In Button */}
-            <Button
+            <EButton
               type="submit"
-              disabled={isLoading}
-              className="w-full h-12 bg-[#174824] hover:bg-[#12391c] text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-md transition-all mt-1 cursor-pointer"
+              variant="primary"
+              isLoading={isLoading}
+              loadingText="Signing In..."
+              showLotusIcon
+              fullWidth
+              className="mt-1"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Signing In...</span>
-                </>
-              ) : (
-                <>
-                  <div className="relative w-5 h-5 flex-shrink-0">
-                    <Image
-                      src="/image-assets/04_lotus_icon_gold.svg"
-                      alt="Lotus"
-                      width={20}
-                      height={20}
-                      className="object-contain brightness-200"
-                    />
-                  </div>
-                  <span>Sign In</span>
-                </>
-              )}
-            </Button>
+              Sign In
+            </EButton>
 
             {/* OR Divider */}
             <div className="flex items-center justify-center gap-3 my-1">
@@ -236,15 +191,14 @@ export default function DesktopLogin() {
             <GoogleAuthButton />
 
             {/* Create New Account Button */}
-            <Link href="/signup" className="w-full">
-              <Button
-                type="button"
-                className="w-full h-12 bg-white hover:bg-amber-50/40 border border-[#cfa35d] text-[#b88636] font-semibold text-sm rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
-              >
-                <User className="w-4 h-4 text-[#b88636]" />
-                <span>Create New Account</span>
-              </Button>
-            </Link>
+            <EButton
+              variant="outline"
+              onClick={() => router.push("/signup")}
+              leftIcon={<User className="w-4 h-4 text-[#b88636]" />}
+              fullWidth
+            >
+              Create New Account
+            </EButton>
           </form>
         </div>
 

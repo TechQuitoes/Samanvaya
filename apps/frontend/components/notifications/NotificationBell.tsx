@@ -21,10 +21,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useNotifications } from "@/hooks/useNotifications";
-import { usePushNotifications } from "@/hooks/usePushNotifications";
+import EButton from "@/components/common/EButton";
+import { useNotifications, usePushNotifications } from "@/hooks/notification";
 import { AppNotification } from "@/types/notification";
 
 function formatTimeAgo(dateStr: string): string {
@@ -104,9 +102,9 @@ export default function NotificationBell() {
             <Bell className="w-4 h-4 text-amber-300" />
             <span className="font-bold text-sm tracking-wide">Notifications</span>
             {unreadCount > 0 && (
-              <Badge className="bg-amber-400 text-[#174824] hover:bg-amber-400 text-[10px] font-bold px-1.5 py-0">
+              <span className="px-1.5 py-0.5 rounded-full bg-amber-400 text-[#174824] text-[10px] font-bold leading-none">
                 {unreadCount} new
-              </Badge>
+              </span>
             )}
           </div>
 
@@ -131,14 +129,15 @@ export default function NotificationBell() {
                 Enable instant browser alerts
               </p>
             </div>
-            <Button
+            <EButton
               size="sm"
-              disabled={isPushLoading}
+              variant="sacred-primary"
+              isLoading={isPushLoading}
               onClick={subscribeUser}
-              className="h-7 text-[11px] px-2.5 bg-[#174824] hover:bg-[#174824]/90 text-white rounded-lg font-bold cursor-pointer flex-shrink-0"
+              className="h-7 text-[11px] px-2.5 flex-shrink-0"
             >
-              {isPushLoading ? "Enabling..." : "Allow Push"}
-            </Button>
+              Allow Push
+            </EButton>
           </div>
         )}
 

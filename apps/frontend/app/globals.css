@@ -58,3 +58,146 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #fcfaf5 inset !important;
   -webkit-text-fill-color: #2c221e !important;
 }
+
+/* ==========================================================================
+   Radix Dialog & Drawer Animations (Tailwind v4 Compliant Keyframes)
+   ========================================================================== */
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlayHide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes drawerSlideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawerSlideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes drawerSlideInBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawerSlideOutBottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes modalContentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes modalContentHide {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+}
+
+/* Dialog / Drawer Backdrop Animation */
+.dialog-overlay[data-state="open"] {
+  animation: overlayShow 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.dialog-overlay[data-state="closed"] {
+  animation: overlayHide 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Responsive Drawer Animations */
+.drawer-content[data-state="open"] {
+  animation: drawerSlideInBottom 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.drawer-content[data-state="closed"] {
+  animation: drawerSlideOutBottom 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (min-width: 768px) {
+  .drawer-content[data-state="open"] {
+    animation: drawerSlideInRight 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .drawer-content[data-state="closed"] {
+    animation: drawerSlideOutRight 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+/* Modal Content Animations */
+.modal-content[data-state="open"] {
+  animation: modalContentShow 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.modal-content[data-state="closed"] {
+  animation: modalContentHide 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Popover Content Animations */
+@keyframes popoverShow {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes popoverHide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+.popover-content[data-state="open"] {
+  animation: popoverShow 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.popover-content[data-state="closed"] {
+  animation: popoverHide 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

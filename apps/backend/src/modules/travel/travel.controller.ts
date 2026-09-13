@@ -27,8 +27,12 @@ export class TravelController {
   constructor(private readonly travelService: TravelService) {}
 
   @Get()
-  async findAll(@Request() req: any, @Query('status') status?: TravelStatus) {
-    return this.travelService.findAll(req.user.userId, status, req.user.role);
+  async findAll(
+    @Request() req: any,
+    @Query('status') status?: TravelStatus,
+    @Query('category') category?: string,
+  ) {
+    return this.travelService.findAll(req.user.userId, status, req.user.role, category);
   }
 
   @Post()

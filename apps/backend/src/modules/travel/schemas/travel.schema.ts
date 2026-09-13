@@ -26,6 +26,11 @@ export enum AccommodationType {
   OTHER = 'OTHER',
 }
 
+export enum TravelCategory {
+  GENERAL = 'GENERAL',
+  MAHARAJ_JI = 'MAHARAJ_JI',
+}
+
 export type TravelDocument = Travel & Document;
 
 @Schema({ timestamps: true })
@@ -35,6 +40,9 @@ export class Travel {
 
   @Prop({ required: true })
   title: string;
+
+  @Prop({ type: String, enum: TravelCategory, default: TravelCategory.GENERAL })
+  category: TravelCategory;
 
   @Prop({ default: 'Official Visit' })
   purpose: string;

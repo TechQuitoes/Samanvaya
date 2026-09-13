@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { LucideIcon } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import ECard from "@/components/common/ECard";
 
 export type SacredStatVariant = "default" | "emerald" | "amber" | "rose" | "blue" | "gold";
 
@@ -76,7 +76,7 @@ export function SacredStatCard({
   const styles = getStyles();
 
   return (
-    <Card
+    <ECard
       onClick={onClick}
       className={`relative overflow-hidden rounded-xl sm:rounded-[28px] p-2.5 sm:p-5 border ${
         styles.border
@@ -121,7 +121,7 @@ export function SacredStatCard({
           }`}
         />
       </div>
-    </Card>
+    </ECard>
   );
 }
 

@@ -6,18 +6,15 @@ import Link from "next/link";
 import {
   ChevronLeft,
   User,
-  Mail,
-  Phone,
-  Lock,
-  Eye,
-  EyeOff,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import EInput from "@/components/common/EInput";
 import LotusDivider from "@/components/ui/LotusDivider";
 import GoogleAuthButton from "./GoogleAuthButton";
+import EEmailInput from "@/components/common/EEmailInput";
+import EMobileInput from "@/components/common/EMobileInput";
+import EPasswordInput from "@/components/common/EPasswordInput";
+import EButton from "@/components/common/EButton";
 import { useSignup } from "../hooks/useSignup";
 
 export default function SignupForm() {
@@ -31,8 +28,6 @@ export default function SignupForm() {
     handleDirectSignup,
   } = useSignup();
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
 
   return (
@@ -117,7 +112,7 @@ export default function SignupForm() {
             noValidate
           >
             {/* Full Name Field */}
-            <Input
+            <EInput
               id="signup-fullName"
               type="text"
               label="Full Name"
@@ -132,27 +127,21 @@ export default function SignupForm() {
               required
             />
 
-            {/* Email Address Field */}
-            <Input
+            {/* Email Address Field with EEmailInput */}
+            <EEmailInput
               id="signup-email"
-              type="email"
-              label="Email Address"
               value={formData.email}
               onChange={(e) => {
                 updateFormData({ email: e.target.value });
                 clearFieldError("email");
               }}
               error={fieldErrors.email}
-              placeholder="Enter your email address"
-              leftIcon={<Mail className="w-4 h-4 text-[#4a3e31]" />}
               required
             />
 
-            {/* Mobile Number Field */}
-            <Input
+            {/* Mobile Number Field with EMobileInput */}
+            <EMobileInput
               id="signup-mobile"
-              type="tel"
-              label="Mobile Number"
               value={formData.mobile}
               onChange={(e) => {
                 updateFormData({ mobile: e.target.value });
@@ -160,14 +149,12 @@ export default function SignupForm() {
               }}
               error={fieldErrors.mobile}
               placeholder="Enter your mobile number"
-              leftIcon={<Phone className="w-4 h-4 text-[#4a3e31]" />}
               required
             />
 
-            {/* Password Field */}
-            <Input
+            {/* Password Field with EPasswordInput */}
+            <EPasswordInput
               id="signup-password"
-              type={showPassword ? "text" : "password"}
               label="Password"
               value={formData.password}
               onChange={(e) => {
@@ -176,28 +163,12 @@ export default function SignupForm() {
               }}
               error={fieldErrors.password}
               placeholder="Enter your password"
-              leftIcon={<Lock className="w-4 h-4 text-[#4a3e31]" />}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="text-[#8c7865] hover:text-[#4a3e31] transition-colors p-0.5"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              }
               required
             />
 
-            {/* Confirm Password Field */}
-            <Input
+            {/* Confirm Password Field with EPasswordInput */}
+            <EPasswordInput
               id="signup-confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
               label="Confirm Password"
               value={formData.confirmPassword}
               onChange={(e) => {
@@ -206,21 +177,6 @@ export default function SignupForm() {
               }}
               error={fieldErrors.confirmPassword}
               placeholder="Confirm your password"
-              leftIcon={<Lock className="w-4 h-4 text-[#4a3e31]" />}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-                  className="text-[#8c7865] hover:text-[#4a3e31] transition-colors p-0.5"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              }
               required
             />
 
@@ -252,31 +208,17 @@ export default function SignupForm() {
             )}
 
             {/* Create Account Button */}
-            <Button
+            <EButton
               type="submit"
-              disabled={isLoading}
-              className="w-full h-12 bg-[#174824] hover:bg-[#12391c] text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-md transition-all mt-1 cursor-pointer"
+              variant="primary"
+              isLoading={isLoading}
+              loadingText="Creating Account..."
+              showLotusIcon
+              fullWidth
+              className="mt-1"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Creating Account...</span>
-                </>
-              ) : (
-                <>
-                  <div className="relative w-5 h-5 flex-shrink-0">
-                    <Image
-                      src="/image-assets/04_lotus_icon_gold.svg"
-                      alt="Lotus"
-                      width={20}
-                      height={20}
-                      className="object-contain brightness-200"
-                    />
-                  </div>
-                  <span>Create Account</span>
-                </>
-              )}
-            </Button>
+              Create Account
+            </EButton>
 
             {/* OR Divider */}
             <div className="flex items-center justify-center gap-3 my-0.5">

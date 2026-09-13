@@ -9,6 +9,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import LinkedTravelCard from "@/components/travel/LinkedTravelCard";
+import ECard from "@/components/common/ECard";
+import EButton from "@/components/common/EButton";
 import EResponsiveDrawer from "@/components/common/EResponsiveDrawer";
 import useTasks from "@/hooks/useTasks";
 import { Task, TaskModuleType, TaskPriority, TaskStatus } from "@/types/task";
@@ -62,7 +64,7 @@ export default function TaskDetailDrawer({
     >
       <div className="space-y-4 pb-4">
         {/* Status Toggle & Priority Header */}
-        <div className="p-3.5 rounded-2xl bg-[#faf5eb] border border-[#e5d9c3] flex items-center justify-between gap-3">
+        <ECard variant="sacred" className="p-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <button
               type="button"
@@ -100,29 +102,33 @@ export default function TaskDetailDrawer({
             </span>
 
             {onEdit && (
-              <button
+              <EButton
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => {
                   onOpenChange(false);
                   onEdit(task);
                 }}
-                className="p-1 text-[#174824] hover:bg-white rounded-lg cursor-pointer transition-colors"
+                className="h-8 w-8 p-0 text-[#174824]"
                 title="Edit Task"
               >
-                <Pencil className="w-4 h-4" />
-              </button>
+                <Pencil className="w-3.5 h-3.5" />
+              </EButton>
             )}
 
-            <button
+            <EButton
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={handleDelete}
-              className="p-1 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer transition-colors"
+              className="h-8 w-8 p-0 text-red-600 hover:bg-red-50"
               title="Delete Task"
             >
-              <Trash2 className="w-4 h-4" />
-            </button>
+              <Trash2 className="w-3.5 h-3.5" />
+            </EButton>
           </div>
-        </div>
+        </ECard>
 
         {/* Linked Module Context (Rich Travel Details) */}
         {task.moduleType === TaskModuleType.TRAVEL && (task.moduleRefId || task.moduleTitle) && (
@@ -135,20 +141,20 @@ export default function TaskDetailDrawer({
 
         {/* Task Description */}
         {task.description && (
-          <div className="p-3.5 rounded-2xl bg-white border border-[#e5d9c3] space-y-1">
+          <ECard className="p-3.5 space-y-1">
             <p className="text-[10px] font-bold text-[#8c7865] uppercase tracking-wider">
               Instructions
             </p>
             <p className="text-xs text-[#2c221e] leading-relaxed font-medium">
               {task.description}
             </p>
-          </div>
+          </ECard>
         )}
 
         {/* Assignment Accountability (Assigned To & Assigned By) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
           {/* Assigned To */}
-          <div className="p-3 rounded-2xl bg-white border border-[#e5d9c3] space-y-1.5 shadow-2xs">
+          <ECard className="p-3 space-y-1.5 shadow-2xs">
             <div className="flex items-center gap-1.5 text-[#8c7865]">
               <User className="w-3.5 h-3.5 text-[#174824]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">
@@ -173,10 +179,10 @@ export default function TaskDetailDrawer({
                 </p>
               </div>
             </div>
-          </div>
+          </ECard>
 
           {/* Assigned By */}
-          <div className="p-3 rounded-2xl bg-white border border-[#e5d9c3] space-y-1.5 shadow-2xs">
+          <ECard className="p-3 space-y-1.5 shadow-2xs">
             <div className="flex items-center gap-1.5 text-[#8c7865]">
               <ShieldCheck className="w-3.5 h-3.5 text-[#174824]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">
@@ -203,11 +209,11 @@ export default function TaskDetailDrawer({
                 )}
               </div>
             </div>
-          </div>
+          </ECard>
         </div>
 
         {/* Due Date Card */}
-        <div className="p-3 rounded-2xl bg-[#faf5eb] border border-[#e5d9c3] flex items-center justify-between text-xs">
+        <ECard variant="sacred" className="p-3 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[#174824]" />
             <div>
@@ -233,7 +239,7 @@ export default function TaskDetailDrawer({
                 : "Active Target"}
             </span>
           )}
-        </div>
+        </ECard>
       </div>
     </EResponsiveDrawer>
   );

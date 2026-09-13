@@ -6,7 +6,7 @@ import {
   Plane,
   ExternalLink,
 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import ESkeleton from "@/components/common/ESkeleton";
 import apiNexus from "@/lib/api/apiNexusIntercepter";
 import { Travel } from "@/types/travel";
 
@@ -58,11 +58,11 @@ export default function LinkedTravelCard({
 
   if (isLoading) {
     return (
-      <div className="p-3 rounded-2xl bg-[#faf5eb] border border-[#e5d9c3] space-y-2 animate-pulse">
-        <Skeleton className="h-4 w-32 bg-[#e5d9c3]/60" />
+      <div className="p-3 rounded-2xl bg-[#faf5eb] border border-[#e5d9c3] space-y-2">
+        <ESkeleton className="h-4 w-32" />
         <div className="grid grid-cols-2 gap-2">
-          <Skeleton className="h-4 w-full bg-[#e5d9c3]/40" />
-          <Skeleton className="h-4 w-full bg-[#e5d9c3]/40" />
+          <ESkeleton className="h-4 w-full" />
+          <ESkeleton className="h-4 w-full" />
         </div>
       </div>
     );
